@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Checkout | EIMC Terminal</title>
+<meta name="description" content="Complete your EIMC Terminal plan.">
+<meta name="theme-color" content="#06080d">
+<!-- The boot splash plays once per session. This runs before any stylesheet so a
+     repeat page never flashes it; js/boot.js then removes #boot entirely. -->
+<script>try{if(sessionStorage.getItem("eimc.boot.seen")==="1"||localStorage.getItem("eimc.boot.seen")==="1")document.documentElement.className+=" booted"}catch(e){}</script>
+<meta name="robots" content="noindex">
+<meta property="og:title" content="EIMC Terminal — Checkout">
+<meta property="og:description" content="Complete your EIMC Terminal plan.">
+<meta property="og:image" content="/assets/eimc.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20x%3D%224%22%20y%3D%224%22%20width%3D%2256%22%20height%3D%2256%22%20rx%3D%2215%22%20fill%3D%22%23141821%22%2F%3E%3Cpath%20d%3D%22M13%2041%20L24%2045%20L31%2038%20L41%2018%20L55%2012%22%20fill%3D%22none%22%20stroke%3D%22%23f5c842%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2212%22%20r%3D%224%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E">
+<link rel="stylesheet" href="/static/vendor/fonts.css">
+<link rel="stylesheet" href="/fonts/arimo.css">
+<link rel="stylesheet" href="/static/css/boot.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/convert.css">
+<!-- Arimo is the site typeface; Inter and Jost are only for the boot splash, which
+     pins them itself so the animation renders exactly as it does in the app. -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/Arimo-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/static/vendor/fonts/Inter-400-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/static/vendor/fonts/Jost-400-latin.woff2">
+<link rel="modulepreload" href="/static/js/theme.js">
+<link rel="modulepreload" href="/static/js/logo.js">
+<link rel="modulepreload" href="/static/js/mark.js">
+<link rel="modulepreload" href="/static/js/launch.js">
+</head>
+<body data-boot-status="Loading <b>checkout</b>">
+
+<!-- boot splash: markup copied verbatim from the product, static/index.html:59-71 -->
+<div class="boot" id="boot">
+  <canvas class="boot-fx" id="boot-fx"></canvas>
+  <div class="boot-core">
+    <div class="boot-mark" id="boot-mark"></div>
+    <div class="boot-copy">
+      <div class="boot-word"><i style="--i:0">E</i><i style="--i:1">I</i><i style="--i:2">M</i><i style="--i:3">C</i></div>
+      <div class="boot-sub">TERMINAL</div>
+      <div class="boot-motto" id="boot-motto">EVERYTHING IS WRITTEN ON UNFOLDED PAPER</div>
+      <div class="boot-lights" id="boot-lights"><i><b></b><b></b></i><i><b></b><b></b></i><i><b></b><b></b></i><i><b></b><b></b></i><i><b></b><b></b></i></div>
+      <div class="boot-status" id="boot-status">Opening the paper&hellip;</div>
+    </div>
+  </div>
+</div>
+
+<!-- floating pill bar: arrives once the hero is behind you -->
+<div class="topbar" id="topbar">
+  <a class="tb-brand" href="index.html"><b>EIMC</b></a>
+  <div class="tb-mid">Founding price &mdash; <b data-cd-compact="2026-12-15T00:00:00Z">&mdash;</b> left</div>
+  <a class="btn btn-sm btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 3 days free <span class="arw">&rarr;</span></a>
+</div>
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html">
+      <div class="brand-mark" id="nav-mark"></div>
+      <div class="bt"><b>EIMC</b><span>TERMINAL</span></div>
+    </a>
+    <nav class="nav-links">
+      <div class="mm">
+        <a class="mm-top" href="features.html">Features</a>
+        <div class="mm-panel">
+          <a class="mm-item" href="features.html#watch-gvp"><b><i style="--mc:#ffb74d"></i>Golden volume profile</b><span>TradingView-exact, carried into the next session</span></a>
+          <a class="mm-item" href="features.html#watch-book"><b><i style="--mc:#22d3ee"></i>Order flow</b><span>Footprint, delta, walls and a live DOM</span></a>
+          <a class="mm-item" href="features.html#watch-smc"><b><i style="--mc:#c084fc"></i>Smart money concepts</b><span>BOS, CHoCH, order blocks, stop hunts, trade plan</span></a>
+          <a class="mm-item" href="features.html#watch-book"><b><i style="--mc:#ffa630"></i>Liquidity heatmap</b><span>Resting orders over time, Bookmap-style</span></a>
+          <a class="mm-item" href="features.html#watch-chain"><b><i style="--mc:#4c7dff"></i>Option chain</b><span>Greeks, buildup, IV skew, max pain, expected move</span></a>
+          <a class="mm-item" href="features.html#watch-flow"><b><i style="--mc:#22d3a6"></i>Option flow</b><span>Call and put buyers vs sellers, scored 0&ndash;100</span></a>
+          <a class="mm-item" href="features.html#watch-ind"><b><i style="--mc:#38bdf8"></i>DQRS setups</b><span>Five mechanical setups, forward-tested</span></a>
+          <a class="mm-item" href="features.html#watch-replay"><b><i style="--mc:#8691a5"></i>Bar replay</b><span>1&times;&ndash;1800&times;, provably blind to the future</span></a>
+        </div>
+      </div>
+      <a href="why.html">Why EIMC</a>
+      <a href="performance.html">Performance</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="download.html">Download</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-sm btn-quiet" href="download.html">Download free</a>
+      <a class="btn btn-sm btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 3-day Pro trial <span class="arw">&rarr;</span></a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menu"><i></i></button>
+  </div>
+</header>
+
+<main>
+
+<section class="phead">
+  <div class="wrap">
+    <div class="buy-grid">
+      <div id="order">
+        <noscript>
+          <h1 class="d2">Checkout needs JavaScript</h1>
+          <p class="lede mt24">Your order summary is built from the plan you picked. Please enable
+          JavaScript, or <a class="tlink" href="pricing.html">go back to pricing</a>.</p>
+        </noscript>
+      </div>
+      <aside id="order-side"></aside>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-in">
+      <div class="footer-brand">
+        <div class="brand"><div class="bt"><b>EIMC</b><span>TERMINAL</span></div></div>
+        <p>Order flow, liquidity and market structure for Indian markets. Built on the DhanHQ v2 Data API.</p>
+      </div>
+      <div>
+        <h5>Modes</h5>
+        <ul>
+          <li><a href="features.html#watch-gvp">Golden volume profile</a></li>
+          <li><a href="features.html#watch-book">Order flow</a></li>
+          <li><a href="features.html#watch-smc">Smart money</a></li>
+          <li><a href="features.html#watch-book">Liquidity heatmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Analysis</h5>
+        <ul>
+          <li><a href="features.html#watch-chain">Option chain</a></li>
+          <li><a href="features.html#watch-flow">Option flow</a></li>
+          <li><a href="features.html#watch-ind">DQRS setups</a></li>
+          <li><a href="features.html#watch-replay">Bar replay</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Buy</h5>
+        <ul>
+          <li><a href="why.html">Why EIMC</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="offer.html">Launch offer</a></li>
+          <li><a href="buy.html?plan=pro&amp;cycle=monthly">3-day Pro trial</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Setup</h5>
+        <ul>
+          <li><a href="download.html">Download</a></li>
+          <li><a href="download.html#dhan">Connect Dhan</a></li>
+          <li><a href="download.html#keys">Keyboard</a></li>
+          <li><a href="performance.html">Performance</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-base">
+      <span>&copy; <span data-year>2026</span> EIMC &middot; Terminal v1.25.218.93</span>
+      <span class="r">Chart engine: Lightweight Charts &copy; TradingView (Apache-2.0)</span>
+    </div>
+  </div>
+  <div class="wrap"><div class="disc">Trading involves a risk of loss. EIMC is an analysis tool, not investment advice.</div></div>
+</footer>
+
+<script type="module" src="/js/boot.js"></script>
+<script type="module" src="/js/site.js"></script>
+<script type="module" src="/js/buy.js"></script>
+<script type="module" src="/js/fx.js"></script>
+</body>
+</html>

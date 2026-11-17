@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Why EIMC — every claim on this site, and how to check it</title>
+<meta name="description" content="Why a NIFTY 50 order book did not exist until now, what Bookmap and ATAS cost and why neither covers NSE, the test that backs each claim on this site, and an honest list of what EIMC will not promise you.">
+<meta name="theme-color" content="#06080d">
+<!-- The boot splash plays once per session. This runs before any stylesheet so a
+     repeat page never flashes it; js/boot.js then removes #boot entirely. -->
+<script>try{if(sessionStorage.getItem("eimc.boot.seen")==="1"||localStorage.getItem("eimc.boot.seen")==="1")document.documentElement.className+=" booted"}catch(e){}</script>
+<link rel="canonical" href="https://eimc.vercel.app/why.html">
+<meta property="og:title" content="Why EIMC — every claim, and how to check it">
+<meta property="og:description" content="What the alternatives cost, why none of them covers NIFTY 50, and the test file behind each number on this site.">
+<meta property="og:image" content="/assets/eimc.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20x%3D%224%22%20y%3D%224%22%20width%3D%2256%22%20height%3D%2256%22%20rx%3D%2215%22%20fill%3D%22%23141821%22%2F%3E%3Cpath%20d%3D%22M13%2041%20L24%2045%20L31%2038%20L41%2018%20L55%2012%22%20fill%3D%22none%22%20stroke%3D%22%23f5c842%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2212%22%20r%3D%224%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E">
+<link rel="stylesheet" href="/static/vendor/fonts.css">
+<link rel="stylesheet" href="/fonts/arimo.css">
+<link rel="stylesheet" href="/static/css/boot.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/convert.css">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/Arimo-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/static/vendor/fonts/Inter-400-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/static/vendor/fonts/Jost-400-latin.woff2">
+<link rel="modulepreload" href="/static/js/theme.js">
+<link rel="modulepreload" href="/static/js/logo.js">
+<link rel="modulepreload" href="/static/js/mark.js">
+<link rel="modulepreload" href="/static/js/launch.js">
+</head>
+<body data-boot-status="Checking the <b>claims</b>">
+
+<!-- boot splash: markup copied verbatim from the product, static/index.html:59-71 -->
+<div class="boot" id="boot">
+  <canvas class="boot-fx" id="boot-fx"></canvas>
+  <div class="boot-core">
+    <div class="boot-mark" id="boot-mark"></div>
+    <div class="boot-copy">
+      <div class="boot-word"><i style="--i:0">E</i><i style="--i:1">I</i><i style="--i:2">M</i><i style="--i:3">C</i></div>
+      <div class="boot-sub">TERMINAL</div>
+      <div class="boot-motto" id="boot-motto">EVERYTHING IS WRITTEN ON UNFOLDED PAPER</div>
+      <div class="boot-lights" id="boot-lights"><i><b></b><b></b></i><i><b></b><b></b></i><i><b></b><b></b></i><i><b></b><b></b></i><i><b></b><b></b></i></div>
+      <div class="boot-status" id="boot-status">Opening the paper&hellip;</div>
+    </div>
+  </div>
+</div>
+
+<!-- floating pill bar: arrives once the hero is behind you -->
+<div class="topbar" id="topbar">
+  <a class="tb-brand" href="index.html"><b>EIMC</b></a>
+  <div class="tb-mid">Founding price &mdash; <b data-cd-compact="2026-12-15T00:00:00Z">&mdash;</b> left</div>
+  <a class="btn btn-sm btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 3 days free <span class="arw">&rarr;</span></a>
+</div>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html">
+      <div class="brand-mark" id="nav-mark"></div>
+      <div class="bt"><b>EIMC</b><span>TERMINAL</span></div>
+    </a>
+    <nav class="nav-links">
+      <div class="mm">
+        <a class="mm-top" href="features.html">Features</a>
+        <div class="mm-panel">
+          <a class="mm-item" href="features.html#watch-gvp"><b><i style="--mc:#ffb74d"></i>Golden volume profile</b><span>TradingView-exact, carried into the next session</span></a>
+          <a class="mm-item" href="features.html#watch-book"><b><i style="--mc:#22d3ee"></i>Order flow</b><span>Footprint, delta, walls and a live DOM</span></a>
+          <a class="mm-item" href="features.html#watch-smc"><b><i style="--mc:#c084fc"></i>Smart money concepts</b><span>BOS, CHoCH, order blocks, stop hunts, trade plan</span></a>
+          <a class="mm-item" href="features.html#watch-book"><b><i style="--mc:#ffa630"></i>Liquidity heatmap</b><span>Resting orders over time, Bookmap-style</span></a>
+          <a class="mm-item" href="features.html#watch-chain"><b><i style="--mc:#4c7dff"></i>Option chain</b><span>Greeks, buildup, IV skew, max pain, expected move</span></a>
+          <a class="mm-item" href="features.html#watch-flow"><b><i style="--mc:#22d3a6"></i>Option flow</b><span>Call and put buyers vs sellers, scored 0&ndash;100</span></a>
+          <a class="mm-item" href="features.html#watch-ind"><b><i style="--mc:#38bdf8"></i>DQRS setups</b><span>Five mechanical setups, forward-tested</span></a>
+          <a class="mm-item" href="features.html#watch-replay"><b><i style="--mc:#8691a5"></i>Bar replay</b><span>1&times;&ndash;1800&times;, provably blind to the future</span></a>
+        </div>
+      </div>
+      <a href="why.html">Why EIMC</a>
+      <a href="performance.html">Performance</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="download.html">Download</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-sm btn-quiet" href="download.html">Download free</a>
+      <a class="btn btn-sm btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 3-day Pro trial <span class="arw">&rarr;</span></a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menu"><i></i></button>
+  </div>
+</header>
+
+<main>
+
+<section class="phead track">
+  <div class="wrap">
+    <div class="kicker plain">Why EIMC</div>
+    <h1 class="d1">Every claim on this site, <em>and how to check it.</em></h1>
+    <p class="lede">
+      Trading software is sold on assertions, which is why nobody believes any of it. This page is the
+      opposite document: what the alternatives actually cost, why none of them covers NIFTY 50, the test
+      file behind each number we quote, and a list of the things EIMC deliberately will not promise you.
+    </p>
+    <div class="btns mt32">
+      <a class="btn btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 3 days of Pro, free <span class="arw">&rarr;</span></a>
+      <a class="btn" href="#claims">Jump to the claim table</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ THE THESIS ═══ -->
+<section class="band grid-tex">
+  <div class="wrap">
+    <div class="kicker"><span class="n">01</span> <b>The thesis</b></div>
+    <h2 class="d2">An index is the hardest thing to see into, <em>and the most traded.</em></h2>
+    <div class="row mt48">
+      <div class="row-copy">
+        <p class="lede">
+          NIFTY 50 is a calculated number. It does not trade, so it has no order book, no volume and no
+          tape. Everything an order-flow platform is built to read simply does not exist on it.
+        </p>
+        <p>
+          That is not a gap in the software market, it is a property of the instrument &mdash; which is why
+          every serious depth tool declines to draw on an index rather than faking it. The honest
+          consequence is that the instrument carrying the most intraday risk in India is the one its
+          traders can see into least.
+        </p>
+        <p>
+          There is a way round it, and it is specific rather than clever: the <b>near-month future</b> does
+          trade, it does have a 200-level book, and it tracks the index by a basis you can measure. Record
+          that book and shift it by the basis and you have a liquidity picture for the index itself.
+        </p>
+        <p>
+          Dhan exposes the 200-level feed. Dhan does not <b>store</b> it &mdash; there is no order-book
+          history API, anywhere. So the recording has to be yours, running on your machine, from before the
+          open. That is the part of EIMC you could not reproduce with a script over your existing charts,
+          and it is the reason the product exists.
+        </p>
+      </div>
+      <div class="row-media">
+        <div class="claim">
+          <div>
+            <span class="n">200</span>
+            <h3>Levels, not five</h3>
+            <p>The deepest feed Dhan offers, with automatic fallback to 20 then 5 if a socket is taken.
+               Bookmap&rsquo;s Indian route topped out at five.</p>
+          </div>
+          <div>
+            <span class="n">1<i>s</i></span>
+            <h3>From 09:00, app or no app</h3>
+            <p>Fifteen minutes before the open, every market day, whether a browser is pointed at it or
+               not. Nothing else records this.</p>
+          </div>
+          <div>
+            <span class="n">5</span>
+            <h3>Sessions you can scroll back through</h3>
+            <p>A week of second-by-second book on disk. Tuesday&rsquo;s wall is still there on Friday, with
+               the tape that ate it.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════ THE RIVALS ═══ -->
+<section class="band band-alt">
+  <div class="wrap">
+    <div class="kicker"><span class="n">02</span> <b>The alternatives</b></div>
+    <h2 class="d2">What they cost, <em>and what they do here.</em></h2>
+    <p class="lede mt24 mb48">
+      Read off each vendor&rsquo;s own pricing page, converted at a rate that rounds in their favour. The
+      third column is the one that decides it.
+    </p>
+    <div data-ui="rivals"></div>
+
+    <h3 class="d3 mt64 mb24">Or you assemble it yourself</h3>
+    <p class="lede mb48">
+      The stack a trader who wanted all of this would have to subscribe to &mdash; and the last two rows,
+      which no amount of money buys in India.
+    </p>
+    <div data-ui="stack"></div>
+  </div>
+</section>
+
+<!-- ═════════════════════════════════════════════════ CLAIM TABLE ═══ -->
+<section class="band" id="claims">
+  <div class="wrap">
+    <div class="kicker"><span class="n">03</span> <b>The claim table</b></div>
+    <h2 class="d2">Each number, <em>and the thing that proves it.</em></h2>
+    <p class="lede mt24 mb48">
+      Where a claim could be written as a test instead of a sentence, it was written as a test. These run
+      on the build, and the file is named so you can ask about any one of them specifically.
+    </p>
+    <div class="tw">
+      <table class="t">
+        <thead><tr><th>What we claim</th><th>How it is established</th><th>Where</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="cap"><b>The volume profile is TradingView&rsquo;s, not an approximation of it</b></td>
+            <td>Matched row by row against a Dhan TradingView screenshot of NIFTY 50 on 19 Oct 2026 &mdash;
+                every row within <b>0.6 px</b>, the same POC row and the same value-area edge, under
+                TradingView&rsquo;s documented row and value-area rules.</td>
+            <td><code class="src">tests/test_volprofile.py</code></td>
+          </tr>
+          <tr>
+            <td class="cap"><b>Bar replay cannot see the future</b></td>
+            <td>Roughly <b>1,090 checks</b>. Every candle and tick after the replay clock is corrupted, and
+                the test demands the chart payload and the MTF table come back
+                <b>byte-identical</b>. Covers indicators, structure, zones, levels, ORB, the trade plan and
+                higher-timeframe zones.</td>
+            <td><code class="src">tests/test_replay.py</code></td>
+          </tr>
+          <tr>
+            <td class="cap"><b>The fast analysis path did not change any answers</b></td>
+            <td><b>1,365</b> equivalence comparisons proving the optimised code returns exactly what the
+                original algorithms did.</td>
+            <td><code class="src">tests/test_equivalence.py</code></td>
+          </tr>
+          <tr>
+            <td class="cap"><b>DQRS hit rates are measured, not chosen</b></td>
+            <td>The rules fire where they should and the arithmetic holds &mdash; &minus;1R losses,
+                R-multiple wins, no stop under 0.5 ATR &mdash; and detection is byte-identical when every
+                candle after a cut is scrambled, so no setup is found using future data.</td>
+            <td><code class="src">tests/test_setups.py</code></td>
+          </tr>
+          <tr>
+            <td class="cap"><b>A stop hunt is distinguished from a real break</b></td>
+            <td>The engine is run over hand-built price paths covering hunt versus break, zone depth, a live
+                raid, equal lows, mirrored highs and trade-plan protection.</td>
+            <td><code class="src">tests/test_stophunt.py</code></td>
+          </tr>
+          <tr>
+            <td class="cap"><b>The browser and the server compute identical indicators</b></td>
+            <td>The engine exists twice &mdash; once for per-tick updates in the browser, once on the
+                server &mdash; and a parity fixture holds the two <b>bar for bar</b>. You can open the
+                comparison yourself.</td>
+            <td><code class="src">make_parity_fixture.py</code> &rarr; <code class="src">/static/dev/parity.html</code></td>
+          </tr>
+          <tr>
+            <td class="cap"><b>Live candles match the exchange&rsquo;s own truth</b></td>
+            <td>A tick-replay harness checks candles built from ticks against the exchange&rsquo;s closed
+                candles, plus the REST merge rules, session handling, the opening range and anchored VWAP.</td>
+            <td><code class="src">/static/dev/live-sim.html</code></td>
+          </tr>
+          <tr>
+            <td class="cap"><b>A missing import cannot silently break a handler</b></td>
+            <td>Every browser module is checked to import the helpers it calls &mdash; otherwise a handler
+                throws halfway and quietly stops doing the rest of its job.</td>
+            <td><code class="src">tests/test_imports.py</code></td>
+          </tr>
+          <tr>
+            <td class="cap"><b>The performance figures are measured on this machine</b></td>
+            <td>Analysis, payload and JSON timings per timeframe, plus a live FPS meter on this website that
+                runs in your own browser before you download anything.</td>
+            <td><code class="src">tests/bench.py</code> &middot; <a class="tlink" style="display:inline" href="performance.html">performance page</a></td>
+          </tr>
+          <tr>
+            <td class="cap"><b>Entitlements on this site match the ones the app checks</b></td>
+            <td>The eleven capability keys in the pricing table are the licence server&rsquo;s own, so the
+                page and the thing that unlocks features cannot drift apart. Entitlement is decided
+                server-side and signed into the token; the interface only reads back what was verified.</td>
+            <td><code class="src">license_server/plans.py</code></td>
+          </tr>
+          <tr>
+            <td class="cap"><b>The order book really is recorded while the app is shut</b></td>
+            <td>This one you verify by using it: close the browser, come back after the close, and scroll the
+                heatmap through the session you were not watching. Five sessions are kept.</td>
+            <td><code class="src">heatrec.py</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════ WHAT WE WILL NOT CLAIM ═══ -->
+<section class="band band-alt">
+  <div class="wrap">
+    <div class="kicker"><span class="n">04</span> <b>The other list</b></div>
+    <h2 class="d2">What this will <em>not</em> do for you.</h2>
+    <p class="lede mt24 mb48">
+      A page of advantages with no limits on it is an advertisement. These are the things EIMC is asked for
+      and does not do, stated plainly so you can rule it out quickly if one of them matters.
+    </p>
+    <div class="idx">
+      <div>
+        <span class="no">NO SIGNALS</span><h3>It will not tell you what to buy</h3>
+        <p>There is no alert that says go long. EIMC measures what has happened and draws what is resting
+        in the book. The DQRS grades and hit rates are evidence about a rule&rsquo;s past behaviour on your
+        symbol, not a forecast of the next trade. Every decision stays yours, and trading involves a risk
+        of loss.</p>
+      </div>
+      <div>
+        <span class="no">NO PROFIT CLAIM</span><h3>It will not make you profitable</h3>
+        <p>We have no idea what your results will be and will not pretend otherwise. The arithmetic on the
+        pricing page is about the <b>cost</b> of the tool in points, not about returns. Nobody on this site
+        will show you an equity curve.</p>
+      </div>
+      <div>
+        <span class="no">NO BACKTESTER</span><h3>It is not a strategy backtesting platform</h3>
+        <p>There is no scripting language and no portfolio-level backtest engine. The forward test exists
+        only to measure the five built-in DQRS rules. If you want to write and optimise your own
+        strategies, this is the wrong tool and something like a dedicated backtesting product is the right
+        one.</p>
+      </div>
+      <div>
+        <span class="no">NO DATA FEED</span><h3>It is not a data vendor</h3>
+        <p>EIMC is a terminal for <b>your</b> Dhan account. You need Dhan with the Data APIs subscription,
+        and for Elite&rsquo;s live orders the Trading APIs too. Access tokens expire every 24 hours, so you
+        paste a fresh one each day &mdash; that is Dhan&rsquo;s design, not ours, and we will not claim it
+        away.</p>
+      </div>
+      <div>
+        <span class="no">WINDOWS ONLY</span><h3>No macOS or Linux build today</h3>
+        <p>Windows 10 or 11, 64-bit. It is a per-user install with no administrator rights and no UAC
+        prompt, so it runs on a locked-down laptop &mdash; but if you are on a Mac, today the answer is no.</p>
+      </div>
+      <div>
+        <span class="no">NO EQUITIES DEPTH</span><h3>Index depth is a reconstruction, and says so</h3>
+        <p>The NIFTY 50 heatmap is the near-month future&rsquo;s book shifted by the basis. That is the
+        honest description of it: it is the future&rsquo;s liquidity, mapped onto the index&rsquo;s price
+        axis, because the index has none of its own. Anyone claiming genuine index depth is selling you
+        the same reconstruction without mentioning it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════ WHO IT IS FOR ═══ -->
+<section class="band">
+  <div class="wrap">
+    <div class="kicker"><span class="n">05</span> <b>Fit</b></div>
+    <h2 class="d2 mb48">Worth it, and not worth it.</h2>
+    <div class="row">
+      <div>
+        <h3 class="mb16">This is built for you if</h3>
+        <ul class="bul tick">
+          <li>You trade <b>NIFTY 50, BANKNIFTY or SENSEX intraday</b>, where the index is the instrument and depth has never been available</li>
+          <li>You have been stopped out at the exact low often enough to suspect it is not coincidence</li>
+          <li>You already read structure &mdash; BOS, order blocks, sweeps &mdash; and want the liquidity underneath it rather than more lines on top</li>
+          <li>You trade options and want to know <b>who is winning the chain</b>, not just what the open interest is</li>
+          <li>You have a Dhan account with the Data APIs, and would rather not rent market data a second time</li>
+          <li>You want to practise &mdash; bar replay at up to 1800&times; on history that provably cannot cheat</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="mb16">Buy something else if</h3>
+        <ul class="bul tick">
+          <li class="no">You invest positionally and look at a weekly chart twice a month &mdash; none of this will pay for itself</li>
+          <li class="no">You want automated signals or a bot to follow</li>
+          <li class="no">You need a scripting language and a portfolio backtester</li>
+          <li class="no">You are on macOS or Linux</li>
+          <li class="no">You trade with a broker other than Dhan and do not want to open one</li>
+          <li class="no">You want US futures or crypto order flow &mdash; that is genuinely what <b>ATAS and Bookmap</b> are for, and they are better at it than we would be</li>
+        </ul>
+        <div class="note gold mt32">
+          <b>If you are unsure, the order of evaluation is free.</b> Download the free tier and run every
+          mode on demo data &mdash; no account, no card, no expiry. Then take the three-day Pro trial on
+          live data, which also takes no card. You reach a payment screen only after using it twice.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ CLOSE ═══ -->
+<section class="close-band track">
+  <div class="wrap">
+    <h2 class="d2">Check it yourself. <em>That is the whole point.</em></h2>
+    <p class="lede">
+      Three days of full Pro on live data, no card. Or the free tier for as long as you like, on demo data,
+      with every mode switched on.
+    </p>
+    <div class="btns">
+      <a class="btn btn-lg btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 3 days of Pro, free <span class="arw">&rarr;</span></a>
+      <a class="btn btn-lg btn-fill" href="download.html">Download the free tier</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-in">
+      <div class="footer-brand">
+        <div class="brand"><div class="bt"><b>EIMC</b><span>TERMINAL</span></div></div>
+        <p>Order flow, liquidity and market structure for Indian markets. Built on the DhanHQ v2 Data API.</p>
+      </div>
+      <div>
+        <h5>Modes</h5>
+        <ul>
+          <li><a href="features.html#watch-gvp">Golden volume profile</a></li>
+          <li><a href="features.html#watch-book">Order flow</a></li>
+          <li><a href="features.html#watch-smc">Smart money</a></li>
+          <li><a href="features.html#watch-book">Liquidity heatmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Analysis</h5>
+        <ul>
+          <li><a href="features.html#watch-chain">Option chain</a></li>
+          <li><a href="features.html#watch-flow">Option flow</a></li>
+          <li><a href="features.html#watch-ind">DQRS setups</a></li>
+          <li><a href="features.html#watch-replay">Bar replay</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Buy</h5>
+        <ul>
+          <li><a href="why.html">Why EIMC</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="offer.html">Launch offer</a></li>
+          <li><a href="buy.html?plan=pro&amp;cycle=monthly">3-day Pro trial</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Setup</h5>
+        <ul>
+          <li><a href="download.html">Download</a></li>
+          <li><a href="download.html#dhan">Connect Dhan</a></li>
+          <li><a href="download.html#keys">Keyboard</a></li>
+          <li><a href="performance.html">Performance</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-base">
+      <span>&copy; <span data-year>2026</span> EIMC &middot; Terminal v1.25.218.93</span>
+      <span class="r">Chart engine: Lightweight Charts &copy; TradingView (Apache-2.0)</span>
+    </div>
+  </div>
+  <div class="wrap"><div class="disc">Trading involves a risk of loss. EIMC is an analysis tool, not investment advice.</div></div>
+</footer>
+
+<script type="module" src="/js/boot.js"></script>
+<script type="module" src="/js/site.js"></script>
+<script type="module">
+  import { renderRivals, renderStack } from '/js/rivals.js';
+  const at = s => document.querySelector(`[data-ui="${s}"]`);
+  renderRivals(at('rivals'));
+  renderStack(at('stack'));
+</script>
+<script type="module" src="/js/fx.js"></script>
+</body>
+</html>

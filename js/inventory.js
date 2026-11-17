@@ -1,0 +1,360 @@
+'use strict';
+/* ════════════════════════════════════════════════════════════════════
+   EVERYTHING IN THE BOX — the full capability inventory.
+
+   Every line here is a real, shipped behaviour taken from the
+   product's own README, not a marketing bullet. The point of the
+   component is volume plus verifiability: a trader who wants to know
+   whether EIMC does one specific thing can type it and find out in
+   two seconds, and the answer is specific enough that a bluff would
+   be obvious.
+
+   `t` is the tier gate, and it matches pricing-data.js exactly:
+     'free'  — works on demo data with no account
+     'basic' — needs a live Dhan connection
+     'pro'   — the analysis engine
+     'elite' — recorded liquidity and real orders
+
+   Keep the wording concrete. "Scored 0–100 from four inputs" earns
+   trust; "powerful analytics" spends it.
+   ════════════════════════════════════════════════════════════════════ */
+
+export const GROUPS = [
+  { id: 'chart',   name: 'Chart engine',        note: 'TradingView Lightweight Charts, driven tick by tick' },
+  { id: 'candle',  name: 'Candle accuracy',     note: 'Why the numbers agree with the exchange' },
+  { id: 'struct',  name: 'Market structure',    note: 'Swings, breaks, zones and the smart-money set' },
+  { id: 'levels',  name: 'Levels & liquidity',  note: 'One scored line per price that matters' },
+  { id: 'gvp',     name: 'Golden volume profile', note: "TradingView's own rules, verified row by row" },
+  { id: 'depth',   name: 'Order book & flow',   note: '200-level depth, recorded all session' },
+  { id: 'options', name: 'Options',             note: 'The full chain, and who is winning it' },
+  { id: 'dqrs',    name: 'DQRS setups',         note: 'Five mechanical setups, forward-tested' },
+  { id: 'replay',  name: 'Bar replay',          note: 'Provably blind to the future' },
+  { id: 'trade',   name: 'Trading',             note: 'Paper by default, live behind a wall' },
+  { id: 'ind',     name: 'Indicators',          note: "TradingView's formulas, browser and server in parity" },
+  { id: 'ux',      name: 'Interface & workflow', note: 'Keyboard, modes, memory' },
+  { id: 'sys',     name: 'System & security',   note: 'Local-only, per-user, your credentials' },
+];
+
+/* ── the inventory ──────────────────────────────────────────────── */
+export const ITEMS = [
+  /* chart engine */
+  ['chart', 'basic', 'Instruments covered', 'NIFTY 50, BANKNIFTY, FINNIFTY, SENSEX and INDIA VIX, every NSE F&amp;O name, NSE and BSE cash, and MCX commodities — through DhanHQ v2.'],
+  ['chart', 'free', 'Ten timeframes', '1m · 5m · 15m · 25m · 1H · 2H · 4H · 1D · 1W · 1M, each on a number key.'],
+  ['chart', 'free', 'Six chart types', 'Candles, Hollow, Heikin Ashi, Bars, Line and Area.'],
+  ['chart', 'free', 'Infinite history', 'Scroll to the left edge and older candles load themselves.'],
+  ['chart', 'basic', 'Tick-by-tick live candles', "The forming candle and every indicator on it update on each tick from Dhan's live feed, keeping your zoom and scroll position."],
+  ['chart', 'free', 'Mouse-wheel and pinch zoom', 'Kinetic scrolling, drag either axis to rescale, double-click an axis to reset.'],
+  ['chart', 'free', 'Auto-fit price axis', 'The A button fits the axis to what is on screen, and switches itself off the moment you drag the axis.'],
+  ['chart', 'free', 'Logarithmic price axis', 'The L button makes equal percentage moves look equal. Both A and L are remembered.'],
+  ['chart', 'free', 'PNG snapshot', 'Alt+S writes the chart to an image.'],
+  ['chart', 'free', 'Fullscreen', 'The chart takes the whole window.'],
+  ['chart', 'basic', 'Live watchlist', 'Your symbols with live prices beside the chart.'],
+  ['chart', 'free', 'Symbol search on any letter', 'Start typing and the search opens — no field to click first.'],
+  ['chart', 'free', 'Drawing tools', 'Trend line, horizontal level, rectangle and measure, on Alt+T / Alt+H / Alt+B / Alt+M, with Delete, Ctrl+Z and Esc.'],
+
+  /* candle accuracy */
+  ['candle', 'basic', 'Triple close reconciliation', "Every candle close is re-checked against Dhan's own candles 1 s, 6 s and 20 s later, then every 30 s until Dhan has it."],
+  ['candle', 'basic', 'Exchange clock, not your PC clock', "Data requests use the exchange's clock, so a slow PC clock can no longer hide the newest candle."],
+  ['candle', 'basic', 'Clock drift readout', 'The status bar shows how far this machine is from the exchange, and when candles last synced.'],
+  ['candle', 'basic', 'No dropped ticks', "A new day high or low that lands between Dhan's ~1 s snapshots still reaches the candle's wick."],
+  ['candle', 'basic', 'Tick-size snapping', 'The Dhan feed sends float32, so 25843.35 arrives as 25843.3496. Prices are snapped back to the instrument tick.'],
+  ['candle', 'basic', 'Official daily bars', "Previous day, week and month levels, pivots, CPR and change % use Dhan's official daily bars — and for NSE stocks the official close is the 30-minute VWAP, not the last trade."],
+  ['candle', 'basic', 'Re-check on reconnect and on tab focus', 'Candles are verified again after a dropped connection and when the tab comes back into view.'],
+  ['candle', 'basic', 'Confirming-candle state', 'The chip reads "Confirming live candle…" while the newest candle exists only from ticks.'],
+
+  /* market structure */
+  ['struct', 'free', 'HH / HL / LH / LL swings', 'Labelled on the candles as they form.'],
+  ['struct', 'pro', 'Break of structure (BOS)', 'Continuation breaks, marked on the candle that did it.'],
+  ['struct', 'pro', 'Change of character (CHoCH)', 'The reversal break, which is the one that matters after a sweep.'],
+  ['struct', 'pro', 'Support and resistance zones', 'Clustered swing points carrying a swing count, a ⇅ flip marker, how many times they have been tested, and a fresh flag when price has not returned yet.'],
+  ['struct', 'pro', 'Demand and supply order blocks', 'The candle range institutional orders were filled from, drawn until it is consumed.'],
+  ['struct', 'pro', 'Fair value gaps', 'Open FVGs with their 50% line and a live fill percentage.'],
+  ['struct', 'pro', 'Equal highs and equal lows', 'The classic resting-stop pool, marked as EQH ×2 / EQL ×2.'],
+  ['struct', 'pro', 'Liquidity sweeps', 'Where price poked through a level and reversed — liquidity taken.'],
+  ['struct', 'pro', 'Premium / discount zones', 'Which half of the dealing range price is working in.'],
+  ['struct', 'pro', 'Higher-timeframe zone overlay', 'Lay 1H / 4H / 1D / 1W zones over a lower-timeframe chart from the MTF tab.'],
+  ['struct', 'pro', 'Trade plan with R:R grade', 'Entry zone, a stop at least 0.5 ATR clear, targets with R-multiples, an A/B/C grade on reward-to-risk, a higher-timeframe alignment check and the risk per lot.'],
+  ['struct', 'pro', 'Bias score', 'Structure, DMI when ADX confirms a trend, volume confirmation, and the next higher timeframe at double weight.'],
+
+  /* stop hunts */
+  ['levels', 'pro', 'Stop-loss liquidity zones', 'Where retail stops actually rest — below swing lows, equal lows and prior session lows for longs, above the mirror highs for shorts.'],
+  ['levels', 'pro', '★ stop score, 0–100', 'How many stops are likely waiting, raised by equal highs/lows, a major swing, a prior day/week/month level, a round number, high volume and age.'],
+  ['levels', 'pro', 'Hunt zone from this chart\'s own history', "The band runs from the level to where 75% of this symbol's past raids turned; the dotted line marks the 90% point. Measured in ATR over up to 3,000 candles, so it adapts per symbol and timeframe."],
+  ['levels', 'pro', 'Hunt versus genuine break', 'A raid counts as a hunt only if price closes back inside within 3 candles and then moves at least 1 ATR away. Otherwise it is recorded as a real break.'],
+  ['levels', 'pro', 'Live raid banner', 'While price is through a level it tells you the exact close that would confirm the hunt, then shows the invalidation level once reclaimed.'],
+  ['levels', 'pro', 'Reach %', "The chance price trades to a level within about one session, from this chart's own distribution of moves."],
+  ['levels', 'pro', 'Draw on liquidity', 'Which side price is most likely to hunt next.'],
+  ['levels', 'pro', 'Hunt-safe stop', 'If a trade plan\'s stop sits inside a stop cluster, the plan offers a replacement beyond the 90% line.'],
+
+  /* levels */
+  ['levels', 'basic', 'One scored line per price', 'No boxes. Green below the last price, red above it, thickness by strength.'],
+  ['levels', 'basic', 'Votes merge, weights add', 'Sources within 0.15 ATR collapse into one line that keeps the sum of their weights, so the label names every reason behind it.'],
+  ['levels', 'basic', 'Labelled sources', 'EQH / EQL, "4 taps", Swept H/L, Hunt H/L, Day H/L/O, PDH/PDL/PDC, PWH/PWL, PMH/PML, Stops ★nn, POC and HVN.'],
+  ['levels', 'basic', 'Today and yesterday always drawn', "Day H/L/O and PDH/PDL/PDC are pinned whatever else wins on score."],
+  ['levels', 'basic', 'Noise control', 'Levels beyond 12 ATR are dropped and two lines never land within 0.35 ATR of each other. Both adjustable.'],
+  ['levels', 'basic', 'Works where there is no volume', "Every line comes from the chart's own swings, sweeps and session boundaries — so it behaves identically on NIFTY 50 and SENSEX, which carry no volume at all."],
+  ['levels', 'basic', 'Previous day / week / month levels', 'Highs, lows and closes from official daily bars.'],
+  ['levels', 'basic', 'Floor pivots, CPR and Camarilla', 'H3/H4/L3/L4 with optional H5/L5 and the inner levels.'],
+  ['levels', 'basic', 'Session breaks', 'Where one session ends and the next begins, drawn on intraday charts.'],
+  ['levels', 'basic', 'Opening range', 'First 5, 15, 30 or 60 minutes, with the breakout marked only on a closed candle.'],
+  ['levels', 'basic', 'Anchored VWAP, up to three', 'Week, month, swing or BOS presets, or Alt+A on any candle you choose.'],
+
+  /* golden volume profile */
+  ['gvp', 'pro', "TradingView's own profile rules", "Rows, value area and POC computed the way TradingView documents them, from the session's 1-minute candles."],
+  ['gvp', 'pro', 'Verified against a real TradingView chart', 'Checked against a Dhan TradingView screenshot of NIFTY 50 on 19 Oct 2026: every row within 0.6 px, same POC row, same value-area edge.'],
+  ['gvp', 'pro', 'Yesterday carried into today', "The previous session's profile, POC and zones are drawn forward to the next session's close."],
+  ['gvp', 'pro', 'HVN zones', 'A peak holding at least 25% of the POC\'s volume and standing 15% above its saddle — an area the market accepted.'],
+  ['gvp', 'pro', 'LVN zones', 'A trough at least 8% below its lower wall and at most half the POC — thin trade, where price tends to move fast.'],
+  ['gvp', 'pro', 'Configurable rows and value area', 'Row count (default 100), value area (default 70%), start at the open or 15 minutes later, width and zone sensitivity.'],
+  ['gvp', 'pro', 'Session stepper', 'The gold chip walks back through every session on the chart; click the date to return to the latest.'],
+  ['gvp', 'pro', 'Computed once per session', 'A finished session never changes, so each is computed once and cached.'],
+  ['gvp', 'pro', 'Replay-safe', 'In a bar replay, only sessions that closed before the replay clock can be read.'],
+
+  /* order book, heatmap, flow */
+  ['depth', 'pro', '200-level order book', "Dhan's deepest feed, falling back to 20 levels then 5 if a socket is unavailable."],
+  ['depth', 'pro', 'Order-book density on the chart', 'One horizontal band per price level hugging the right edge, whose length and opacity both grow with the quantity resting there. Walls keep their price line and label.'],
+  ['depth', 'pro', 'Independent of the panel', 'The density map keeps working with the Book tab closed.'],
+  ['depth', 'elite', 'Liquidity heatmap, Bookmap-style', 'Resting orders over time, so you can see a wall build and then get eaten.'],
+  ['depth', 'elite', 'Order flow and footprint', 'Per-price traded volume and delta, ATAS-style.'],
+  ['depth', 'elite', 'The book recorded every second', 'Dhan keeps no order-book history, so EIMC records its own — once a second, 09:00 to 15:35 IST on market days, whether the app is open or not.'],
+  ['depth', 'elite', 'Five sessions kept', 'A week of recorded liquidity on disk, replayable.'],
+  ['depth', 'elite', 'Depth for NIFTY 50, which has no book', "The near-month future's 200-level book, shifted onto the index chart by the basis."],
+  ['depth', 'elite', 'Up to six options recorded', 'Pick them in the option chain. The first three get 200 levels; options four to six record 20.'],
+  ['depth', 'elite', 'Socket budget managed for you', "An account may hold five depth sockets. EIMC takes four for 200-level work and one 20-level socket for the rest, gives one back if Dhan answers 805, and retries every 30 minutes."],
+  ['depth', 'elite', 'Socket lights', 'Five indicators in the recorder box show exactly which instrument holds which socket.'],
+  ['depth', 'pro', 'Resting buy versus sell pressure', 'Across the five depth levels, per option leg, in the chain.'],
+
+  /* options */
+  ['options', 'pro', 'The full chain, every five seconds', 'Calls, strike, puts for one expiry, refreshed every 5 s while the market is open.'],
+  ['options', 'pro', 'Two endpoints merged', "The option-chain API for OI, volume and greeks, and the market-quote API for everything the chain leaves out — so each row carries what the exchange actually reports."],
+  ['options', 'pro', 'Open interest with walls marked', 'OI with its bar, and R / S on the biggest call and put wall in view.'],
+  ['options', 'pro', 'Buildup read per strike', 'LB long buildup, SB short buildup, SC short covering, LU long unwinding — coloured by what it means for the underlying.'],
+  ['options', 'pro', 'Volume ÷ OI', 'How much of the position was churned today.'],
+  ['options', 'pro', 'Bid, ask and spread %', 'With a bar of resting buy versus sell quantity across five depth levels.'],
+  ['options', 'pro', 'Day range with position %', "Today's low to high with the open marked and the last price as a dot — 97% means it is trading at the top of the day's range."],
+  ['options', 'pro', 'Time value and breakeven', 'What is left in the premium, and where the trade breaks even at expiry.'],
+  ['options', 'pro', 'Premium sparkline', "Today's 1-minute premium path, per strike."],
+  ['options', 'pro', 'IV skew', 'Put IV minus call IV. Positive means the market is paying up for downside protection.'],
+  ['options', 'pro', 'PCR by OI and by volume', 'Both, because they disagree and the disagreement is the signal.'],
+  ['options', 'pro', 'Max pain and total OI', 'With the change on the day.'],
+  ['options', 'pro', 'Expected move', 'From the ATM straddle, in points and as an implied range by expiry.'],
+  ['options', 'pro', 'Chain bias score', "Every strike's buildup weighted by the open interest it actually moved."],
+  ['options', 'pro', 'Four mini charts', 'The underlying today, OI by strike with the top support and resistance named, OI change today, and the IV smile.'],
+  ['options', 'pro', 'Full strike panel', 'Click a strike for both legs: intraday premium chart, O/H/L/PC, day VWAP and distance from it, day swing %, turnover, OI with its own day range, all five greeks, intrinsic and time value, breakeven, moneyness, premium as % of spot, resting quantity with a pressure read, cost per lot, circuit limits, last trade time and the 5-level book.'],
+  ['options', 'pro', 'Column groups you choose', 'Turn groups on and off in the Columns bar; the choice is remembered.'],
+  ['options', 'pro', 'Option flow, scored 0–100', 'Call buyers, call sellers, put buyers and put sellers, each scored across the ATM strike and one either side.'],
+  ['options', 'pro', 'Premium change as an input', 'Buyers push premiums up, writers press them down.'],
+  ['options', 'pro', 'Trend steadiness as an input', "R² of today's 1-minute premium path — a straight, one-way move means one side is in control."],
+  ['options', 'pro', 'Delta check as an input', 'What the index move alone should have done to each premium, from delta, gamma and decay, against what it actually did. Calls flat in a rally means writers are absorbing it.'],
+  ['options', 'pro', 'Open interest as an input', 'Fresh positions versus the other side closing out.'],
+  ['options', 'pro', 'Bull and bear camps', 'Call buyers plus put sellers against put buyers plus call sellers, with a verdict, 30-minute change, a session chart, the evidence table and the reasons in plain words.'],
+  ['options', 'pro', 'Refreshes every 30 seconds', 'And you can switch expiry with one button.'],
+
+  /* DQRS */
+  ['dqrs', 'pro', 'Four-axis scorecard', 'Direction (trend agreement), Quality (what else is at that level), Risk (a stop clear of noise and what it buys) and Signal (how convincing the trigger candle is).'],
+  ['dqrs', 'pro', 'SWEEP', 'A swing high or low is taken out, then price closes back inside within 3 candles.'],
+  ['dqrs', 'pro', 'REJECT', 'Price tags a level and closes away from it, having left a long wick.'],
+  ['dqrs', 'pro', 'RETEST', 'After a break of structure, price returns to the broken level and holds it.'],
+  ['dqrs', 'pro', 'ORB', 'The opening range breaks and the candle closes beyond it.'],
+  ['dqrs', 'pro', 'PULLBACK', "With the trend, a pullback into EMA 21 or 50 closes back the trend's way."],
+  ['dqrs', 'pro', 'Hit rates are measured, not claimed', 'Each rule has fixed entry, stop and target arithmetic, so every past occurrence is replayed forward over 60 candles — stop first when one candle covers both, the conservative reading — to see which came first.'],
+  ['dqrs', 'pro', 'Measured on your symbol and timeframe', 'Not on a vendor backtest of something else.'],
+  ['dqrs', 'pro', 'Live setups drawn on the chart', 'With their exact entry, stop and target, labelled like "A SWEEP ▲ 3.0R".'],
+  ['dqrs', 'pro', 'Past setups marked by outcome', '✓ where target came first, ✗ where the stop did.'],
+  ['dqrs', 'pro', 'Protected geometry', 'A stop closer than 0.5 ATR is widened, and the target must be an opposing swing worth at least 1.2 R.'],
+  ['dqrs', 'pro', 'Grade filter', 'Show A only, A and B, or everything.'],
+  ['dqrs', 'pro', 'Costs nothing when off', 'The forward test only runs while the mode is on.'],
+
+  /* replay */
+  ['replay', 'free', 'Replay any candle forward', 'Click the candle to start from, or use Random or Date. That candle and everything after it are hidden.'],
+  ['replay', 'free', 'Provably blind to the future', 'The server returns no candle after the replay clock, and the analysis only runs on candles up to it. A test corrupts every candle and tick after the clock and checks the chart payload and MTF table stay byte-identical.'],
+  ['replay', 'free', 'The same pipeline as live', 'Replay ticks go through the live tick stream, candle builder, indicator engine, reconciler, order lines and paper fills — so a replay is not a separate, friendlier code path.'],
+  ['replay', 'basic', 'Intra-bar formation', 'Each candle forms tick by tick from lower-timeframe data: 1m for charts up to 25m, 5m for 1H–4H, 15m for 1D, daily for 1W and 1M.'],
+  ['replay', 'free', 'Speed 1× to 1800×, or Max', 'Of market time. Space plays and pauses, Shift+→ finishes the candle, Shift+← hides it again.'],
+  ['replay', 'free', 'Keeps your place', 'Change timeframe or symbol and the replay moment is preserved. It pauses itself when you switch browser tabs.'],
+  ['replay', 'free', 'Paper trading with a scorecard', 'Trades, win rate and P&L, filling at the replay\'s prices. Live orders are refused by both the browser and the server.'],
+  ['replay', 'free', 'No leaking the hidden future', 'Open replay trades are closed at the current price when you rewind or jump.'],
+  ['replay', 'free', 'Live-only data hidden', 'Watchlist quotes, the option chain and the order book disappear during a replay, so nothing leaks from the present.'],
+
+  /* trading */
+  ['trade', 'free', 'Paper mode on every page load', 'The default, every single time — not a setting you can forget.'],
+  ['trade', 'elite', 'Live orders through your Dhan account', 'Switch with the PAPER/LIVE badge, then type LIVE to confirm.'],
+  ['trade', 'elite', 'Live mode is visually unmistakable', 'A red frame round the chart and a banner carrying Exit all and Back to Paper.'],
+  ['trade', 'elite', 'Server-side order checks', 'Every real order is re-checked by the server, and none of these can be bypassed from the browser.'],
+  ['trade', 'elite', 'The server uses its own price', 'A live Dhan price is required, and the server trusts its own, not the browser\'s.'],
+  ['trade', 'elite', '5% typo guard', 'A limit price more than 5% from the live price is refused.'],
+  ['trade', 'elite', 'Value, quantity and daily-loss limits', 'Defaults ₹50,000 and ₹2,000, editable in the Live dialog.'],
+  ['trade', 'elite', '3-second duplicate guard', 'An identical order inside 3 s is refused, and only one real order is processed at a time.'],
+  ['trade', 'elite', 'Exits read your real position first', 'Exit and Exit all read your actual open quantity from Dhan, so they never sell more than you hold.'],
+  ['trade', 'elite', 'Exact targets from your real fill', 'After the entry fills, the app reads your average fill price from Dhan\'s trade book and re-prices the exits.'],
+  ['trade', 'elite', 'Rounding that favours you', 'The target rounds up to the tick, so a 0.20% target is never 0.19%. The stop rounds toward entry, so the loss never exceeds your stop %.'],
+  ['trade', 'elite', 'Dhan Super Orders', 'When both target and stop are set, Dhan links the exits so filling one cancels the other.'],
+  ['trade', 'elite', 'Drag to modify', 'Drag the TP/SL lines or a pending limit line to change the order; ✕ exits or cancels.'],
+  ['trade', 'elite', 'Position lines on the chart', 'Average shows your position average, Last fill shows the latest fill with its TP/SL.'],
+  ['trade', 'free', 'Quantity remembered per symbol', 'And your last-used order settings come back with you.'],
+  ['trade', 'elite', 'Shift+B and Shift+S', 'Buy and sell from the keyboard, with a confirmation unless you enable one-click for the session.'],
+
+  /* indicators */
+  ['ind', 'free', "TradingView's formulas", 'EMA, Wilder RMA with an SMA seed, RSI, ATR, Supertrend, MACD, DMI/ADX and VWAP with bands.'],
+  ['ind', 'free', 'Browser and server in parity', 'The engine exists twice — in the browser for per-tick updates and on the server — and a parity test keeps the two bar-for-bar identical.'],
+  ['ind', 'free', 'EMA ×4', 'Four independent exponential moving averages.'],
+  ['ind', 'free', 'VWAP with σ bands', 'Plus Bollinger and Supertrend.'],
+  ['ind', 'free', 'RSI, MACD, ADX/DMI', 'In their own panes, following each tick live.'],
+  ['ind', 'free', 'Hidden RSI divergence', 'Regular and hidden, both detected.'],
+  ['ind', 'free', 'SMA 20 / 50 / 200', 'The intraday set.'],
+  ['ind', 'free', 'Volume with its average', 'And a visible-range volume profile with POC and value area that recomputes as you zoom.'],
+  ['ind', 'free', 'Every indicator configurable', 'A ⚙ beside each one, and the oscillator panes follow every tick too.'],
+  ['ind', 'free', 'Colour and opacity picker', 'A palette, a hex box, a system colour picker and an opacity slider, with one tab per colour for indicators that draw several.'],
+  ['ind', 'free', 'Labels take their indicator\'s colour', 'Restyle an indicator and the CHoCH, BOS, HH/HL, SWEEP and SUPPLY OB text it draws follows.'],
+  ['ind', 'free', 'Your chart comes back', 'Every colour, setting and toggle is remembered, and ↶ restores one indicator to its default.'],
+  ['ind', 'free', 'Candle colours are yours', 'One colour for up, one for down; bodies, wicks and volume bars all follow.'],
+  ['ind', 'free', 'Multi-timeframe matrix', 'Trend across 5m to 1M, how many timeframes agree, and confluence zones that line up on two or more.'],
+
+  /* interface */
+  ['ux', 'free', 'Modes — one switch per family', 'Golden volume profile, Smart money, Order book, Liquidity heatmap / Order flow, Trend and Intraday. Alt+D opens the menu.'],
+  ['ux', 'free', 'A mode remembers its contents', 'Switch it off and back on and exactly what was on inside it returns.'],
+  ['ux', 'free', 'Modes and Indicators cannot disagree', "A mode's state is read back from its indicators, so the two views are always the same truth."],
+  ['ux', 'free', 'Chart only, and Everything on', 'Strip to bare candles, or bring the lot back, in one click.'],
+  ['ux', 'free', 'Insights panel', 'Overview with quote, day range, an animated bias gauge and factor checklist, trade plan and notes; plus Levels, MTF and Signals tabs.'],
+  ['ux', 'free', 'Signals log', 'BOS, CHoCH, sweeps, divergences, order blocks and Supertrend flips — click one to jump to it on the chart.'],
+  ['ux', 'free', 'Level ladder', 'Every level around the current price, clickable to highlight.'],
+  ['ux', 'free', 'Full keyboard control', 'Timeframes on 1–0, drawings on Alt+T/H/B/M, Alt+D modes, Alt+P replay, Alt+O chain, Alt+R reset, Alt+L live, Alt+S snapshot.'],
+  ['ux', 'free', 'Runs in your browser', 'A local server and a real browser engine — no custom UI toolkit to learn, and your charts are a tab.'],
+
+  /* system */
+  ['sys', 'free', 'Per-user install, no admin rights', 'Windows 10 or 11, 64-bit. No UAC prompt, nothing written outside your profile.'],
+  ['sys', 'free', 'Your data stays on your machine', 'Charts, drawings, recordings and credentials live in %LOCALAPPDATA%\\EIMC.'],
+  ['sys', 'basic', 'Credentials in Windows Credential Manager', 'Through keyring — not a config file in the install folder.'],
+  ['sys', 'free', 'The server is local-only', 'It refuses any request arriving with a Host or Origin header other than its own, so nothing on the network can talk to it.'],
+  ['sys', 'basic', 'Rate-limited, chunked Dhan calls', "Within Dhan's published limits, so your account is never the thing that breaks."],
+  ['sys', 'basic', 'Offline licence grace', 'Your licence is valid for 7 days and refreshes on every launch that reaches the server. One failed DNS lookup never locks you out during market hours.'],
+  ['sys', 'basic', 'Entitlement decided server-side', 'Signed into the token; the app only reads back what was verified. Nothing in the interface is what unlocks a feature.'],
+  ['sys', 'free', 'Uncapped rendering', 'Up to 144 FPS, with no shadowBlur and no CSS filters in a hot path, gradients cached and rebuilt only on resize, and every animation loop suspended off-screen.'],
+  ['sys', 'free', 'Demo data generator', 'The whole terminal, every mode, running on synthetic data with no account, no card and no expiry.'],
+];
+
+/* ── rendering ──────────────────────────────────────────────────── */
+const TIER = {
+  free:  { label: 'Free',  cls: 'free'  },
+  basic: { label: 'Basic', cls: 'basic' },
+  pro:   { label: 'Pro',   cls: 'pro'   },
+  elite: { label: 'Elite', cls: 'elite' },
+};
+
+/* Search keys are read back off the rendered DOM rather than built
+   into an attribute. textContent gives us the text a reader actually
+   sees — entities already decoded, markup already gone — so there is
+   no escaping to get wrong and no way for "&rsquo;" or a stray quote
+   to end up in the index. Non-breaking spaces are folded to ordinary
+   ones so typing "1 s" finds "1 s". */
+const norm = s => s.toLowerCase().replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
+
+/**
+ * The searchable inventory. Renders the filter chips, the live search
+ * box and the grouped list, then wires filtering entirely in the DOM
+ * (no re-render churn — we toggle a hidden class, so typing stays
+ * smooth with ~180 rows on the page).
+ */
+export function renderInventory(host) {
+  if (!host) return;
+
+  const byGroup = GROUPS.map(g => ({
+    ...g,
+    items: ITEMS.filter(i => i[0] === g.id),
+  })).filter(g => g.items.length);
+
+  host.innerHTML = `
+    <div class="inv-bar">
+      <div class="inv-search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+        <input type="search" id="inv-q" placeholder="Search ${ITEMS.length} capabilities — try &ldquo;stop hunt&rdquo;, &ldquo;expiry&rdquo;, &ldquo;200&rdquo;, &ldquo;replay&rdquo;" autocomplete="off" spellcheck="false">
+        <button type="button" class="inv-clear" id="inv-clear" aria-label="Clear">&times;</button>
+      </div>
+      <div class="inv-chips" id="inv-tiers">
+        <button type="button" class="on" data-tier="all">All tiers</button>
+        ${Object.entries(TIER).map(([k, v]) => `<button type="button" data-tier="${k}">${v.label}</button>`).join('')}
+      </div>
+    </div>
+    <div class="inv-count" id="inv-count"></div>
+    <div class="inv-groups">
+      ${byGroup.map(g => `
+        <section class="inv-g" data-g="${g.id}">
+          <div class="inv-gh">
+            <h3>${g.name}</h3>
+            <p>${g.note}</p>
+            <span class="inv-gn num">${g.items.length}</span>
+          </div>
+          <div class="inv-list">
+            ${g.items.map(([, t, name, desc]) => `
+              <div class="inv-i" data-t="${t}" data-g="${g.id}">
+                <span class="inv-t ${TIER[t].cls}">${TIER[t].label}</span>
+                <div class="inv-c"><b>${name}</b><p>${desc}</p></div>
+              </div>`).join('')}
+          </div>
+        </section>`).join('')}
+    </div>
+    <p class="inv-none" id="inv-none">Nothing matches that. Every line in this list is a shipped behaviour &mdash;
+      if you were looking for something specific and it is not here, it is worth asking before you buy.</p>`;
+
+  const q      = host.querySelector('#inv-q');
+  const clear  = host.querySelector('#inv-clear');
+  const chips  = host.querySelector('#inv-tiers');
+  const count  = host.querySelector('#inv-count');
+  const none   = host.querySelector('#inv-none');
+  const items  = [...host.querySelectorAll('.inv-i')];
+  const groups = [...host.querySelectorAll('.inv-g')];
+
+  let tier = 'all';
+
+  /* index once, off the rendered text, plus the group name so
+     "options" finds the whole Options section */
+  const GNAME = Object.fromEntries(GROUPS.map(g => [g.id, g.name]));
+  const keys = new WeakMap();
+  items.forEach(el => keys.set(el, norm(`${el.textContent} ${GNAME[el.dataset.g] || ''}`)));
+
+  const apply = () => {
+    /* Match every word, not the phrase. Someone typing "stop hunt"
+       means both words, and the text that answers them reads
+       "...counts as a hunt only if..." three sentences from
+       "...where retail stops rest...". A contiguous substring search
+       returns nothing for the most obvious query on the page, which
+       makes the box look broken. */
+    const words = norm(q.value).split(' ').filter(Boolean);
+    let shown = 0;
+
+    items.forEach(el => {
+      const okTier = tier === 'all' || el.dataset.t === tier;
+      const k = keys.get(el);
+      const okText = words.every(w => k.includes(w));
+      const ok = okTier && okText;
+      el.classList.toggle('off', !ok);
+      if (ok) shown++;
+    });
+
+    // a group with nothing left in it collapses away entirely
+    groups.forEach(g => {
+      const live = [...g.querySelectorAll('.inv-i')].filter(i => !i.classList.contains('off')).length;
+      g.classList.toggle('off', !live);
+      g.querySelector('.inv-gn').textContent = live;
+    });
+
+    host.classList.toggle('empty', shown === 0);
+    clear.classList.toggle('on', !!q.value);
+    count.innerHTML = shown === ITEMS.length
+      ? `<b class="num">${ITEMS.length}</b> capabilities, every one of them shipped`
+      : `<b class="num">${shown}</b> of <span class="num">${ITEMS.length}</span> capabilities`;
+    none.style.display = shown === 0 ? '' : 'none';
+  };
+
+  q.addEventListener('input', apply);
+  clear.addEventListener('click', () => { q.value = ''; q.focus(); apply(); });
+  chips.addEventListener('click', e => {
+    const b = e.target.closest('button[data-tier]');
+    if (!b) return;
+    tier = b.dataset.tier;
+    [...chips.children].forEach(c => c.classList.toggle('on', c === b));
+    apply();
+  });
+
+  apply();
+}

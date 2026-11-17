@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /buy.html
+
+Sitemap: https://eimc.vercel.app/sitemap.xml

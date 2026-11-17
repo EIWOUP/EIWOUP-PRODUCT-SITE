@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Download — install and connect Dhan | EIMC Terminal</title>
+<meta name="description" content="Download EIMC Terminal for Windows 10 and 11, 64-bit. Per-user install, no administrator rights, WebView2 bundled. Then connect your Dhan account in three steps, or run the free demo mode with no credentials.">
+<meta name="theme-color" content="#06080d">
+<!-- The boot splash plays once per session. This runs before any stylesheet so a
+     repeat page never flashes it; js/boot.js then removes #boot entirely. -->
+<script>try{if(sessionStorage.getItem("eimc.boot.seen")==="1"||localStorage.getItem("eimc.boot.seen")==="1")document.documentElement.className+=" booted"}catch(e){}</script>
+<link rel="canonical" href="https://eimc.vercel.app/download.html">
+<meta property="og:title" content="Download EIMC Terminal">
+<meta property="og:description" content="Download EIMC Terminal for Windows 10 and 11, 64-bit. Per-user install, no administrator rights, WebView2 bundled. Then connect your Dhan account in three steps, or run the free demo mode with no credentials.">
+<meta property="og:image" content="/assets/eimc.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20x%3D%224%22%20y%3D%224%22%20width%3D%2256%22%20height%3D%2256%22%20rx%3D%2215%22%20fill%3D%22%23141821%22%2F%3E%3Cpath%20d%3D%22M13%2041%20L24%2045%20L31%2038%20L41%2018%20L55%2012%22%20fill%3D%22none%22%20stroke%3D%22%23f5c842%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2212%22%20r%3D%224%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E">
+<link rel="stylesheet" href="/static/vendor/fonts.css">
+<link rel="stylesheet" href="/fonts/arimo.css">
+<link rel="stylesheet" href="/static/css/boot.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/convert.css">
+<!-- Arimo is the site typeface; Inter and Jost are only for the boot splash, which
+     pins them itself so the animation renders exactly as it does in the app. -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/Arimo-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/static/vendor/fonts/Inter-400-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/static/vendor/fonts/Jost-400-latin.woff2">
+<link rel="modulepreload" href="/static/js/theme.js">
+<link rel="modulepreload" href="/static/js/logo.js">
+<link rel="modulepreload" href="/static/js/mark.js">
+<link rel="modulepreload" href="/static/js/launch.js">
+</head>
+<body data-boot-status="Loading <b>download</b>">
+
+<!-- boot splash: markup copied verbatim from the product, static/index.html:59-71 -->
+<div class="boot" id="boot">
+  <canvas class="boot-fx" id="boot-fx"></canvas>
+  <div class="boot-core">
+    <div class="boot-mark" id="boot-mark"></div>
+    <div class="boot-copy">
+      <div class="boot-word"><i style="--i:0">E</i><i style="--i:1">I</i><i style="--i:2">M</i><i style="--i:3">C</i></div>
+      <div class="boot-sub">TERMINAL</div>
+      <div class="boot-motto" id="boot-motto">EVERYTHING IS WRITTEN ON UNFOLDED PAPER</div>
+      <div class="boot-lights" id="boot-lights"><i><b></b><b></b></i><i><b></b><b></b></i><i><b></b><b></b></i><i><b></b><b></b></i><i><b></b><b></b></i></div>
+      <div class="boot-status" id="boot-status">Opening the paper&hellip;</div>
+    </div>
+  </div>
+</div>
+
+<!-- floating pill bar: arrives once the hero is behind you -->
+<div class="topbar" id="topbar">
+  <a class="tb-brand" href="index.html"><b>EIMC</b></a>
+  <div class="tb-mid">Founding price &mdash; <b data-cd-compact="2026-12-15T00:00:00Z">&mdash;</b> left</div>
+  <a class="btn btn-sm btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 3 days free <span class="arw">&rarr;</span></a>
+</div>
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html">
+      <div class="brand-mark" id="nav-mark"></div>
+      <div class="bt"><b>EIMC</b><span>TERMINAL</span></div>
+    </a>
+    <nav class="nav-links">
+      <div class="mm">
+        <a class="mm-top" href="features.html">Features</a>
+        <div class="mm-panel">
+          <a class="mm-item" href="features.html#watch-gvp"><b><i style="--mc:#ffb74d"></i>Golden volume profile</b><span>TradingView-exact, carried into the next session</span></a>
+          <a class="mm-item" href="features.html#watch-book"><b><i style="--mc:#22d3ee"></i>Order flow</b><span>Footprint, delta, walls and a live DOM</span></a>
+          <a class="mm-item" href="features.html#watch-smc"><b><i style="--mc:#c084fc"></i>Smart money concepts</b><span>BOS, CHoCH, order blocks, stop hunts, trade plan</span></a>
+          <a class="mm-item" href="features.html#watch-book"><b><i style="--mc:#ffa630"></i>Liquidity heatmap</b><span>Resting orders over time, Bookmap-style</span></a>
+          <a class="mm-item" href="features.html#watch-chain"><b><i style="--mc:#4c7dff"></i>Option chain</b><span>Greeks, buildup, IV skew, max pain, expected move</span></a>
+          <a class="mm-item" href="features.html#watch-flow"><b><i style="--mc:#22d3a6"></i>Option flow</b><span>Call and put buyers vs sellers, scored 0&ndash;100</span></a>
+          <a class="mm-item" href="features.html#watch-ind"><b><i style="--mc:#38bdf8"></i>DQRS setups</b><span>Five mechanical setups, forward-tested</span></a>
+          <a class="mm-item" href="features.html#watch-replay"><b><i style="--mc:#8691a5"></i>Bar replay</b><span>1&times;&ndash;1800&times;, provably blind to the future</span></a>
+        </div>
+      </div>
+      <a href="why.html">Why EIMC</a>
+      <a href="performance.html">Performance</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="download.html">Download</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-sm btn-quiet" href="download.html">Download free</a>
+      <a class="btn btn-sm btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 3-day Pro trial <span class="arw">&rarr;</span></a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menu"><i></i></button>
+  </div>
+</header>
+
+<main>
+
+<section class="phead">
+  <div class="wrap">
+    <div class="kicker plain">Download</div>
+    <h1 class="d1">EIMC Terminal <em>for Windows.</em></h1>
+    <p class="lede">
+      One installer. Per-user, so it needs no administrator rights and raises no UAC prompt. The Microsoft
+      Edge WebView2 runtime ships inside it and installs silently only if your machine does not already
+      have it.
+    </p>
+    <div class="btns mt32">
+      <button class="btn btn-lg btn-fill" id="dl">Download EIMC-Setup-1.25.218.93.exe</button>
+      <a class="btn btn-lg" href="features.html">See what it does first</a>
+    </div>
+    <div class="stub" id="dl-note" hidden>
+      <b>Installer not hosted yet</b>
+      Drop <span class="num">EIMC-Setup-1.25.218.93.exe</span> into the site root and point this button at
+      it &mdash; it is built with <span class="num">iscc installer\eimc.iss</span> from the Nuitka
+      standalone folder. Until then this is a placeholder, exactly like the checkout.
+    </div>
+    <p class="hero-meta">
+      Free forever on demo data &nbsp;&middot;&nbsp; Windows 10 / 11, 64-bit &nbsp;&middot;&nbsp;
+      your data stays in <code class="src">%LOCALAPPDATA%\EIMC</code>
+    </p>
+  </div>
+</section>
+
+<section class="band" id="install">
+  <div class="wrap">
+    <div class="row wide-left">
+      <div class="row-copy">
+        <div class="kicker"><span class="n">01</span> <b>Install</b></div>
+        <h2 class="d2 mb32">What the installer does.</h2>
+        <div class="steps">
+          <div class="step"><div><h4>Runs without administrator rights</h4><p>A per-user install on purpose. No UAC prompt &mdash; and, the reason that matters later, an auto-updater can replace the files without elevation.</p></div></div>
+          <div class="step"><div><h4>Installs WebView2 only if it is missing</h4><p>EIMC runs in a native Microsoft Edge WebView2 window. The installer carries the evergreen bootstrapper and runs it silently when the runtime is not already present.</p></div></div>
+          <div class="step"><div><h4>Creates shortcuts, offers a desktop icon</h4><p>Start-menu entry always; the desktop shortcut is a tick-box during setup.</p></div></div>
+          <div class="step"><div><h4>Never writes inside the install folder</h4><p>Your charts, drawings, recordings and credentials live in <code class="src">%LOCALAPPDATA%\EIMC</code> and are left alone by both install and uninstall. Override with <code class="src">EIMC_DATA_DIR</code>.</p></div></div>
+        </div>
+      </div>
+      <div class="row-media">
+        <div class="note warn">
+          <b>A SmartScreen warning is possible.</b> Until the code-signing certificate is in place, Windows
+          may show &ldquo;Windows protected your PC&rdquo; for a new publisher. Choose
+          <b>More info &#8594; Run anyway</b>. Both the app and the installer get signed once the
+          certificate is in hand.
+        </div>
+        <div class="note mt24">
+          <b>Uninstalling.</b> Settings &#8594; Apps &#8594; EIMC Terminal, or the Start-menu uninstaller.
+          It removes the program and the WebView2 cache beside it, and leaves
+          <code class="src">%LOCALAPPDATA%\EIMC</code> untouched &mdash; so reinstalling later brings your
+          layout, drawings and recordings back with it.
+        </div>
+        <div class="note mt24">
+          <b>Prefer to run from source?</b> <code class="src">pip install -r requirements.txt</code>, then
+          <code class="src">python server.py</code>, and open <code class="src">http://127.0.0.1:8765</code>.
+          Or double-click <code class="src">run.bat</code>, which does both. Keep the console window open
+          &mdash; closing it stops the server.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band band-alt" id="dhan">
+  <div class="wrap">
+    <div class="row wide-left">
+      <div class="row-copy">
+        <div class="kicker"><span class="n">02</span> <b>Connect</b></div>
+        <h2 class="d2 mb32">Connect your Dhan account.</h2>
+        <p class="lede mb32">EIMC is a terminal for your own Dhan account, so the data is yours and nothing is resold to you. Three steps, about a minute.</p>
+        <div class="steps">
+          <div class="step"><div><h4>Generate an access token</h4><p>web.dhan.co &#8594; Profile &#8594; <b>DhanHQ Trading APIs</b>. Set the toggle to <b>Access Token</b>, then click <b>Generate</b>.</p></div></div>
+          <div class="step"><div><h4>Paste it into EIMC</h4><p>Open <b>Settings</b> (the sliders icon, top right). Paste your Client ID and the token, then click <b>Save &amp; test</b>.</p></div></div>
+          <div class="step"><div><h4>Check both lights</h4><p>You should see <b>Login OK</b> and <b>Data APIs OK</b>. Chart data needs the Data APIs subscription &mdash; Login OK on its own is not enough.</p></div></div>
+        </div>
+      </div>
+      <div class="row-media">
+        <div class="note warn">
+          <b>Tokens expire every 24 hours.</b> Dhan issues a fresh one daily, so pasting a new token each
+          morning is part of the routine &mdash; not a bug.
+        </div>
+        <div class="note mt24">
+          <b>No credentials? Use demo.</b> Choose <b>Demo (synthetic)</b> and the whole terminal runs on
+          generated data: every mode, every indicator, bar replay included. That is the free tier, and it
+          never expires.
+        </div>
+        <div class="note mt24">
+          <b>For live orders only.</b> Elite&rsquo;s real-money orders need the Trading APIs enabled, and
+          Dhan may require your IP to be whitelisted: web.dhan.co &#8594; DhanHQ Trading APIs &#8594;
+          <b>Static IP Setting</b>. Credentials are stored in the Windows Credential Manager, never in a
+          file in the install folder.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="keys">
+  <div class="wrap">
+    <div class="kicker"><span class="n">03</span> <b>Keyboard</b></div>
+    <h2 class="d2 mb48">Everything without the mouse.</h2>
+    <div class="tw">
+      <table class="t">
+        <thead><tr><th>Key</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>any letter</td><td>Symbol search</td></tr>
+          <tr><td><kbd>1</kbd> &hellip; <kbd>0</kbd></td><td>Timeframe, 1m through 1M</td></tr>
+          <tr><td><kbd>Alt+D</kbd></td><td>Modes menu &mdash; whole families of overlays on or off</td></tr>
+          <tr><td><kbd>Shift+Z</kbd> <kbd>Shift+X</kbd> <kbd>Shift+C</kbd> <kbd>Shift+V</kbd></td><td>Golden volume profile &middot; Order flow &middot; Smart money &middot; Liquidity heatmap</td></tr>
+          <tr><td><kbd>Alt+O</kbd></td><td>Option chain</td></tr>
+          <tr><td><kbd>Alt+T</kbd> <kbd>Alt+H</kbd> <kbd>Alt+B</kbd> <kbd>Alt+M</kbd></td><td>Trend line &middot; horizontal level &middot; rectangle &middot; measure</td></tr>
+          <tr><td><kbd>Alt+A</kbd></td><td>Anchored VWAP &mdash; then click the candle to anchor on</td></tr>
+          <tr><td><kbd>Delete</kbd> <kbd>Ctrl+Z</kbd> <kbd>Esc</kbd></td><td>Delete the selected drawing &middot; undo &middot; cancel</td></tr>
+          <tr><td><kbd>&larr;</kbd> <kbd>&rarr;</kbd></td><td>Scroll the chart</td></tr>
+          <tr><td><kbd>Alt+P</kbd></td><td>Bar replay &mdash; choose the start candle, or exit the replay</td></tr>
+          <tr><td><kbd>Space</kbd> <kbd>Shift+&rarr;</kbd> <kbd>Shift+&larr;</kbd></td><td>Replay: play / pause &middot; next candle &middot; previous candle</td></tr>
+          <tr><td><kbd>Shift+B</kbd> <kbd>Shift+S</kbd></td><td>Buy &middot; sell</td></tr>
+          <tr><td><kbd>Alt+R</kbd> <kbd>Alt+L</kbd> <kbd>Alt+S</kbd></td><td>Reset view &middot; toggle live &middot; snapshot to PNG</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note mt32">
+      <b>On the chart itself:</b> mouse-wheel and pinch zoom, kinetic scrolling, drag either axis to rescale
+      and double-click an axis to reset. The <b>A</b> and <b>L</b> buttons in the bottom-right corner
+      auto-fit the price axis and switch it to logarithmic; both are remembered. Scroll to the left edge and
+      older history loads by itself.
+    </div>
+  </div>
+</section>
+
+<section class="band band-alt" id="req">
+  <div class="wrap">
+    <div class="kicker"><span class="n">04</span> <b>Requirements</b></div>
+    <h2 class="d2 mb32">System requirements.</h2>
+    <div class="specs">
+      <div class="r"><div class="k">Operating system</div><div class="v">Windows 10 or 11, 64-bit (x64-compatible)</div></div>
+      <div class="r"><div class="k">Runtime</div><div class="v">Microsoft Edge WebView2 &mdash; bundled, installed silently only if missing</div></div>
+      <div class="r"><div class="k">Privileges</div><div class="v">None. Per-user install, no UAC prompt.</div></div>
+      <div class="r"><div class="k">Display</div><div class="v">Opens maximised; window default 1600 &times; 950, minimum 1100 &times; 700</div></div>
+      <div class="r"><div class="k">Account</div><div class="v">Dhan with the Data APIs subscription for live data &middot; Trading APIs as well for live orders &middot; none at all for demo mode</div></div>
+      <div class="r"><div class="k">Markets</div><div class="v">NSE &middot; BSE &middot; MCX</div></div>
+      <div class="r"><div class="k">Data location</div><div class="v"><code class="src">%LOCALAPPDATA%\EIMC</code>, or wherever <code class="src">EIMC_DATA_DIR</code> points</div></div>
+      <div class="r"><div class="k">Network</div><div class="v">The local server refuses any request whose Host or Origin header is not its own</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="close-band">
+  <div class="wrap">
+    <h2 class="d2">Three days of Pro, free.</h2>
+    <p class="lede">Install the free version first if you like — the trial will still be there when you want the live market.</p>
+    <div class="btns"><a class="btn btn-lg btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 3-day Pro trial</a><a class="btn btn-lg" href="pricing.html">Compare the plans</a></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-in">
+      <div class="footer-brand">
+        <div class="brand"><div class="bt"><b>EIMC</b><span>TERMINAL</span></div></div>
+        <p>Order flow, liquidity and market structure for Indian markets. Built on the DhanHQ v2 Data API.</p>
+      </div>
+      <div>
+        <h5>Modes</h5>
+        <ul>
+          <li><a href="features.html#watch-gvp">Golden volume profile</a></li>
+          <li><a href="features.html#watch-book">Order flow</a></li>
+          <li><a href="features.html#watch-smc">Smart money</a></li>
+          <li><a href="features.html#watch-book">Liquidity heatmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Analysis</h5>
+        <ul>
+          <li><a href="features.html#watch-chain">Option chain</a></li>
+          <li><a href="features.html#watch-flow">Option flow</a></li>
+          <li><a href="features.html#watch-ind">DQRS setups</a></li>
+          <li><a href="features.html#watch-replay">Bar replay</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Buy</h5>
+        <ul>
+          <li><a href="why.html">Why EIMC</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="offer.html">Launch offer</a></li>
+          <li><a href="buy.html?plan=pro&amp;cycle=monthly">3-day Pro trial</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Setup</h5>
+        <ul>
+          <li><a href="download.html">Download</a></li>
+          <li><a href="download.html#dhan">Connect Dhan</a></li>
+          <li><a href="download.html#keys">Keyboard</a></li>
+          <li><a href="performance.html">Performance</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-base">
+      <span>&copy; <span data-year>2026</span> EIMC &middot; Terminal v1.25.218.93</span>
+      <span class="r">Chart engine: Lightweight Charts &copy; TradingView (Apache-2.0)</span>
+    </div>
+  </div>
+  <div class="wrap"><div class="disc">Trading involves a risk of loss. EIMC is an analysis tool, not investment advice.</div></div>
+</footer>
+
+<script type="module" src="/js/boot.js"></script>
+<script type="module" src="/js/site.js"></script>
+<script type="module">
+  const btn = document.getElementById('dl');
+  btn?.addEventListener('click', () => {
+    const note = document.getElementById('dl-note');
+    if (note) { note.hidden = false; note.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    btn.disabled = true;
+    btn.textContent = 'Installer not hosted yet';
+  });
+</script>
+<script type="module" src="/js/fx.js"></script>
+</body>
+</html>

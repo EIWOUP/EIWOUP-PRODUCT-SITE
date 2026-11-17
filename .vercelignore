@@ -1,0 +1,6 @@
+# Raw, uncompressed source media (hundreds of MB). The site serves the
+# web-encoded copies in /media instead — see tools/encode_media.py.
+MEEEEDIAAA/
+# Local-only folders
+_backup-*/
+tools/
