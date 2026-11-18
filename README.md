@@ -232,7 +232,7 @@ There is no boot splash any more. Visitors land straight on the page, and the he
 
 ## Light theme
 
-Dark is the default. The sun/moon button in the header (it replaced "Download free") switches themes and remembers the choice in `localStorage` (`eimc.theme`). A tiny script in every `<head>` applies it before the first paint. The switch reveals the real new page in a circle from the button (View Transitions), so text, images and video change theme as the edge reaches them. The gallery's particle dust (`js/theme-dust.js`) flies off the edge. Without View Transitions it falls back to a dissolving sheet, and without WebGL 2 to a fade. Code: `js/theme-toggle.js`, `js/theme-dust.js`.
+Light is the default for a first visit (changed 2026-11-18). The sun/moon button in the header (it replaced "Download free") switches themes and remembers the choice in `localStorage` (`eimc.theme`). A tiny script in every `<head>` applies it before the first paint. The switch reveals the real new page in a circle from the button (View Transitions), so text, images and video change theme as the edge reaches them. The gallery's particle dust (`js/theme-dust.js`) flies off the edge. Without View Transitions it falls back to a dissolving sheet, and without WebGL 2 to a fade. Code: `js/theme-toggle.js`, `js/theme-dust.js`.
 
 How the colours work (`css/site.css`, "LIGHT THEME"):
 - Every tint, line, glow and shadow in the CSS is built from colour-channel tokens (`--tint`, `--acc`, `--g0..2`, `--sh`, `--teal-c` …). The light theme moves each one deliberately; it does not invert anything.

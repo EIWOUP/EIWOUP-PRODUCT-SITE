@@ -1,6 +1,6 @@
 'use strict';
 /* ════════════════════════════════════════════════════════════════════
-   Dark (default) / light theme switch.
+   Light (default) / dark theme switch.
 
    The choice lives in localStorage 'eimc.theme'. An inline script in
    every page's <head> applies it before the first paint, so a page never
