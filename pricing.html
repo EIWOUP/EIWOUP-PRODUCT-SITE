@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>try{document.documentElement.style.setProperty("--dpr",String(devicePixelRatio||1));if(localStorage.getItem("eimc.theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
+<script>try{if(localStorage.getItem("eimc.session")||sessionStorage.getItem("eimc.session"))document.documentElement.classList.add("signed-in")}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Pricing — free, Basic, Pro and Elite | EIMC Terminal</title>
 <meta name="description" content="Free forever on demo data. Basic ₹499, Pro ₹1,499 and Elite ₹2,999 a month, or pay yearly and get two months free. Three-day Pro trial, no card required.">
 <meta name="theme-color" content="#06080d">
-<!-- The boot splash plays once per session. This runs before any stylesheet so a
-     repeat page never flashes it; js/boot.js then removes #boot entirely. -->
-<script>try{if(sessionStorage.getItem("eimc.boot.seen")==="1"||localStorage.getItem("eimc.boot.seen")==="1")document.documentElement.className+=" booted"}catch(e){}</script>
 <link rel="canonical" href="https://eimc.vercel.app/pricing.html">
 <meta property="og:title" content="EIMC Terminal — Pricing">
 <meta property="og:description" content="Free forever on demo data. Basic ₹499, Pro ₹1,499 and Elite ₹2,999 a month, or pay yearly and get two months free. Three-day Pro trial, no card required.">
@@ -19,32 +18,12 @@
 <link rel="stylesheet" href="/static/css/boot.css">
 <link rel="stylesheet" href="/css/site.css">
 <link rel="stylesheet" href="/css/convert.css">
-<!-- Arimo is the site typeface; Inter and Jost are only for the boot splash, which
-     pins them itself so the animation renders exactly as it does in the app. -->
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/Arimo-latin.woff2">
-<link rel="preload" as="font" type="font/woff2" crossorigin href="/static/vendor/fonts/Inter-400-latin.woff2">
-<link rel="preload" as="font" type="font/woff2" crossorigin href="/static/vendor/fonts/Jost-400-latin.woff2">
 <link rel="modulepreload" href="/static/js/theme.js">
 <link rel="modulepreload" href="/static/js/logo.js">
 <link rel="modulepreload" href="/static/js/mark.js">
-<link rel="modulepreload" href="/static/js/launch.js">
 </head>
-<body data-boot-status="Loading <b>pricing</b>">
-
-<!-- boot splash: markup copied verbatim from the product, static/index.html:59-71 -->
-<div class="boot" id="boot">
-  <canvas class="boot-fx" id="boot-fx"></canvas>
-  <div class="boot-core">
-    <div class="boot-mark" id="boot-mark"></div>
-    <div class="boot-copy">
-      <div class="boot-word"><i style="--i:0">E</i><i style="--i:1">I</i><i style="--i:2">M</i><i style="--i:3">C</i></div>
-      <div class="boot-sub">TERMINAL</div>
-      <div class="boot-motto" id="boot-motto">EVERYTHING IS WRITTEN ON UNFOLDED PAPER</div>
-      <div class="boot-lights" id="boot-lights"><i><b></b><b></b></i><i><b></b><b></b></i><i><b></b><b></b></i><i><b></b><b></b></i><i><b></b><b></b></i></div>
-      <div class="boot-status" id="boot-status">Opening the paper&hellip;</div>
-    </div>
-  </div>
-</div>
+<body>
 
 <!-- floating pill bar: arrives once the hero is behind you -->
 <div class="topbar" id="topbar">
@@ -78,8 +57,26 @@
       <a href="download.html">Download</a>
     </nav>
     <div class="nav-cta">
-      <a class="btn btn-sm btn-quiet" href="download.html">Download free</a>
       <a class="btn btn-sm btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 3-day Pro trial <span class="arw">&rarr;</span></a>
+    </div>
+    <div class="nav-user">
+      <button type="button" class="theme-tg" data-theme-toggle aria-label="Switch to light theme" title="Switch theme">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>
+      </button>
+      <a class="nav-login" href="login.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Log in</a>
+      <div class="acct" data-acct>
+        <button type="button" class="acct-btn" aria-haspopup="menu" aria-expanded="false" aria-label="Your account"><span class="acct-av" data-acct-initials></span><span class="acct-plan" data-acct-plan></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="acct-pop" role="menu">
+          <div class="acct-who"><span class="acct-av" data-acct-initials></span><div><b data-acct-name>Your account</b><span data-acct-id></span></div></div>
+          <a href="account.html#overview" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Account overview</a>
+          <a href="account.html#subscription" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 3 7l9 5 9-5-9-5Z"/><path d="m3 17 9 5 9-5"/><path d="m3 12 9 5 9-5"/></svg>Subscription</a>
+          <a href="account.html#orders" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h8M9 17h6"/></svg>Orders &amp; invoices</a>
+          <a href="account.html#support" role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17.5v.01"/></svg>Help &amp; support</a>
+          <hr>
+          <button type="button" data-logout role="menuitem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 17l-5-5 5-5M5 12h11"/></svg>Log out</button>
+        </div>
+      </div>
     </div>
     <button class="burger" id="burger" aria-label="Menu"><i></i></button>
   </div>

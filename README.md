@@ -54,7 +54,6 @@ The golden volume profile stays gold inside the replicas, because in the product
 
 The particles are tiny (most are one screen pixel, some a little larger), and there are up to about 400–550 thousand per picture. They run on the graphics chip (WebGL 2). Each particle's path is computed in a shader, and its colour comes straight from the picture. While the picture moves, a shader also draws its ring, blur and fade. The real `<img>`/`<video>` waits hidden underneath and takes over, pixel-exact, for the last stretch. Screenshots are decoded and uploaded while the page is idle, so a click never waits on a decode. If frames are missed, the next animation uses fewer particles. Without WebGL 2, a canvas fallback draws a few thousand particles and uses CSS mask and blur.
 
-**Crosshair cursor.** On mouse devices the whole site uses the terminal's chart crosshair: only a white + cursor at 20 % transparency (`crosshair()` in `js/site.js`, `.xh*` in `css/site.css`).
 
 **Sharpness rule.** Every recording and screenshot is a `[data-px]` element with its source size in `--nw`/`--nh`. `js/media.js` sizes it to source pixels ÷ devicePixelRatio and nudges it onto whole device pixels; it falls back to fit-to-width only on screens narrower than the source. Never put a transform, float, tilt or pixel-altering overlay on the media itself. Verified by screenshotting the page and finding `bias.png` and `gvp-plan.png` in it with 100.00% identical pixels.
 
@@ -114,7 +113,7 @@ static/             COPIED VERBATIM FROM THE PRODUCT. Do not rename this folder.
 css/site.css        the site's own design system
 css/convert.css     the conversion layer's components, kept apart from the design
                     system so a change to how the site SELLS cannot break how it LOOKS
-js/boot.js          mounts the mark and starts the splash (the only new boot code)
+js/boot.js          mounts the EIMC mark (no splash)
 js/ui.js            the product UI replicas — chart, depth ladder, option chain
 js/fx.js            the interaction layer (table above)
 js/site.js          nav, reveal, counters
@@ -135,43 +134,9 @@ js/session.js       one session, 09:00 to after the close
 js/inventory.js     ~167 shipped capabilities, searchable and tier-tagged
 ```
 
-## The boot splash plays once
+## No boot splash
 
-The full F1 sequence runs on the **first page of a browsing session only**. Every page
-opened after that — home → features → pricing, or an F5 — shows no splash at all, and
-never flashes one.
-
-Two layers enforce it:
-
-1. An inline script in each page's `<head>`, before any stylesheet, reads
-   `eimc.boot.seen` and puts `.booted` on `<html>`; `html.booted .boot { display: none }`
-   kills it before the first paint.
-2. `js/boot.js` then removes `#boot` from the DOM entirely and never calls `bootSplash()`.
-
-The flag is written the moment the splash starts, not when it ends, so navigating away
-mid-animation does not make the next page replay it.
-
-To show it only once per browser instead of once per session, set `SCOPE = 'ever'` at the
-top of `js/boot.js`. The `<head>` guard checks both stores, so nothing else changes.
-
-### Why `static/` must keep that exact path
-
-`static/js/launch.worker.js` line 15 hardcodes an absolute font path:
-
-```js
-const INTER = "/static/vendor/fonts/Inter-400-latin.woff2";
-```
-
-Mirroring the product's own path is what allows every animation file to be copied with
-**zero edits**. Renaming the folder would force a change to the worker.
-
-```sh
-# prove the copies are untouched
-SRC="C:/EIMC/EIMC v1.25.218.93"
-for f in theme.js mark.js launch.js launch.worker.js logo.js modeviz.js; do
-  cmp "$SRC/static/js/$f" "static/js/$f" && echo "identical: $f"
-done
-```
+The boot splash was removed on 2026-11-18. `js/boot.js` now only draws the EIMC mark (favicon, header, login page, any hero mark). The splash code in `/static/js` is unused.
 
 ## The product UI replicas (`js/ui.js`)
 
@@ -254,3 +219,25 @@ what it is wiping, so `js/xray.js` only needs its two `chartSVG()` calls swapped
 Chart engine: [Lightweight Charts](https://github.com/tradingview/lightweight-charts)
 © TradingView (Apache-2.0). Trading involves a risk of loss. EIMC is an analysis tool, not
 investment advice.
+
+## Accounts (login.html, account.html)
+
+There is no boot splash any more. Visitors land straight on the page, and the header has **Log in** at the top right. Once signed in, that becomes an account menu (initials + plan) with Overview, Subscription, Orders, Support and Log out. The "Start trial" button hides for signed-in customers.
+
+- `login.html`: client ID + password, show/hide, Caps Lock warning, "keep me logged in for 30 days", a slow-down after 5 wrong tries, and `?next=` to return to the page you came from (same-site pages only).
+- `account.html`: Overview, Subscription (billing cycle, change plan, cancel/resume), Orders & invoices (printable GST invoice), Payment methods + billing details/GSTIN, Personal info (+ data export), Login & security, Notifications, Licence & devices, Contact support (tickets), and Feature requests (ideas board with votes). Each section has its own link, e.g. `account.html#orders`.
+- **Demo data only.** `js/auth.js` holds a dummy backend, and `js/account-data.js` holds one invented customer: client ID `2222004`, password `2222004`, Pro monthly, six days into the month. Edits are saved in the visitor's browser.
+- **Going online:** replace `dummyBackend` in `js/auth.js` with an API client that has the same method names. Nothing else changes. The password check, rate limiting and the session token must live on the server; the dummy check in the browser is not security.
+- `login.html` and `account.html` are `noindex` and disallowed in `robots.txt`.
+
+## Light theme
+
+Dark is the default. The sun/moon button in the header (it replaced "Download free") switches themes and remembers the choice in `localStorage` (`eimc.theme`). A tiny script in every `<head>` applies it before the first paint. The switch reveals the real new page in a circle from the button (View Transitions), so text, images and video change theme as the edge reaches them. The gallery's particle dust (`js/theme-dust.js`) flies off the edge. Without View Transitions it falls back to a dissolving sheet, and without WebGL 2 to a fade. Code: `js/theme-toggle.js`, `js/theme-dust.js`.
+
+How the colours work (`css/site.css`, "LIGHT THEME"):
+- Every tint, line, glow and shadow in the CSS is built from colour-channel tokens (`--tint`, `--acc`, `--g0..2`, `--sh`, `--teal-c` …). The light theme moves each one deliberately; it does not invert anything.
+- **Ground:** neutrals carry the brand's own blue hue (222°) at low saturation. Paper is `#f3f5f9`, cards are white, and wells are `#e6eaf1`.
+- **Depth:** a raised surface is whiter and casts a soft navy-tinted shadow (`--elev`), not a black one.
+- **Text:** navy-black `#0e1628` with four lightness steps; secondary text meets 4.5:1 or better on paper.
+- **Accent and signals:** the blue deepens to `#2f5ae6` / `#2449c9` so it passes contrast on white. Teal, red, orange, cyan and violet each drop in lightness. Glows become shadows, and the hero's light effects blend in as faint tints (`mix-blend-mode: multiply`).
+- **Screens stay dark:** the recordings, gallery, terminal replicas, chips and the login brand panel get the dark tokens back (the `:is(.hx-screen, .sc-frame, …)` rule).

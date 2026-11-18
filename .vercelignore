@@ -4,3 +4,4 @@ MEEEEDIAAA/
 # Local-only folders
 _backup-*/
 tools/
+.claude/

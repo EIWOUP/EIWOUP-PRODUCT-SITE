@@ -8,12 +8,16 @@
    ════════════════════════════════════════════════════════════════════ */
 
 import { mountUI } from '/js/ui.js';
+import { mountHeader } from '/js/auth.js';
+import { mountThemeToggle } from '/js/theme-toggle.js';
 
 const $  = (s, c = document) => c.querySelector(s);
 const $$ = (s, c = document) => [...c.querySelectorAll(s)];
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 mountUI();
+mountHeader();
+mountThemeToggle();
 
 /* ── nav ─────────────────────────────────────────────────────────── */
 (function nav() {
@@ -85,7 +89,5 @@ mountUI();
 /* ── footer year ─────────────────────────────────────────────────── */
 $$('[data-year]').forEach(el => { el.textContent = new Date().getFullYear(); });
 
-/* ── cursor: a plain + everywhere (css/site.css .xh-on), mouse only ── */
-if (matchMedia('(hover: hover) and (pointer: fine)').matches) document.documentElement.classList.add('xh-on');
 
 export { $, $$, REDUCED };

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>try{document.documentElement.style.setProperty("--dpr",String(devicePixelRatio||1));if(localStorage.getItem("eimc.theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
+<script>try{if(localStorage.getItem("eimc.session")||sessionStorage.getItem("eimc.session"))document.documentElement.classList.add("signed-in")}catch(e){}</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Log in | EIMC Terminal</title>
+<meta name="description" content="Log in to your EIMC account to see your subscription, invoices, devices and support.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#06080d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20x%3D%224%22%20y%3D%224%22%20width%3D%2256%22%20height%3D%2256%22%20rx%3D%2215%22%20fill%3D%22%23141821%22%2F%3E%3C%2Fsvg%3E">
+<link rel="stylesheet" href="/static/vendor/fonts.css">
+<link rel="stylesheet" href="/fonts/arimo.css">
+<link rel="stylesheet" href="/static/css/boot.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/account.css">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/Arimo-latin.woff2">
+<link rel="modulepreload" href="/static/js/logo.js">
+<script>/* already signed in: straight to the account */try{if(document.documentElement.classList.contains("signed-in"))location.replace("account.html")}catch(e){}</script>
+</head>
+<body class="lg-body">
+
+<main class="lg">
+  <!-- left: the brand, the terminal behind glass -->
+  <section class="lg-side" aria-hidden="true">
+    <video class="lg-vid" id="lg-vid" src="/media/hero.mp4" poster="/media/hero-poster.webp" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
+    <div class="lg-side-in">
+      <a class="brand" href="index.html" tabindex="-1">
+        <div class="brand-mark" data-mark data-size="26"></div>
+        <div class="bt"><b>EIMC</b><span>TERMINAL</span></div>
+      </a>
+      <div class="lg-pitch">
+        <div class="kicker plain"><b>Your account</b></div>
+        <h2 class="d2">Everything about your <em>terminal, in one place.</em></h2>
+        <ul class="lg-list">
+          <li><i></i><div><b>Subscription &amp; renewal</b><span>Plan, billing cycle, next charge, upgrade or cancel</span></div></li>
+          <li><i></i><div><b>Invoices with GST</b><span>Every order, ready to download for your books</span></div></li>
+          <li><i></i><div><b>Licence &amp; devices</b><span>Your key, and the PCs it is active on</span></div></li>
+          <li><i></i><div><b>Support &amp; ideas</b><span>Raise a ticket, or vote on what we build next</span></div></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- right: the form -->
+  <section class="lg-main">
+    <div class="lg-top">
+      <a class="brand lg-brand-m" href="index.html">
+        <div class="brand-mark" data-mark data-size="24"></div>
+        <div class="bt"><b>EIMC</b><span>TERMINAL</span></div>
+      </a>
+      <button type="button" class="theme-tg" data-theme-toggle aria-label="Switch to light theme" title="Switch theme">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>
+      </button>
+      <a class="lg-back" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Back to site</a>
+    </div>
+
+    <div class="lg-card" id="lg-card">
+      <h1 class="lg-h">Log in</h1>
+      <p class="lg-sub">Use the client ID and password from your EIMC welcome email.</p>
+
+      <form class="lg-form" id="lg-form" novalidate autocomplete="on">
+        <div class="fld">
+          <label for="lg-id">Client ID</label>
+          <div class="inp">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+            <input id="lg-id" name="username" type="text" inputmode="numeric" autocomplete="username" spellcheck="false" placeholder="e.g. 2222004" required>
+          </div>
+        </div>
+        <div class="fld">
+          <div class="fld-row"><label for="lg-pw">Password</label><button type="button" class="lg-link" id="lg-forgot">Forgot password?</button></div>
+          <div class="inp">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            <input id="lg-pw" name="password" type="password" autocomplete="current-password" placeholder="Your password" required>
+            <button type="button" class="inp-eye" id="lg-eye" aria-label="Show password" aria-pressed="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="fld-hint" id="lg-caps" hidden>Caps Lock is on</div>
+        </div>
+        <label class="chk"><input type="checkbox" id="lg-remember" checked><span></span>Keep me logged in for 30 days</label>
+
+        <div class="lg-err" id="lg-err" role="alert" aria-live="assertive"></div>
+
+        <button class="btn btn-gold btn-lg btn-block lg-go" type="submit" id="lg-go">
+          <span class="lg-go-t">Log in</span><span class="arw">&rarr;</span><span class="spin" aria-hidden="true"></span>
+        </button>
+      </form>
+
+      <div class="lg-forgot" id="lg-forgot-box" hidden>
+        <b>Resetting your password</b>
+        <p>Write to <a href="mailto:support@eimc.app">support@eimc.app</a> from the email on your account and we will send a reset link. Self-service reset arrives with online accounts.</p>
+      </div>
+
+      <div class="lg-or"><span>New to EIMC?</span></div>
+      <div class="lg-alt">
+        <a class="btn btn-block" href="buy.html?plan=pro&amp;cycle=monthly">Start a 3-day Pro trial</a>
+        <a class="btn btn-quiet btn-block" href="download.html">Download the free terminal</a>
+      </div>
+    </div>
+
+    <p class="lg-fine">
+      We will never ask for your Dhan password or OTP.
+      <span>&copy; <span data-year>2026</span> EIMC</span>
+    </p>
+  </section>
+</main>
+
+<script type="module" src="/js/boot.js"></script>
+<script type="module" src="/js/login.js"></script>
+</body>
+</html>
