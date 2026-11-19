@@ -12,12 +12,12 @@
    ════════════════════════════════════════════════════════════════════ */
 
 import {
-  planById, priceOf, inr, yearlySaving, CURRENCY, GST_RATE, TRIAL_DAYS, CAPS, hasCap,
+  PLANS, priceOf, inr, yearlySaving, CURRENCY, GST_RATE, TRIAL_DAYS, CAPS, hasCap,
 } from '/js/pricing-data.js';
 
 const q = new URLSearchParams(location.search);
-const plan = planById((q.get('plan') || 'pro').toLowerCase());
-const cycle = q.get('cycle') === 'yearly' ? 'yearly' : 'monthly';
+const plan = PLANS.find(p => p.id === (q.get('plan') || 'pro').toLowerCase()) || null;
+const cycle = 'monthly';      // only monthly billing is sold
 
 const host = document.getElementById('order');
 const side = document.getElementById('order-side');
@@ -44,9 +44,9 @@ if (!plan || plan.monthly === 0) {
 
   host.innerHTML = `
     <div class="kicker plain">Checkout &middot; ${cycle === 'yearly' ? 'Yearly' : 'Monthly'}</div>
-    <h1 class="d2">${isTrial ? `${TRIAL_DAYS} days of ${plan.name}, <em>free</em>` : `EIMC ${plan.name}`}</h1>
+    <h1 class="d2">${isTrial ? `${TRIAL_DAYS} day${TRIAL_DAYS === 1 ? "" : "s"} of ${plan.name}, <em>free</em>` : `EIMC ${plan.name}`}</h1>
     <p class="lede mt24">${isTrial
-      ? `The trial starts the moment you activate it and runs for ${TRIAL_DAYS} days with every Pro capability unlocked on live data. The billing below is what begins afterwards — nothing is charged today.`
+      ? `The trial starts the moment you activate it and runs for ${TRIAL_DAYS} day${TRIAL_DAYS === 1 ? "" : "s"} with every Pro capability unlocked on live data. The billing below is what begins afterwards — nothing is charged today.`
       : plan.blurb}</p>
 
     <div class="box mt32">
@@ -58,7 +58,7 @@ if (!plan || plan.monthly === 0) {
       <div class="brow"><span class="k">Subtotal</span><span class="v">${CURRENCY}${inr(net)} / ${per}</span></div>
       <div class="brow"><span class="k">GST (18%)</span><span class="v">${CURRENCY}${inr(gst)}</span></div>
       <div class="brow total">
-        <span class="k">${isTrial ? `Due after ${TRIAL_DAYS} days` : 'Total'}</span>
+        <span class="k">${isTrial ? `Due after ${TRIAL_DAYS} day${TRIAL_DAYS === 1 ? "" : "s"}` : 'Total'}</span>
         <span class="v">${CURRENCY}${inr(total)}</span>
       </div>
       ${isTrial ? `<p class="dim mt16" style="font-size:12.5px">Due today: <b class="up">${CURRENCY}0</b>. No card is taken for the trial.</p>` : ''}

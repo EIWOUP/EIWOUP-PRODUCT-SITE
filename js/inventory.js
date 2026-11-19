@@ -11,9 +11,7 @@
 
    `t` is the tier gate, and it matches pricing-data.js exactly:
      'free'  — works on demo data with no account
-     'basic' — needs a live Dhan connection
-     'pro'   — the analysis engine
-     'elite' — recorded liquidity and real orders
+     'pro'   — everything on live data (needs a Dhan connection)
 
    Keep the wording concrete. "Scored 0–100 from four inputs" earns
    trust; "powerful analytics" spends it.
@@ -38,29 +36,29 @@ export const GROUPS = [
 /* ── the inventory ──────────────────────────────────────────────── */
 export const ITEMS = [
   /* chart engine */
-  ['chart', 'basic', 'Instruments covered', 'NIFTY 50, BANKNIFTY, FINNIFTY, SENSEX and INDIA VIX, every NSE F&amp;O name, NSE and BSE cash, and MCX commodities — through DhanHQ v2.'],
+  ['chart', 'pro', 'Instruments covered', 'NIFTY 50, BANKNIFTY, FINNIFTY, SENSEX and INDIA VIX, every NSE F&amp;O name, NSE and BSE cash, and MCX commodities — through DhanHQ v2.'],
   ['chart', 'free', 'Ten timeframes', '1m · 5m · 15m · 25m · 1H · 2H · 4H · 1D · 1W · 1M, each on a number key.'],
   ['chart', 'free', 'Six chart types', 'Candles, Hollow, Heikin Ashi, Bars, Line and Area.'],
   ['chart', 'free', 'Infinite history', 'Scroll to the left edge and older candles load themselves.'],
-  ['chart', 'basic', 'Tick-by-tick live candles', "The forming candle and every indicator on it update on each tick from Dhan's live feed, keeping your zoom and scroll position."],
+  ['chart', 'pro', 'Tick-by-tick live candles', "The forming candle and every indicator on it update on each tick from Dhan's live feed, keeping your zoom and scroll position."],
   ['chart', 'free', 'Mouse-wheel and pinch zoom', 'Kinetic scrolling, drag either axis to rescale, double-click an axis to reset.'],
   ['chart', 'free', 'Auto-fit price axis', 'The A button fits the axis to what is on screen, and switches itself off the moment you drag the axis.'],
   ['chart', 'free', 'Logarithmic price axis', 'The L button makes equal percentage moves look equal. Both A and L are remembered.'],
   ['chart', 'free', 'PNG snapshot', 'Alt+S writes the chart to an image.'],
   ['chart', 'free', 'Fullscreen', 'The chart takes the whole window.'],
-  ['chart', 'basic', 'Live watchlist', 'Your symbols with live prices beside the chart.'],
+  ['chart', 'pro', 'Live watchlist', 'Your symbols with live prices beside the chart.'],
   ['chart', 'free', 'Symbol search on any letter', 'Start typing and the search opens — no field to click first.'],
   ['chart', 'free', 'Drawing tools', 'Trend line, horizontal level, rectangle and measure, on Alt+T / Alt+H / Alt+B / Alt+M, with Delete, Ctrl+Z and Esc.'],
 
   /* candle accuracy */
-  ['candle', 'basic', 'Triple close reconciliation', "Every candle close is re-checked against Dhan's own candles 1 s, 6 s and 20 s later, then every 30 s until Dhan has it."],
-  ['candle', 'basic', 'Exchange clock, not your PC clock', "Data requests use the exchange's clock, so a slow PC clock can no longer hide the newest candle."],
-  ['candle', 'basic', 'Clock drift readout', 'The status bar shows how far this machine is from the exchange, and when candles last synced.'],
-  ['candle', 'basic', 'No dropped ticks', "A new day high or low that lands between Dhan's ~1 s snapshots still reaches the candle's wick."],
-  ['candle', 'basic', 'Tick-size snapping', 'The Dhan feed sends float32, so 25843.35 arrives as 25843.3496. Prices are snapped back to the instrument tick.'],
-  ['candle', 'basic', 'Official daily bars', "Previous day, week and month levels, pivots, CPR and change % use Dhan's official daily bars — and for NSE stocks the official close is the 30-minute VWAP, not the last trade."],
-  ['candle', 'basic', 'Re-check on reconnect and on tab focus', 'Candles are verified again after a dropped connection and when the tab comes back into view.'],
-  ['candle', 'basic', 'Confirming-candle state', 'The chip reads "Confirming live candle…" while the newest candle exists only from ticks.'],
+  ['candle', 'pro', 'Triple close reconciliation', "Every candle close is re-checked against Dhan's own candles 1 s, 6 s and 20 s later, then every 30 s until Dhan has it."],
+  ['candle', 'pro', 'Exchange clock, not your PC clock', "Data requests use the exchange's clock, so a slow PC clock can no longer hide the newest candle."],
+  ['candle', 'pro', 'Clock drift readout', 'The status bar shows how far this machine is from the exchange, and when candles last synced.'],
+  ['candle', 'pro', 'No dropped ticks', "A new day high or low that lands between Dhan's ~1 s snapshots still reaches the candle's wick."],
+  ['candle', 'pro', 'Tick-size snapping', 'The Dhan feed sends float32, so 25843.35 arrives as 25843.3496. Prices are snapped back to the instrument tick.'],
+  ['candle', 'pro', 'Official daily bars', "Previous day, week and month levels, pivots, CPR and change % use Dhan's official daily bars — and for NSE stocks the official close is the 30-minute VWAP, not the last trade."],
+  ['candle', 'pro', 'Re-check on reconnect and on tab focus', 'Candles are verified again after a dropped connection and when the tab comes back into view.'],
+  ['candle', 'pro', 'Confirming-candle state', 'The chip reads "Confirming live candle…" while the newest candle exists only from ticks.'],
 
   /* market structure */
   ['struct', 'free', 'HH / HL / LH / LL swings', 'Labelled on the candles as they form.'],
@@ -87,17 +85,17 @@ export const ITEMS = [
   ['levels', 'pro', 'Hunt-safe stop', 'If a trade plan\'s stop sits inside a stop cluster, the plan offers a replacement beyond the 90% line.'],
 
   /* levels */
-  ['levels', 'basic', 'One scored line per price', 'No boxes. Green below the last price, red above it, thickness by strength.'],
-  ['levels', 'basic', 'Votes merge, weights add', 'Sources within 0.15 ATR collapse into one line that keeps the sum of their weights, so the label names every reason behind it.'],
-  ['levels', 'basic', 'Labelled sources', 'EQH / EQL, "4 taps", Swept H/L, Hunt H/L, Day H/L/O, PDH/PDL/PDC, PWH/PWL, PMH/PML, Stops ★nn, POC and HVN.'],
-  ['levels', 'basic', 'Today and yesterday always drawn', "Day H/L/O and PDH/PDL/PDC are pinned whatever else wins on score."],
-  ['levels', 'basic', 'Noise control', 'Levels beyond 12 ATR are dropped and two lines never land within 0.35 ATR of each other. Both adjustable.'],
-  ['levels', 'basic', 'Works where there is no volume', "Every line comes from the chart's own swings, sweeps and session boundaries — so it behaves identically on NIFTY 50 and SENSEX, which carry no volume at all."],
-  ['levels', 'basic', 'Previous day / week / month levels', 'Highs, lows and closes from official daily bars.'],
-  ['levels', 'basic', 'Floor pivots, CPR and Camarilla', 'H3/H4/L3/L4 with optional H5/L5 and the inner levels.'],
-  ['levels', 'basic', 'Session breaks', 'Where one session ends and the next begins, drawn on intraday charts.'],
-  ['levels', 'basic', 'Opening range', 'First 5, 15, 30 or 60 minutes, with the breakout marked only on a closed candle.'],
-  ['levels', 'basic', 'Anchored VWAP, up to three', 'Week, month, swing or BOS presets, or Alt+A on any candle you choose.'],
+  ['levels', 'pro', 'One scored line per price', 'No boxes. Green below the last price, red above it, thickness by strength.'],
+  ['levels', 'pro', 'Votes merge, weights add', 'Sources within 0.15 ATR collapse into one line that keeps the sum of their weights, so the label names every reason behind it.'],
+  ['levels', 'pro', 'Labelled sources', 'EQH / EQL, "4 taps", Swept H/L, Hunt H/L, Day H/L/O, PDH/PDL/PDC, PWH/PWL, PMH/PML, Stops ★nn, POC and HVN.'],
+  ['levels', 'pro', 'Today and yesterday always drawn', "Day H/L/O and PDH/PDL/PDC are pinned whatever else wins on score."],
+  ['levels', 'pro', 'Noise control', 'Levels beyond 12 ATR are dropped and two lines never land within 0.35 ATR of each other. Both adjustable.'],
+  ['levels', 'pro', 'Works where there is no volume', "Every line comes from the chart's own swings, sweeps and session boundaries — so it behaves identically on NIFTY 50 and SENSEX, which carry no volume at all."],
+  ['levels', 'pro', 'Previous day / week / month levels', 'Highs, lows and closes from official daily bars.'],
+  ['levels', 'pro', 'Floor pivots, CPR and Camarilla', 'H3/H4/L3/L4 with optional H5/L5 and the inner levels.'],
+  ['levels', 'pro', 'Session breaks', 'Where one session ends and the next begins, drawn on intraday charts.'],
+  ['levels', 'pro', 'Opening range', 'First 5, 15, 30 or 60 minutes, with the breakout marked only on a closed candle.'],
+  ['levels', 'pro', 'Anchored VWAP, up to three', 'Week, month, swing or BOS presets, or Alt+A on any candle you choose.'],
 
   /* golden volume profile */
   ['gvp', 'pro', "TradingView's own profile rules", "Rows, value area and POC computed the way TradingView documents them, from the session's 1-minute candles."],
@@ -114,14 +112,14 @@ export const ITEMS = [
   ['depth', 'pro', '200-level order book', "Dhan's deepest feed, falling back to 20 levels then 5 if a socket is unavailable."],
   ['depth', 'pro', 'Order-book density on the chart', 'One horizontal band per price level hugging the right edge, whose length and opacity both grow with the quantity resting there. Walls keep their price line and label.'],
   ['depth', 'pro', 'Independent of the panel', 'The density map keeps working with the Book tab closed.'],
-  ['depth', 'elite', 'Liquidity heatmap, Bookmap-style', 'Resting orders over time, so you can see a wall build and then get eaten.'],
-  ['depth', 'elite', 'Order flow and footprint', 'Per-price traded volume and delta, ATAS-style.'],
-  ['depth', 'elite', 'The book recorded every second', 'Dhan keeps no order-book history, so EIMC records its own — once a second, 09:00 to 15:35 IST on market days, whether the app is open or not.'],
-  ['depth', 'elite', 'Five sessions kept', 'A week of recorded liquidity on disk, replayable.'],
-  ['depth', 'elite', 'Depth for NIFTY 50, which has no book', "The near-month future's 200-level book, shifted onto the index chart by the basis."],
-  ['depth', 'elite', 'Up to six options recorded', 'Pick them in the option chain. The first three get 200 levels; options four to six record 20.'],
-  ['depth', 'elite', 'Socket budget managed for you', "An account may hold five depth sockets. EIMC takes four for 200-level work and one 20-level socket for the rest, gives one back if Dhan answers 805, and retries every 30 minutes."],
-  ['depth', 'elite', 'Socket lights', 'Five indicators in the recorder box show exactly which instrument holds which socket.'],
+  ['depth', 'pro', 'Liquidity heatmap, Bookmap-style', 'Resting orders over time, so you can see a wall build and then get eaten.'],
+  ['depth', 'pro', 'Order flow and footprint', 'Per-price traded volume and delta, ATAS-style.'],
+  ['depth', 'pro', 'The book recorded every second', 'Dhan keeps no order-book history, so EIMC records its own — once a second, 09:00 to 15:35 IST on market days, whether the app is open or not.'],
+  ['depth', 'pro', 'Five sessions kept', 'A week of recorded liquidity on disk, replayable.'],
+  ['depth', 'pro', 'Depth for NIFTY 50, which has no book', "The near-month future's 200-level book, shifted onto the index chart by the basis."],
+  ['depth', 'pro', 'Up to six options recorded', 'Pick them in the option chain. The first three get 200 levels; options four to six record 20.'],
+  ['depth', 'pro', 'Socket budget managed for you', "An account may hold five depth sockets. EIMC takes four for 200-level work and one 20-level socket for the rest, gives one back if Dhan answers 805, and retries every 30 minutes."],
+  ['depth', 'pro', 'Socket lights', 'Five indicators in the recorder box show exactly which instrument holds which socket.'],
   ['depth', 'pro', 'Resting buy versus sell pressure', 'Across the five depth levels, per option leg, in the chain.'],
 
   /* options */
@@ -169,7 +167,7 @@ export const ITEMS = [
   ['replay', 'free', 'Replay any candle forward', 'Click the candle to start from, or use Random or Date. That candle and everything after it are hidden.'],
   ['replay', 'free', 'Provably blind to the future', 'The server returns no candle after the replay clock, and the analysis only runs on candles up to it. A test corrupts every candle and tick after the clock and checks the chart payload and MTF table stay byte-identical.'],
   ['replay', 'free', 'The same pipeline as live', 'Replay ticks go through the live tick stream, candle builder, indicator engine, reconciler, order lines and paper fills — so a replay is not a separate, friendlier code path.'],
-  ['replay', 'basic', 'Intra-bar formation', 'Each candle forms tick by tick from lower-timeframe data: 1m for charts up to 25m, 5m for 1H–4H, 15m for 1D, daily for 1W and 1M.'],
+  ['replay', 'pro', 'Intra-bar formation', 'Each candle forms tick by tick from lower-timeframe data: 1m for charts up to 25m, 5m for 1H–4H, 15m for 1D, daily for 1W and 1M.'],
   ['replay', 'free', 'Speed 1× to 1800×, or Max', 'Of market time. Space plays and pauses, Shift+→ finishes the candle, Shift+← hides it again.'],
   ['replay', 'free', 'Keeps your place', 'Change timeframe or symbol and the replay moment is preserved. It pauses itself when you switch browser tabs.'],
   ['replay', 'free', 'Paper trading with a scorecard', 'Trades, win rate and P&L, filling at the replay\'s prices. Live orders are refused by both the browser and the server.'],
@@ -178,21 +176,21 @@ export const ITEMS = [
 
   /* trading */
   ['trade', 'free', 'Paper mode on every page load', 'The default, every single time — not a setting you can forget.'],
-  ['trade', 'elite', 'Live orders through your Dhan account', 'Switch with the PAPER/LIVE badge, then type LIVE to confirm.'],
-  ['trade', 'elite', 'Live mode is visually unmistakable', 'A red frame round the chart and a banner carrying Exit all and Back to Paper.'],
-  ['trade', 'elite', 'Server-side order checks', 'Every real order is re-checked by the server, and none of these can be bypassed from the browser.'],
-  ['trade', 'elite', 'The server uses its own price', 'A live Dhan price is required, and the server trusts its own, not the browser\'s.'],
-  ['trade', 'elite', '5% typo guard', 'A limit price more than 5% from the live price is refused.'],
-  ['trade', 'elite', 'Value, quantity and daily-loss limits', 'Defaults ₹50,000 and ₹2,000, editable in the Live dialog.'],
-  ['trade', 'elite', '3-second duplicate guard', 'An identical order inside 3 s is refused, and only one real order is processed at a time.'],
-  ['trade', 'elite', 'Exits read your real position first', 'Exit and Exit all read your actual open quantity from Dhan, so they never sell more than you hold.'],
-  ['trade', 'elite', 'Exact targets from your real fill', 'After the entry fills, the app reads your average fill price from Dhan\'s trade book and re-prices the exits.'],
-  ['trade', 'elite', 'Rounding that favours you', 'The target rounds up to the tick, so a 0.20% target is never 0.19%. The stop rounds toward entry, so the loss never exceeds your stop %.'],
-  ['trade', 'elite', 'Dhan Super Orders', 'When both target and stop are set, Dhan links the exits so filling one cancels the other.'],
-  ['trade', 'elite', 'Drag to modify', 'Drag the TP/SL lines or a pending limit line to change the order; ✕ exits or cancels.'],
-  ['trade', 'elite', 'Position lines on the chart', 'Average shows your position average, Last fill shows the latest fill with its TP/SL.'],
+  ['trade', 'pro', 'Live orders through your Dhan account', 'Switch with the PAPER/LIVE badge, then type LIVE to confirm.'],
+  ['trade', 'pro', 'Live mode is visually unmistakable', 'A red frame round the chart and a banner carrying Exit all and Back to Paper.'],
+  ['trade', 'pro', 'Server-side order checks', 'Every real order is re-checked by the server, and none of these can be bypassed from the browser.'],
+  ['trade', 'pro', 'The server uses its own price', 'A live Dhan price is required, and the server trusts its own, not the browser\'s.'],
+  ['trade', 'pro', '5% typo guard', 'A limit price more than 5% from the live price is refused.'],
+  ['trade', 'pro', 'Value, quantity and daily-loss limits', 'Defaults ₹50,000 and ₹2,000, editable in the Live dialog.'],
+  ['trade', 'pro', '3-second duplicate guard', 'An identical order inside 3 s is refused, and only one real order is processed at a time.'],
+  ['trade', 'pro', 'Exits read your real position first', 'Exit and Exit all read your actual open quantity from Dhan, so they never sell more than you hold.'],
+  ['trade', 'pro', 'Exact targets from your real fill', 'After the entry fills, the app reads your average fill price from Dhan\'s trade book and re-prices the exits.'],
+  ['trade', 'pro', 'Rounding that favours you', 'The target rounds up to the tick, so a 0.20% target is never 0.19%. The stop rounds toward entry, so the loss never exceeds your stop %.'],
+  ['trade', 'pro', 'Dhan Super Orders', 'When both target and stop are set, Dhan links the exits so filling one cancels the other.'],
+  ['trade', 'pro', 'Drag to modify', 'Drag the TP/SL lines or a pending limit line to change the order; ✕ exits or cancels.'],
+  ['trade', 'pro', 'Position lines on the chart', 'Average shows your position average, Last fill shows the latest fill with its TP/SL.'],
   ['trade', 'free', 'Quantity remembered per symbol', 'And your last-used order settings come back with you.'],
-  ['trade', 'elite', 'Shift+B and Shift+S', 'Buy and sell from the keyboard, with a confirmation unless you enable one-click for the session.'],
+  ['trade', 'pro', 'Shift+B and Shift+S', 'Buy and sell from the keyboard, with a confirmation unless you enable one-click for the session.'],
 
   /* indicators */
   ['ind', 'free', "TradingView's formulas", 'EMA, Wilder RMA with an SMA seed, RSI, ATR, Supertrend, MACD, DMI/ADX and VWAP with bands.'],
@@ -224,11 +222,11 @@ export const ITEMS = [
   /* system */
   ['sys', 'free', 'Per-user install, no admin rights', 'Windows 10 or 11, 64-bit. No UAC prompt, nothing written outside your profile.'],
   ['sys', 'free', 'Your data stays on your machine', 'Charts, drawings, recordings and credentials live in %LOCALAPPDATA%\\EIMC.'],
-  ['sys', 'basic', 'Credentials in Windows Credential Manager', 'Through keyring — not a config file in the install folder.'],
+  ['sys', 'pro', 'Credentials in Windows Credential Manager', 'Through keyring — not a config file in the install folder.'],
   ['sys', 'free', 'The server is local-only', 'It refuses any request arriving with a Host or Origin header other than its own, so nothing on the network can talk to it.'],
-  ['sys', 'basic', 'Rate-limited, chunked Dhan calls', "Within Dhan's published limits, so your account is never the thing that breaks."],
-  ['sys', 'basic', 'Offline licence grace', 'Your licence is valid for 7 days and refreshes on every launch that reaches the server. One failed DNS lookup never locks you out during market hours.'],
-  ['sys', 'basic', 'Entitlement decided server-side', 'Signed into the token; the app only reads back what was verified. Nothing in the interface is what unlocks a feature.'],
+  ['sys', 'pro', 'Rate-limited, chunked Dhan calls', "Within Dhan's published limits, so your account is never the thing that breaks."],
+  ['sys', 'pro', 'Offline licence grace', 'Your licence is valid for 7 days and refreshes on every launch that reaches the server. One failed DNS lookup never locks you out during market hours.'],
+  ['sys', 'pro', 'Entitlement decided server-side', 'Signed into the token; the app only reads back what was verified. Nothing in the interface is what unlocks a feature.'],
   ['sys', 'free', 'Uncapped rendering', 'Up to 144 FPS, with no shadowBlur and no CSS filters in a hot path, gradients cached and rebuilt only on resize, and every animation loop suspended off-screen.'],
   ['sys', 'free', 'Demo data generator', 'The whole terminal, every mode, running on synthetic data with no account, no card and no expiry.'],
 ];
@@ -236,9 +234,7 @@ export const ITEMS = [
 /* ── rendering ──────────────────────────────────────────────────── */
 const TIER = {
   free:  { label: 'Free',  cls: 'free'  },
-  basic: { label: 'Basic', cls: 'basic' },
   pro:   { label: 'Pro',   cls: 'pro'   },
-  elite: { label: 'Elite', cls: 'elite' },
 };
 
 /* Search keys are read back off the rendered DOM rather than built

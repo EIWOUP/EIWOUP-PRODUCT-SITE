@@ -5,12 +5,12 @@
 <script>try{document.documentElement.style.setProperty("--dpr",String(devicePixelRatio||1));if(localStorage.getItem("eimc.theme")!=="dark")document.documentElement.dataset.theme="light"}catch(e){}</script>
 <script>try{if(localStorage.getItem("eimc.session")||sessionStorage.getItem("eimc.session"))document.documentElement.classList.add("signed-in")}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pricing — free, Basic, Pro and Elite | EIMC Terminal</title>
-<meta name="description" content="Free forever on demo data. Basic ₹499, Pro ₹1,499 and Elite ₹2,999 a month, or pay yearly and get two months free. Three-day Pro trial, no card required.">
+<title>Pricing — Free and Pro | EIMC Terminal</title>
+<meta name="description" content="Free forever on demo data, or Pro with every feature on live data at a launch price of ₹299 a month (regular ₹499). One-day Pro trial, no card required.">
 <meta name="theme-color" content="#f3f5f9">
 <link rel="canonical" href="https://eimc.vercel.app/pricing.html">
 <meta property="og:title" content="EIMC Terminal — Pricing">
-<meta property="og:description" content="Free forever on demo data. Basic ₹499, Pro ₹1,499 and Elite ₹2,999 a month, or pay yearly and get two months free. Three-day Pro trial, no card required.">
+<meta property="og:description" content="Free forever on demo data, or Pro with every feature on live data at a launch price of ₹299 a month (regular ₹499). One-day Pro trial, no card required.">
 <meta property="og:image" content="/assets/eimc.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20x%3D%224%22%20y%3D%224%22%20width%3D%2256%22%20height%3D%2256%22%20rx%3D%2215%22%20fill%3D%22%23141821%22%2F%3E%3Cpath%20d%3D%22M13%2041%20L24%2045%20L31%2038%20L41%2018%20L55%2012%22%20fill%3D%22none%22%20stroke%3D%22%23f5c842%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2212%22%20r%3D%224%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E">
 <link rel="stylesheet" href="/static/vendor/fonts.css">
@@ -29,7 +29,7 @@
 <div class="topbar" id="topbar">
   <a class="tb-brand" href="index.html"><b>EIMC</b></a>
   <div class="tb-mid">Founding price &mdash; <b data-cd-compact="2026-12-15T00:00:00Z">&mdash;</b> left</div>
-  <a class="btn btn-sm btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 3 days free <span class="arw">&rarr;</span></a>
+  <a class="btn btn-sm btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 1 day free <span class="arw">&rarr;</span></a>
 </div>
 <header class="nav" id="nav">
   <div class="wrap nav-in">
@@ -57,7 +57,7 @@
       <a href="download.html">Download</a>
     </nav>
     <div class="nav-cta">
-      <a class="btn btn-sm btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 3-day Pro trial <span class="arw">&rarr;</span></a>
+      <a class="btn btn-sm btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 1-day Pro trial <span class="arw">&rarr;</span></a>
     </div>
     <div class="nav-user">
       <button type="button" class="theme-tg" data-theme-toggle aria-label="Switch to light theme" title="Switch theme">
@@ -99,26 +99,63 @@
 
 <section>
   <div class="wrap">
-    <div class="btns mb32">
-      <div class="cycle" id="cycle-toggle"></div>
-      <span class="dim" style="font-size:13px">Yearly is billed as ten months &mdash; two months free.</span>
-    </div>
     <div class="plans" id="plan-cards"></div>
     <div class="offer mt48">
       <div>
-        <h3>Three days of Pro, free &mdash; no card</h3>
-        <p>Smart money concepts, the DQRS setup tracker, the golden volume profile, the option chain,
-        option flow and order-book density, on live data. A trial is limited by time, not by features.</p>
+        <h3>One day of Pro, free &mdash; no card</h3>
+        <p>Every feature on live data: smart money concepts, DQRS setups, the golden volume profile, the
+        option chain, option flow, order-book density, the liquidity heatmap and live orders. A trial is
+        limited by time, not by features.</p>
       </div>
       <a class="btn btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start the trial</a>
     </div>
 
     <div class="trust mt48">
-      <div><b>No card for the trial</b><p>Three days of full Pro on live data. You enter a card only if you decide to keep it.</p></div>
+      <div><b>No card for the trial</b><p>One day of full Pro on live data. You enter a card only if you decide to keep it.</p></div>
       <div><b>The free tier never expires</b><p>If you walk away you keep the whole interface on demo data. Nothing is deleted and nothing nags.</p></div>
-      <div><b>Change plan any time</b><p>The tiers are additive, so moving up only adds entitlements to your token and takes effect on the next launch.</p></div>
+      <div><b>Launch price</b><p>Pro is &#8377;299 a month for our first customers instead of the regular &#8377;499. Cancel any time.</p></div>
       <div><b>Your own broker</b><p>EIMC is not a data vendor. It runs on your Dhan account, so you are not renting market data twice.</p></div>
     </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════ DHAN API NOTICE ═══ -->
+<section class="band band-alt" id="dhan-api">
+  <div class="wrap narrow">
+    <div class="kicker"><b>Important notice</b></div>
+    <h2 class="d2">You also need Dhan&rsquo;s Data API, <em>bought from Dhan.</em></h2>
+    <div class="note warn mt32" role="note">
+      <p><b>Live market data comes from Dhan, and Dhan charges for it separately.</b> To use Pro on live data
+      you need a <b>Data API subscription in your own Dhan account</b>. Dhan charges
+      <b>&#8377;499 + GST per month</b> for it, auto-debited from your Dhan balance. This fee goes to Dhan,
+      not to EIMC, and it is not included in the Pro price.</p>
+      <p class="mt16"><b>Stay safe from scams:</b> buy the Data API only inside your own Dhan account
+      (web.dhan.co). EIMC never sells Dhan access tokens, never collects the Dhan fee, and will never
+      ask for your Dhan password or OTP. If anyone offers to sell you a Dhan token or API key, it is a scam.</p>
+      <p class="mt16 dim" style="font-size:13px">Dhan sets its own price and may change it. Check the current
+      price in your Dhan account before you subscribe. The Free plan needs no Dhan account at all.</p>
+    </div>
+
+    <h3 class="mt48 mb32" style="font-size:22px">How to get your Dhan API access</h3>
+    <div class="steps">
+      <div class="step"><div><h4>Open a Dhan account</h4><p>If you do not have one, open a trading account at
+        <b>dhan.co</b> and complete the KYC. EIMC works only with Dhan.</p></div></div>
+      <div class="step"><div><h4>Log in to Dhan on the web</h4><p>Go to <b>web.dhan.co</b> and log in. Click
+        your <b>Profile</b> and open <b>Access DhanHQ APIs</b> (also shown as <b>DhanHQ Trading APIs</b>).</p></div></div>
+      <div class="step"><div><h4>Subscribe to the Data APIs</h4><p>Open the <b>Data APIs</b> tab and subscribe:
+        &#8377;499 + GST a month, paid to Dhan. Keep enough balance in your Dhan account, because Dhan
+        renews it automatically every 30 days.</p></div></div>
+      <div class="step"><div><h4>Generate an access token</h4><p>On the same page, set the toggle to
+        <b>Access Token</b> and click <b>Generate</b>. Copy the token and your <b>Dhan Client ID</b>.
+        Keep the token private, like a password.</p></div></div>
+      <div class="step"><div><h4>Paste it into EIMC</h4><p>In the terminal, open <b>Settings</b> (the sliders icon,
+        top right). Paste your Client ID and the token, then click <b>Save &amp; test</b>. You should see
+        <b>Login OK</b> and <b>Data APIs OK</b>.</p></div></div>
+      <div class="step"><div><h4>Make a new token each day</h4><p>Dhan access tokens expire every 24 hours, so you
+        generate a fresh one each trading day. For live real-money orders, Dhan may also ask you to
+        whitelist your IP: <b>DhanHQ Trading APIs &#8594; Static IP Setting</b>.</p></div></div>
+    </div>
+    <p class="mt32"><a class="tlink" href="download.html#dhan">Full setup guide on the download page</a></p>
   </div>
 </section>
 
@@ -137,7 +174,7 @@
       <b>The honest version of this argument.</b> A tool cannot promise you points, and this one does
       not: EIMC measures what happened and shows what is resting in the book. What it can tell you
       is the size of the bet. One <b>30-point</b> stop-out on a single lot is &#8377;1,950 &mdash; more
-      than a month of Pro. That is the whole question, and three days of it cost nothing to answer.
+      than a month of Pro. That is the whole question, and one day of it costs nothing to answer.
     </div>
   </div>
 </section>
@@ -164,7 +201,7 @@
 <section class="band" id="compare">
   <div class="wrap">
     <div class="kicker"><b>Compare</b></div>
-    <h2 class="d2">What each plan unlocks.</h2>
+    <h2 class="d2">Free vs Pro.</h2>
     <p class="lede mt24 mb48">
       These rows are not marketing groupings. They are EIMC&rsquo;s own entitlements &mdash; the exact
       capability keys the licence server signs into your token &mdash; so what you read here is what the
@@ -180,7 +217,7 @@
     <h2 class="d2 mb48">How your licence behaves.</h2>
     <div class="idx">
       <div><span class="no">OFFLINE</span><h3>It survives a dropped connection</h3><p>Your licence is valid for 7 days and refreshes on every launch that can reach the server. If the network is down, EIMC keeps running on the cached licence until it genuinely expires. One failed DNS lookup must never lock a paying customer out of their charts during market hours.</p></div>
-      <div><span class="no">SERVER</span><h3>The app cannot grant itself features</h3><p>Entitlement is decided server-side and signed into the token; the app only reads back what was verified. Nothing in the interface is the thing that unlocks a feature &mdash; otherwise anyone who can open DevTools would have the Elite tier.</p></div>
+      <div><span class="no">SERVER</span><h3>The app cannot grant itself features</h3><p>Entitlement is decided server-side and signed into the token; the app only reads back what was verified. Nothing in the interface is the thing that unlocks a feature &mdash; otherwise anyone who can open DevTools would have Pro for free.</p></div>
       <div><span class="no">DEVICE</span><h3>One licence, your machine</h3><p>A licence is bound to the device that activated it, so copying the licence file to another PC will not work. Switching machines is a sign-in, not a purchase.</p></div>
     </div>
   </div>
@@ -200,25 +237,18 @@
       </details>
       <details>
         <summary>Do I need a Dhan account?</summary>
-        <p>For any paid plan, yes &mdash; EIMC is a terminal for your Dhan account, not a data vendor. You
-        need the <b>Data APIs</b> subscription for chart data. For Elite&rsquo;s live orders you also need
-        the Trading APIs enabled, and Dhan may require your IP to be whitelisted. Access tokens expire every
-        24 hours, so you paste a fresh one each day.</p>
+        <p>For Pro, yes &mdash; EIMC is a terminal for your Dhan account, not a data vendor. You need Dhan&rsquo;s
+        <b>Data APIs</b> subscription for chart data, which Dhan charges separately (&#8377;499 + GST a month,
+        paid to Dhan). For live orders you also need the Trading APIs enabled, and Dhan may require your IP to
+        be whitelisted. Access tokens expire every 24 hours, so you paste a fresh one each day.
+        <a class="tlink" href="#dhan-api">How to get it</a></p>
       </details>
       <details>
-        <summary>What happens when the 3-day Pro trial ends?</summary>
+        <summary>What happens when the 1-day Pro trial ends?</summary>
         <p>The trial grants everything and is limited by time rather than by features. When it ends you are
         not locked out of the app &mdash; you drop back to the free tier and can keep using the whole
         interface on demo data, or pick a plan. Nothing you saved is deleted; your charts, drawings and
         recordings stay in <code class="src">%LOCALAPPDATA%\EIMC</code>.</p>
-      </details>
-      <details>
-        <summary>Why is the liquidity heatmap only on Elite?</summary>
-        <p>Because it is the one feature with a real running cost on both sides. Dhan keeps no order-book
-        history, so EIMC records its own &mdash; once a second, 09:00 to 15:35 IST, whether the app is open
-        or not &mdash; and it holds four of your account&rsquo;s five 200-level depth sockets to do it.
-        Elite also carries live real-money order routing, which is the part that has to be right every
-        single time.</p>
       </details>
       <details>
         <summary>Is this good for NIFTY 50 specifically?</summary>
@@ -230,16 +260,14 @@
         verified against a Dhan TradingView chart of NIFTY 50.</p>
       </details>
       <details>
-        <summary>Monthly or yearly?</summary>
-        <p>Yearly is billed as ten months, so two are free &mdash; Basic &#8377;4,990, Pro &#8377;14,990 and
-        Elite &#8377;29,990 a year. If you are not sure the product fits your routine yet, start monthly or
-        take the three-day Pro trial; the yearly saving will still be there next month.</p>
+        <summary>Why is Pro &#8377;299 and not &#8377;499?</summary>
+        <p>&#8377;299 a month is a launch price for our first customers. The regular price of Pro is &#8377;499
+        a month. Either way Pro includes every feature &mdash; there are no higher tiers to upgrade to.</p>
       </details>
       <details>
-        <summary>Can I change plan later?</summary>
-        <p>Yes. The tiers are additive &mdash; Pro is Basic plus the analysis engine, Elite is Pro plus
-        recorded liquidity and live orders &mdash; so moving up only adds entitlements to your token and
-        takes effect on the next launch.</p>
+        <summary>Can I cancel?</summary>
+        <p>Yes, any time from your account. Pro stays on until the end of the month you paid for, then the
+        terminal goes back to the Free plan on demo data. Your settings and drawings stay.</p>
       </details>
       <details>
         <summary>Is my Dhan token safe?</summary>
@@ -259,9 +287,9 @@
 
 <section class="close-band">
   <div class="wrap">
-    <h2 class="d2">Three days costs nothing.</h2>
+    <h2 class="d2">One day costs nothing.</h2>
     <p class="lede">Full Pro on live data, no card. Or download the free version and run every mode on demo data for as long as you like.</p>
-    <div class="btns"><a class="btn btn-lg btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 3-day Pro trial</a><a class="btn btn-lg btn-fill" href="download.html">Download free</a></div>
+    <div class="btns"><a class="btn btn-lg btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start 1-day Pro trial</a><a class="btn btn-lg btn-fill" href="download.html">Download free</a></div>
   </div>
 </section>
 
@@ -298,7 +326,7 @@
           <li><a href="why.html">Why EIMC</a></li>
           <li><a href="pricing.html">Pricing</a></li>
           <li><a href="offer.html">Launch offer</a></li>
-          <li><a href="buy.html?plan=pro&amp;cycle=monthly">3-day Pro trial</a></li>
+          <li><a href="buy.html?plan=pro&amp;cycle=monthly">1-day Pro trial</a></li>
         </ul>
       </div>
       <div>

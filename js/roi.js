@@ -53,10 +53,6 @@ export function renderROI(host) {
         <div class="seg" id="roi-plan">
           ${paid.map((p, i) => `<button type="button" class="${p.id === 'pro' ? 'on' : ''}" data-plan="${p.id}">${p.name}</button>`).join('')}
         </div>
-        <div class="seg seg-sm mt8" id="roi-cycle">
-          <button type="button" class="on" data-cycle="monthly">Monthly</button>
-          <button type="button" data-cycle="yearly">Yearly</button>
-        </div>
       </div>
     </div>
 
@@ -72,7 +68,7 @@ export function renderROI(host) {
           <div class="roi-tr"><i style="--w:100%"></i></div>
         </div>
         <div class="roi-bar on">
-          <div class="roi-bl"><span>A month of <b id="roi-pname">Pro</b></span><b class="num" id="roi-cost">₹1,499</b></div>
+          <div class="roi-bl"><span>A month of <b id="roi-pname">Pro</b></span><b class="num" id="roi-cost">₹299</b></div>
           <div class="roi-tr"><i id="roi-w" style="--w:77%"></i></div>
         </div>
       </div>
@@ -139,7 +135,7 @@ export function renderROI(host) {
     [...el.plan.children].forEach(c => c.classList.toggle('on', c === b));
     draw();
   });
-  el.cycle.addEventListener('click', e => {
+  el.cycle?.addEventListener('click', e => {
     const b = e.target.closest('button[data-cycle]'); if (!b) return;
     state.cycle = b.dataset.cycle;
     [...el.cycle.children].forEach(c => c.classList.toggle('on', c === b));

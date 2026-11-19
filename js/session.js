@@ -20,7 +20,7 @@
 
 export const SESSION = [
   {
-    t: '09:00', tag: 'Before you are awake', tier: 'elite',
+    t: '09:00', tag: 'Before you are awake', tier: 'pro',
     h: 'The recorder is already running',
     d: 'Fifteen minutes before the open, EIMC starts taking a snapshot of the near-month '
      + 'future&rsquo;s 200-level order book every single second &mdash; whether the app is open in a '
@@ -38,7 +38,7 @@ export const SESSION = [
     k: ['POC carried', 'HVN / LVN', "TradingView's rules"],
   },
   {
-    t: '09:16', tag: 'First ticks', tier: 'basic',
+    t: '09:16', tag: 'First ticks', tier: 'pro',
     h: 'And the candles are already being checked',
     d: 'Every close is re-read against Dhan&rsquo;s own candles at 1&nbsp;s, 6&nbsp;s and 20&nbsp;s, then '
      + 'every 30&nbsp;s until Dhan has it. Requests use the exchange clock rather than your PC clock. '
@@ -47,7 +47,7 @@ export const SESSION = [
     k: ['1 s · 6 s · 20 s', 'Exchange clock', 'No dropped ticks'],
   },
   {
-    t: '09:30', tag: 'Opening range closes', tier: 'basic',
+    t: '09:30', tag: 'Opening range closes', tier: 'pro',
     h: 'The ORB arms itself, on a closed candle',
     d: 'The first fifteen minutes become a level, and the breakout only marks when a candle '
      + '<b>closes</b> beyond it &mdash; not when a wick pokes through it. That one rule is the '
@@ -81,7 +81,7 @@ export const SESSION = [
     k: ['SWEEP', 'Graded A/B/C', 'Measured, not claimed'],
   },
   {
-    t: '12:40', tag: 'The dull hours', tier: 'elite',
+    t: '12:40', tag: 'The dull hours', tier: 'pro',
     h: 'A wall builds where nothing seems to happen',
     d: 'The heatmap is the only thing on the screen doing anything at lunch: resting sell '
      + 'quantity stacking at one price, visible for forty minutes before it matters. '
@@ -98,7 +98,7 @@ export const SESSION = [
     k: ['Four inputs', 'Every 30 s', '30-min change'],
   },
   {
-    t: '15:30', tag: 'The close', tier: 'basic',
+    t: '15:30', tag: 'The close', tier: 'pro',
     h: "Today's levels become tomorrow's",
     d: 'The day&rsquo;s high, low and open are pinned, the official daily bar settles them, and the '
      + 'profile for the session you just traded is computed once and kept. Tomorrow opens with '
@@ -106,7 +106,7 @@ export const SESSION = [
     k: ['Official daily bars', 'Pinned levels'],
   },
   {
-    t: '15:35', tag: 'Recording stops', tier: 'elite',
+    t: '15:35', tag: 'Recording stops', tier: 'pro',
     h: 'And five sessions stay on disk',
     d: 'A week of second-by-second order book, yours to scroll back through. The wall from '
      + 'Tuesday is still there on Friday, with the tape that ate it.',
@@ -123,7 +123,7 @@ export const SESSION = [
   },
 ];
 
-const TIER = { free: 'Free', basic: 'Basic', pro: 'Pro', elite: 'Elite' };
+const TIER = { free: 'Free', pro: 'Pro' };
 
 export function renderSession(host) {
   if (!host) return;

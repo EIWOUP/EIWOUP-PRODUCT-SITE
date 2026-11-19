@@ -3,25 +3,21 @@
    EVERY price and entitlement on this website lives here.
    Change a number in this file and all pages follow.
 
-   The capability keys below are EIMC's own, copied from
-   .removed-licensing/license_server/plans.py:
-
-     BASIC = (CHARTS, REPLAY, LEVELS)
-     PRO   = BASIC + (SMARTMONEY, SETUPS, GOLDVP, OPTIONCHAIN, OPTIONFLOW, BOOK)
-     ELITE = PRO + (HEAT, LIVE)
-
-   Keeping the same keys means the pricing page and the entitlement
-   server can never drift apart — which is what plans.py asks for:
-   "the tiers deliberately follow EIMC's existing Modes, so the
-    pricing page can describe them in the words the app already uses."
+   Plans on sale: Free (demo data) and Pro (everything, live data).
+   Pro is on a launch price (monthly) with the regular price in listPrice.
+   The capability keys are EIMC's own, from license_server/plans.py.
    ═══════════════════════════════════════════════════════════════ */
 
 export const CURRENCY = '₹';
 export const GST_RATE = 0.18;           // India, SaaS
-export const TRIAL_DAYS = 3;            // the Pro trial offer
-export const YEARLY_MONTHS = 10;        // pay for 10, get 12 — "2 months free"
+export const TRIAL_DAYS = 1;            // the Pro trial offer
+export const YEARLY_MONTHS = 10;        // kept for old yearly subscriptions only
 
-/* The 11 sellable capabilities, in the order the pricing table lists them.
+/* What Dhan itself charges for its Data APIs (paid to Dhan, not to EIMC).
+   Shown on the pricing page so nobody is surprised or scammed. */
+export const DHAN_API_MONTHLY = 499;
+
+/* The 11 capabilities, in the order the pricing table lists them.
    `key` matches plans.py exactly. */
 export const CAPS = [
   { key: 'charts',      name: 'Charts, 10 timeframes, indicators, drawings' },
@@ -37,17 +33,16 @@ export const CAPS = [
   { key: 'live',        name: 'Live real-money orders through Dhan' },
 ];
 
-const BASIC = ['charts', 'replay', 'levels'];
-const PRO   = [...BASIC, 'smartmoney', 'setups', 'goldvp', 'optionchain', 'optionflow', 'book'];
-const ELITE = [...PRO, 'heat', 'live'];
+const ALL = CAPS.map(c => c.key);
 
+/* What is on sale: Free and Pro. Pro has everything. */
 export const PLANS = [
   {
     id: 'free',
     name: 'Free',
-    blurb: 'The whole terminal, running on generated data.',
+    blurb: 'The whole terminal on demo data. Explore every screen, no strings attached.',
     monthly: 0,
-    caps: ELITE,            // every mode is visible…
+    caps: ALL,              // every mode is visible…
     demoOnly: true,         // …but only against Demo (synthetic) data
     liveData: false,
     cta: 'Download free',
@@ -56,69 +51,50 @@ export const PLANS = [
       'Every mode and every indicator',
       'Demo (synthetic) market data',
       'Bar replay on demo data',
+      'Paper trading to practise',
       'No account, no card, no expiry',
-    ],
-  },
-  {
-    id: 'basic',
-    name: 'Basic',
-    blurb: 'Your own Dhan account, on live NSE / BSE / MCX data.',
-    monthly: 499,
-    caps: BASIC,
-    demoOnly: false,
-    liveData: true,
-    cta: 'Choose Basic',
-    highlights: [
-      'Connect your own Dhan account',
-      'Live candles, every tick',
-      'Bar replay on real history',
-      'Scored liquidity Levels',
     ],
   },
   {
     id: 'pro',
     name: 'Pro',
-    blurb: 'The analysis engine: structure, setups, profile and options.',
-    monthly: 1499,
-    caps: PRO,
+    blurb: 'Everything EIMC does, on your own Dhan account with live market data.',
+    monthly: 299,           // launch price for the first customers
+    listPrice: 499,         // the regular price after the launch offer
+    caps: ALL,
     demoOnly: false,
     liveData: true,
-    flag: 'Most popular',
+    flag: 'Launch price',
     trial: true,
-    cta: 'Start 3-day trial',
+    cta: 'Start 1-day free trial',
     highlights: [
-      'Everything in Basic',
-      'Smart money concepts',
-      'DQRS setup tracker',
+      'Live NSE / BSE / MCX data from your Dhan account',
+      'Tick-by-tick live candles, 10 timeframes',
+      'Scored liquidity Levels',
+      'Smart money concepts — BOS, CHoCH, order blocks, FVG',
+      'DQRS setup tracker, forward-tested',
       'Golden volume profile',
-      'Option chain + Option flow',
-      'Order-book density',
-    ],
-  },
-  {
-    id: 'elite',
-    name: 'Elite',
-    blurb: 'Recorded liquidity and real orders, straight from the chart.',
-    monthly: 2999,
-    caps: ELITE,
-    demoOnly: false,
-    liveData: true,
-    cta: 'Choose Elite',
-    highlights: [
-      'Everything in Pro',
+      'Option chain with greeks + Option flow',
+      'Order-book density, 200 levels',
       'Liquidity heatmap (Bookmap-style)',
-      'Order flow recording (ATAS-style)',
-      'Live real-money orders via Dhan',
-      'Server-checked order guardrails',
+      'Order flow and footprint recording (ATAS-style)',
+      'Bar replay on real history',
+      'Live real-money orders via Dhan, with server-checked guardrails',
     ],
   },
+];
+
+/* Plans no longer sold. Kept only so older subscriptions still show a name. */
+const RETIRED = [
+  { id: 'basic', name: 'Basic', blurb: 'This plan is no longer sold. Pro now includes every feature.', monthly: 499, caps: ['charts', 'replay', 'levels'], liveData: true, highlights: [] },
+  { id: 'elite', name: 'Elite', blurb: 'This plan is no longer sold. Pro now includes every feature.', monthly: 2999, caps: ALL, liveData: true, highlights: [] },
 ];
 
 /* ── helpers ─────────────────────────────────────────────────── */
 
 export const yearlyOf = p => p.monthly * YEARLY_MONTHS;
 
-export const planById = id => PLANS.find(p => p.id === id) || null;
+export const planById = id => PLANS.find(p => p.id === id) || RETIRED.find(p => p.id === id) || null;
 
 export const hasCap = (plan, key) => plan.caps.includes(key);
 

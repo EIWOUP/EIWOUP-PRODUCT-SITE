@@ -40,7 +40,7 @@ const money = n => `${CURRENCY}${inr(n)}`;
 export function renderRivals(host) {
   if (!host) return;
 
-  const elite = planById('elite');
+  const elite = planById('pro');
   const pro   = planById('pro');
 
   const rows = RIVALS.map(r => {
@@ -76,12 +76,12 @@ export function renderRivals(host) {
         ${rows}
         <tr class="rv-us">
           <td class="rv-n">
-            <b>EIMC Terminal</b><span>${elite.name} &mdash; everything</span>
+            <b>EIMC Terminal</b><span>${elite.name} &mdash; every feature</span>
             <p>Order flow, recorded depth, profile, structure, the chain and live orders</p>
           </td>
           <td class="rv-p">
             <b class="num">${money(elite.monthly)}</b><span>/ month</span>
-            <p>${money(pro.monthly)} for Pro &middot; data is your own Dhan account</p>
+            <p>Launch price (regular ${money(pro.listPrice || pro.monthly)}) &middot; data is your own Dhan account</p>
           </td>
           <td class="rv-d">
             <span class="rv-tag yes">Built for NIFTY 50</span>
@@ -109,7 +109,7 @@ export function renderStack(host) {
   if (!host) return;
 
   const pro = planById('pro');
-  const elite = planById('elite');
+  const elite = pro;
   const total = stackTotal();
 
   const rows = STACK.map(r => r.buy
@@ -142,13 +142,13 @@ export function renderStack(host) {
       <div class="st-card">
         <div class="k">All of it, in one window</div>
         <div class="v"><span class="cur">${CURRENCY}</span><b class="num">${inr(elite.monthly)}</b><i>/ month</i></div>
-        <p>EIMC <b>Elite</b> &mdash; including the two rows above that nothing else in India sells.</p>
+        <p>EIMC <b>Pro</b> &mdash; including the two rows above that nothing else in India sells.</p>
         <div class="st-save">
           About <b class="gold num">${money(total - elite.monthly)}</b> a month less than the stack,
           and the stack still cannot draw depth on the index.
         </div>
         <a class="btn btn-gold btn-block mt24" href="buy.html?plan=pro&amp;cycle=monthly">
-          Start with 3 days of Pro, free <span class="arw">&rarr;</span></a>
+          Start with 1 day of Pro, free <span class="arw">&rarr;</span></a>
         <p class="st-fine">No card for the trial. ${money(pro.monthly)}/month after, if you keep it.</p>
       </div>
     </div>

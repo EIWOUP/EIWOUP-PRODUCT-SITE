@@ -117,7 +117,7 @@ S.overview = () => {
   const hello = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
   const first = A.profile.name.split(' ')[0];
   const open = A.tickets.filter(t => t.status !== 'resolved').length;
-  const elite = planById('elite');
+  const pro = planById('pro');
   const locked = CAPS.filter(c => !pl.caps.includes(c.key));
   return `
   ${head(`${hello}, ${esc(first)}`, 'Here is your EIMC account at a glance.')}
@@ -154,7 +154,7 @@ S.overview = () => {
       <ul class="caps">
         ${CAPS.map(c => {
           const on = pl.caps.includes(c.key);
-          return `<li class="${on ? 'on' : 'off'}">${on ? ICON.check : ICON.lock}<span>${esc(c.name)}</span>${on ? '' : '<em>Elite</em>'}</li>`;
+          return `<li class="${on ? 'on' : 'off'}">${on ? ICON.check : ICON.lock}<span>${esc(c.name)}</span>${on ? '' : '<em>Pro</em>'}</li>`;
         }).join('')}
       </ul>
     </section>
@@ -162,9 +162,9 @@ S.overview = () => {
       ${locked.length ? `
       <section class="card up-card">
         <div class="ov-k">Upgrade</div>
-        <h2>Elite adds what the book is doing</h2>
-        <p>${locked.map(c => esc(c.name.split(' — ')[0].split(' & ')[0])).join(' and ')}. ${money(elite.monthly - pl.monthly)} a month more.</p>
-        <a class="btn btn-sm mt16" href="buy.html?plan=elite&amp;cycle=${s.cycle}">See Elite <span class="arw">&rarr;</span></a>
+        <h2>Pro has every feature</h2>
+        <p>${locked.map(c => esc(c.name.split(' — ')[0].split(' & ')[0])).join(' and ')}. Pro is ${money(pro.monthly)} a month at the launch price.</p>
+        <a class="btn btn-sm mt16" href="buy.html?plan=pro&amp;cycle=monthly">Get Pro <span class="arw">&rarr;</span></a>
       </section>` : ''}
       <section class="card">
         <div class="card-h"><h2>Shortcuts</h2></div>
@@ -183,7 +183,7 @@ S.overview = () => {
 S.subscription = () => {
   const s = A.subscription, pl = plan(), p = period(), m = defaultMethod();
   const yearly = yearlyOf(pl), save = yearlySaving(pl);
-  const order = ['basic', 'pro', 'elite'];
+  const order = s.plan === 'pro' ? ['pro'] : [s.plan, 'pro'].filter(id => planById(id));
   return `
   ${head('Subscription', 'Your plan, what it costs and when it renews.')}
   ${s.cancelAtPeriodEnd ? `
@@ -205,9 +205,9 @@ S.subscription = () => {
     </div>
     <dl class="kv mt24">
       <div><dt>Billing cycle</dt><dd>Monthly${s.cycleNext === 'yearly' ? ' <em class="hint">switches to yearly on ' + date(s.currentEnd) + '</em>' : ''}</dd></div>
-      <div><dt>Price</dt><dd>${money(s.price)} a month</dd></div>
+      <div><dt>Price</dt><dd>${money(s.price)} ${s.cycle === 'yearly' ? 'a year' : 'a month'}</dd></div>
       <div><dt>GST (${Math.round(GST_RATE * 100)}%)</dt><dd>${money(s.gst)}</dd></div>
-      <div><dt>Charged each month</dt><dd><b>${money(s.total)}</b></dd></div>
+      <div><dt>Charged each ${s.cycle === 'yearly' ? 'year' : 'month'}</dt><dd><b>${money(s.total)}</b></dd></div>
       <div><dt>Current period</dt><dd>${date(s.currentStart)} &ndash; ${date(s.currentEnd)}</dd></div>
       <div><dt>${s.cancelAtPeriodEnd ? 'Ends on' : 'Next renewal'}</dt><dd>${date(s.currentEnd)}</dd></div>
       <div><dt>Pays with</dt><dd>${esc(m.label)} &middot; ${esc(m.detail)} <a class="tlink sm" href="#payments">Change</a></dd></div>
@@ -216,29 +216,16 @@ S.subscription = () => {
   </section>
 
   <section class="card">
-    <div class="card-h"><h2>Billing cycle</h2></div>
-    <div class="cyc">
-      <button class="cyc-o ${s.cycleNext === 'monthly' ? 'on' : ''}" data-cycle="monthly">
-        <b>Monthly</b><span>${money(pl.monthly)} a month + GST</span><em>Cancel any time</em>
-      </button>
-      <button class="cyc-o ${s.cycleNext === 'yearly' ? 'on' : ''}" data-cycle="yearly">
-        <b>Yearly <i class="save">2 months free</i></b><span>${money(yearly)} a year + GST</span><em>Saves ${money(save)} against monthly</em>
-      </button>
-    </div>
-    <p class="fine mt16">A change of cycle starts at your next renewal, ${date(s.currentEnd)}. Nothing is charged today.</p>
-  </section>
-
-  <section class="card">
     <div class="card-h"><h2>Change plan</h2><a class="tlink" href="pricing.html#compare">Full comparison</a></div>
     <div class="pl3">
       ${order.map(id => {
-        const q = planById(id), cur = id === s.plan, up = order.indexOf(id) > order.indexOf(s.plan);
+        const q = planById(id), cur = id === s.plan, up = id === 'pro' && ['free', 'basic'].includes(s.plan);
         return `<div class="pl ${cur ? 'cur' : ''}">
           <div class="pl-n">${esc(q.name)} ${cur ? pill('Your plan', 'ok') : ''}</div>
           <div class="pl-p">${money(q.monthly)}<span>/mo</span></div>
           <ul>${q.highlights.slice(0, 4).map(h => `<li>${esc(h)}</li>`).join('')}</ul>
           ${cur ? '<button class="btn btn-sm btn-block" disabled>Current plan</button>'
-            : `<a class="btn btn-sm btn-block ${up ? 'btn-gold' : ''}" href="buy.html?plan=${id}&amp;cycle=${s.cycle}">${up ? 'Upgrade' : 'Switch'} to ${esc(q.name)}</a>`}
+            : `<a class="btn btn-sm btn-block ${up ? 'btn-gold' : ''}" href="buy.html?plan=${id}&amp;cycle=monthly">${up ? 'Upgrade' : 'Switch'} to ${esc(q.name)}</a>`}
         </div>`;
       }).join('')}
     </div>
@@ -609,7 +596,6 @@ function wire(tab) {
     <p>You keep every Pro feature until <b>${date(A.subscription.currentEnd)}</b>. After that the terminal goes back to the free plan on demo data. Your settings and drawings stay.</p>
     <div class="fld mt16"><label for="m-why">What made you cancel? <span class="muted">(optional)</span></label>
       <select id="m-why"><option value="">Choose a reason</option><option>Too expensive</option><option>Missing a feature I need</option><option>Not trading for a while</option><option>Moving to another tool</option><option>Something else</option></select></div>
-    <div class="note gold mt16"><b>Taking a break?</b> Switch to Basic instead: ${money(planById('basic').monthly)} a month keeps live data and bar replay.</div>
     <div class="modal-f"><button class="btn btn-sm" data-close autofocus>Keep Pro</button><button class="btn btn-sm btn-danger" data-confirm>Cancel at period end</button></div>`,
   (box, close) => $('[data-confirm]', box).addEventListener('click', e => busy(e.currentTarget, async () => {
     try { await api.setCancel(true, $('#m-why', box).value); close(); await refresh(); toast(`Cancelled. Pro stays on until ${date(A.subscription.currentEnd)}.`); } catch (x) { guard(x); }
