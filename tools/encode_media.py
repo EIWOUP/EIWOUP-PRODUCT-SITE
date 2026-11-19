@@ -42,8 +42,12 @@ JOBS = {
                       poster="orderbook-poster.webp", start=0, dur=None, crf=17),
     "optionflow": dict(src=SRC / "Features" / "Feature - Option Flow.MOV", out="optionflow.mp4",
                        poster="optionflow-poster.webp", start=0, dur=None, crf=16),
-    "optionchain": dict(src=SRC / "Features" / "Feature - Option Chain Look.mp4", out="optionchain.mp4",
+    "optionchain": dict(src=SRC / "Features" / "FEATURE-Option Chain.MP4", out="optionchain.mp4",
                         poster="optionchain-poster.webp", start=0, dur=None, crf=17),
+    "heatmap": dict(src=SRC / "Features" / "HEATMAP-First Look.mp4", out="heatmap.mp4",
+                    poster="heatmap-poster.webp", start=0, dur=None, crf=17),
+    "footprint": dict(src=SRC / "Features" / "HEATMAP-Delta and Volume Profile.mp4", out="footprint.mp4",
+                      poster="footprint-poster.webp", start=0, dur=None, crf=17),
 }
 
 WARN_MB = 25

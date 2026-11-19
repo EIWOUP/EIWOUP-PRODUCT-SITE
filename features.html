@@ -43,9 +43,9 @@
         <a class="mm-top" href="features.html">Features</a>
         <div class="mm-panel">
           <a class="mm-item" href="features.html#watch-gvp"><b><i style="--mc:#ffb74d"></i>Golden volume profile</b><span>TradingView-exact, carried into the next session</span></a>
-          <a class="mm-item" href="features.html#watch-book"><b><i style="--mc:#22d3ee"></i>Order flow</b><span>Footprint, delta, walls and a live DOM</span></a>
+          <a class="mm-item" href="features.html#watch-fp"><b><i style="--mc:#22d3ee"></i>Order flow</b><span>Footprint, delta, walls and a live DOM</span></a>
           <a class="mm-item" href="features.html#watch-smc"><b><i style="--mc:#c084fc"></i>Smart money concepts</b><span>BOS, CHoCH, order blocks, stop hunts, trade plan</span></a>
-          <a class="mm-item" href="features.html#watch-book"><b><i style="--mc:#ffa630"></i>Liquidity heatmap</b><span>Resting orders over time, Bookmap-style</span></a>
+          <a class="mm-item" href="features.html#watch-heat"><b><i style="--mc:#ffa630"></i>Liquidity heatmap</b><span>Resting orders over time, Bookmap-style</span></a>
           <a class="mm-item" href="features.html#watch-chain"><b><i style="--mc:#4c7dff"></i>Option chain</b><span>Greeks, buildup, IV skew, max pain, expected move</span></a>
           <a class="mm-item" href="features.html#watch-flow"><b><i style="--mc:#22d3a6"></i>Option flow</b><span>Call and put buyers vs sellers, scored 0&ndash;100</span></a>
           <a class="mm-item" href="features.html#watch-ind"><b><i style="--mc:#38bdf8"></i>DQRS setups</b><span>Five mechanical setups, forward-tested</span></a>
@@ -96,7 +96,7 @@
       <div class="kicker plain"><b>Watch it work</b> &middot; nothing below is a mock-up</div>
       <h2 class="d2">Real screens. <em>Real sessions.</em></h2>
       <p class="lede mt24">
-        Three recordings and five screenshots taken straight from the terminal on live NIFTY data. Every frame
+        Five recordings and five screenshots taken straight from the terminal on live NIFTY data. Every frame
         is shown pixel for pixel, exactly as it looks in the app. The labels under each one are numbers read off that
         screen, so you can check every one against the picture.
       </p>
@@ -140,14 +140,53 @@
           it down. It is a rule-based reading of real orders, trades and volume. The app labels it, in its own
           words, &ldquo;not a forecast&rdquo;.</p>
         </div>
-        <div class="sc-more btns"><a class="tlink" href="#heat">The liquidity heatmap in depth</a><a class="tlink" href="#oflow">Order flow and footprint</a></div>
+        <div class="sc-more btns"><a class="tlink" href="#watch-heat">The liquidity heatmap</a><a class="tlink" href="#watch-fp">Footprint and delta</a></div>
       </div>
     </article>
 
-    <!-- ── REC 02 · OPTION FLOW ────────────────────────────────── -->
+    <!-- ── REC 02 · LIQUIDITY HEATMAP ──────────────────────────── -->
+    <article class="sc wide" id="watch-heat" style="--sc:#ff8c2a;--sc2:#4c7dff">
+      <figure class="sc-media">
+        <div class="sc-float">
+          <div class="sc-frame" data-px="golden" style="--nw:1920;--nh:1080">
+            <video data-src="/media/heatmap.mp4" poster="/media/heatmap-poster.webp" muted loop playsinline preload="none"
+                   aria-label="Screen recording: NIFTY NOV FUT on a one-minute chart from 10:50 to 12:40, with the recorded 200-level order book painted behind the candles as a heatmap of blue, orange and red bands"></video>
+            <span class="sc-rec"><span class="rec"></span>REC 02 &middot; LIVE MARKET</span>
+            <span class="sc-prog"><i></i></span>
+          </div>
+          <span class="sc-chip p-tr" style="--cc:#ff8c2a;--z:-22;--bd:7.8s"><i></i><span>REC 200-level<small>recorded since 10:37</small></span></span>
+          <span class="sc-chip p-l" style="--cc:#4c7dff;--z:18;--bd:9.2s;--bdl:-3s"><i></i><span>NIFTY NOV FUT<small>1m &middot; 25,410</small></span></span>
+          <span class="sc-chip p-br opt" style="--cc:#f23645;--z:-14;--bd:8.6s;--bdl:-5s"><i></i><span>Brighter band = bigger size<small>blue &rarr; orange &rarr; red</small></span></span>
+        </div>
+        <figcaption class="sc-cap"><b>Real recording</b> &middot; NIFTY NOV FUT, 1m &middot; two hours of the recorded book</figcaption>
+      </figure>
+      <div class="sc-copy">
+        <div class="sc-k"><span class="sc-tag">REC 02</span> Liquidity heatmap &middot; Bookmap-style</div>
+        <h3 class="d2 sc-h">Where the size sat, <em>minute by minute, all session.</em></h3>
+        <p class="lede">
+          EIMC records the near-month future&rsquo;s 200-level book every second and paints it behind the candles.
+          Every horizontal band is size that rested at that price, for as long as it rested there. This clip runs
+          from 10:50 to 12:40 on NIFTY NOV FUT, with the recorder on since 10:37.
+        </p>
+        <ul class="sc-pts">
+          <li style="--i:0"><i>01</i><div><b>Colour is size</b><span>Thin blue is ordinary resting size. Orange and red are the heavy orders. A band that runs for an hour is a level someone defended for an hour.</span></div></li>
+          <li style="--i:1"><i>02</i><div><b>Walls appear, and walls get pulled</b><span>A band that ends just before price reaches it was pulled, not filled. A band that price stops at, again and again, was real. You see both, because the book is recorded, not drawn afterwards.</span></div></li>
+          <li style="--i:2"><i>03</i><div><b>The trades, over the book</b><span>The candles, the trade bubbles and the buy and sell volume bars sit on top of the heatmap, so you can see price meet the size, and what happened next.</span></div></li>
+          <li style="--i:3"><i>04</i><div><b>On the index, not just the future</b><span>NIFTY has no order book of its own. EIMC records the near-month future&rsquo;s book and shifts it by the basis, so the bands line up with the index chart you trade from.</span></div></li>
+        </ul>
+        <div class="sc-why">
+          <span>How it helps you</span>
+          <p>Support and resistance stop being lines you drew and become size you can see. You can tell a level that
+          is being defended from one that is only a round number, and notice when the size behind a level quietly
+          disappears.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- ── REC 03 · OPTION FLOW ────────────────────────────────── -->
     <article class="sc tall flip" id="watch-flow" style="--sc:#22d3a6;--sc2:#4c7dff">
       <div class="sc-copy">
-        <div class="sc-k"><span class="sc-tag">REC 02</span> Option flow &middot; who is strong today</div>
+        <div class="sc-k"><span class="sc-tag">REC 03</span> Option flow &middot; who is strong today</div>
         <h3 class="d2 sc-h">Who is really in control, <em>read from the options.</em></h3>
         <p class="lede">
           Option premiums carry the market&rsquo;s real conviction, but nobody can read twelve of them at once in
@@ -167,14 +206,13 @@
           When put writers are pressing and calls are bid, dips tend to get absorbed. When the camps flip, the
           card flips with them, in plain words instead of a wall of open-interest numbers.</p>
         </div>
-        <div class="sc-more"><a class="tlink" href="#flow">How the four scores are built</a></div>
       </div>
       <figure class="sc-media">
         <div class="sc-float">
           <div class="sc-frame" data-px style="--nw:372;--nh:858">
             <video data-src="/media/optionflow.mp4" poster="/media/optionflow-poster.webp" muted loop playsinline preload="none"
                    aria-label="Screen recording: the Option flow card for NIFTY showing Strong Bullish, put sellers leading at 100, bull camp 94 against bear camp 6, and the calls and puts panels"></video>
-            <span class="sc-rec"><span class="rec"></span>REC 02 &middot; LIVE MARKET</span>
+            <span class="sc-rec"><span class="rec"></span>REC 03 &middot; LIVE MARKET</span>
             <span class="sc-prog"><i></i></span>
           </div>
           <span class="sc-chip p-tr" style="--cc:#22d3a6;--z:-20;--bd:8s"><i></i><span>STRONG BULLISH<small>who is strong today</small></span></span>
@@ -185,10 +223,49 @@
       </figure>
     </article>
 
-    <!-- ── SHOT 03 · TECHNICAL BIAS ────────────────────────────── -->
+    <!-- ── REC 04 · FOOTPRINT, DELTA AND VOLUME PROFILE ──────────── -->
+    <article class="sc wide" id="watch-fp" style="--sc:#22d3a6;--sc2:#f23645">
+      <figure class="sc-media">
+        <div class="sc-float">
+          <div class="sc-frame" data-px="golden" style="--nw:1920;--nh:1080">
+            <video data-src="/media/footprint.mp4" poster="/media/footprint-poster.webp" muted loop playsinline preload="none"
+                   aria-label="Screen recording: NIFTY NOV FUT one-minute footprint candles over the recorded order book heatmap, with the traded volume inside every candle, the delta under each candle and a profile on the price scale"></video>
+            <span class="sc-rec"><span class="rec"></span>REC 04 &middot; LIVE MARKET</span>
+            <span class="sc-prog"><i></i></span>
+          </div>
+          <span class="sc-chip p-tr" style="--cc:#22d3a6;--z:-20;--bd:8.4s"><i></i><span>Delta +558<small>buyers took the candle</small></span></span>
+          <span class="sc-chip p-l" style="--cc:#f23645;--z:20;--bd:9.6s;--bdl:-4s"><i></i><span>Delta &minus;1,328<small>sellers took the drop</small></span></span>
+          <span class="sc-chip p-br opt" style="--cc:#ffb74d;--z:-16;--bd:7.4s;--bdl:-2s"><i></i><span>Volume at every price<small>inside each candle</small></span></span>
+        </div>
+        <figcaption class="sc-cap"><b>Real recording</b> &middot; NIFTY NOV FUT, 1m footprint over the recorded book</figcaption>
+      </figure>
+      <div class="sc-copy">
+        <div class="sc-k"><span class="sc-tag">REC 04</span> Footprint, delta &amp; volume profile</div>
+        <h3 class="d2 sc-h">Inside every candle: <em>who traded, at which price.</em></h3>
+        <p class="lede">
+          Zoom in and each candle opens into a footprint: the volume traded at every price inside it, with the
+          delta, buyers minus sellers, printed under the candle. The recorded book stays behind it, and the
+          profile on the price scale shows where the volume built up.
+        </p>
+        <ul class="sc-pts">
+          <li style="--i:0"><i>01</i><div><b>Volume at every price</b><span>Each row of a candle is one price with the size that traded there. Highlighted cells mark where one side clearly outweighed the other.</span></div></li>
+          <li style="--i:1"><i>02</i><div><b>Delta under every candle</b><span>Buyers minus sellers for that minute. In the clip a breakout candle prints <em>+558</em>, and the sharp drop after it prints <em>&minus;1,328</em>: the move down was sold into, not drifted into.</span></div></li>
+          <li style="--i:2"><i>03</i><div><b>The profile on the price scale</b><span>The volume profile along the right edge shows which prices took the most trade, so the levels the market cared about stand out without drawing anything.</span></div></li>
+          <li style="--i:3"><i>04</i><div><b>Candles, footprint and book together</b><span>The same chart carries the 200-level heatmap behind it and the buy and sell volume bars under it, so every candle can be read against the size that was waiting.</span></div></li>
+        </ul>
+        <div class="sc-why">
+          <span>How it helps you</span>
+          <p>A green candle with negative delta is a warning a normal chart never gives you. The footprint shows
+          whether a breakout was bought, whether a drop was real selling, and where the volume says the fair price is,
+          one minute at a time.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- ── SHOT 05 · TECHNICAL BIAS ────────────────────────────── -->
     <article class="sc tall" id="watch-bias" style="--sc:#8b5cf6;--sc2:#22d3a6">
       <div class="sc-copy">
-        <div class="sc-k"><span class="sc-tag">SHOT 03</span> Technical bias &middot; Overview tab</div>
+        <div class="sc-k"><span class="sc-tag">SHOT 05</span> Technical bias &middot; Overview tab</div>
         <h3 class="d2 sc-h">Twelve checks, <em>one honest needle.</em></h3>
         <p class="lede">
           Every trader runs the same checklist in their head before an entry: trend, structure, momentum, VWAP,
@@ -207,14 +284,13 @@
           a setup the indicators don&rsquo;t support. Take one look before you enter. If the needle and your
           idea disagree, you find out before the order goes in.</p>
         </div>
-        <div class="sc-more"><a class="tlink" href="#insights">Everything in the insights panel</a></div>
       </div>
       <figure class="sc-media">
         <div class="sc-float">
           <div class="sc-frame" data-px style="--nw:363;--nh:548">
             <img src="/media/bias.png" width="363" height="548" loading="lazy" decoding="async"
                  alt="The Technical bias card: a gauge reading Strong Bullish, uptrend, conviction 64%, trending, score +9 of 14, with a checklist of twelve indicators and their values">
-            <span class="sc-rec shot">SHOT 03 &middot; FROM THE APP</span>
+            <span class="sc-rec shot">SHOT 05 &middot; FROM THE APP</span>
           </div>
           <span class="sc-chip p-tr" style="--cc:#22d3a6;--z:-20;--bd:8.6s"><i></i><span><span class="num">+9 / 14</span><small>bias score</small></span></span>
           <span class="sc-chip p-l" style="--cc:#8b5cf6;--z:20;--bd:9.8s;--bdl:-3s"><i></i><span>Conviction 64%<small>uptrend &middot; trending</small></span></span>
@@ -224,14 +300,14 @@
       </figure>
     </article>
 
-    <!-- ── SHOT 04 · GOLDEN VOLUME PROFILE, AS A PLAN ──────────── -->
+    <!-- ── SHOT 06 · GOLDEN VOLUME PROFILE, AS A PLAN ──────────── -->
     <article class="sc tall" id="watch-gvp" style="--sc:#ffb74d;--sc2:#ff8c2a">
       <figure class="sc-media">
         <div class="sc-float">
           <div class="sc-frame" data-px style="--nw:1820;--nh:993">
             <img src="/media/gvp-plan.png" width="1820" height="993" loading="lazy" decoding="async"
                  alt="A NIFTY 50 five-minute chart over a week in late October with a golden volume profile and a hand-marked plan: weekly LVN zone, an order block plus HVN zone, a trendline breakout, previous-day high and low, and a lower LVN marked low chance to come here">
-            <span class="sc-rec shot">SHOT 04 &middot; A REAL PLAN</span>
+            <span class="sc-rec shot">SHOT 06 &middot; A REAL PLAN</span>
           </div>
           <span class="sc-chip p-tr" style="--cc:#ffb74d;--z:-22;--bd:8.2s"><i></i><span>WEEKLY LVN<small>price travels fast</small></span></span>
           <span class="sc-chip p-l" style="--cc:#22d3ee;--z:20;--bd:9.4s;--bdl:-4s"><i></i><span>HVN + order block<small>where the market agreed</small></span></span>
@@ -240,7 +316,7 @@
         <figcaption class="sc-cap"><b>The founder&rsquo;s plan</b> &middot; NIFTY 50, 5m &middot; late October 2026</figcaption>
       </figure>
       <div class="sc-copy">
-        <div class="sc-k"><span class="sc-tag">SHOT 04</span> Golden volume profile &middot; a real plan</div>
+        <div class="sc-k"><span class="sc-tag">SHOT 06</span> Golden volume profile &middot; a real plan</div>
         <h3 class="d2 sc-h">Yesterday&rsquo;s volume, <em>turned into tomorrow&rsquo;s plan.</em></h3>
         <p class="lede">
           The golden volume profile carries the previous session&rsquo;s profile, built TradingView-exact with its
@@ -259,28 +335,27 @@
           you already know where price is likely to stall, where it is likely to run, and the level that proves
           your idea wrong.</p>
         </div>
-        <div class="sc-more"><a class="tlink" href="#gvp">How the golden profile is built</a></div>
       </div>
     </article>
 
-    <!-- ── REC 05 · OPTION CHAIN ───────────────────────────────── -->
+    <!-- ── REC 07 · OPTION CHAIN ───────────────────────────────── -->
     <article class="sc wide" id="watch-chain" style="--sc:#4c7dff;--sc2:#8b5cf6">
       <figure class="sc-media">
         <div class="sc-float">
           <div class="sc-frame" data-px="golden" style="--nw:1920;--nh:1080">
             <video data-src="/media/optionchain.mp4" poster="/media/optionchain-poster.webp" muted loop playsinline preload="none"
-                   aria-label="Screen recording: the NIFTY option chain with ATM IV, skew, PCR, max pain, expected move and chain bias across the top, four mini charts, the heat recorder, and calls and puts by strike with buildup tags and sparklines"></video>
-            <span class="sc-rec"><span class="rec"></span>REC 05 &middot; LIVE MARKET</span>
+                   aria-label="Screen recording: the NIFTY option chain for the 23 Nov expiry with ATM IV, skew, PCR, max pain, expected move and chain bias across the top, four mini charts, the heat recorder recording option books, calls and puts by strike, and then the 25350 call opened on its own chart with order flow"></video>
+            <span class="sc-rec"><span class="rec"></span>REC 07 &middot; LIVE MARKET</span>
             <span class="sc-prog"><i></i></span>
           </div>
-          <span class="sc-chip p-tr" style="--cc:#22d3a6;--z:-20;--bd:8.2s"><i></i><span>Chain bias &#9650; 28<small>buildup weighted by OI</small></span></span>
-          <span class="sc-chip p-l" style="--cc:#4c7dff;--z:20;--bd:9.4s;--bdl:-3s"><i></i><span>PCR 1.01 &middot; Max pain 25400<small>expected move &plusmn;13</small></span></span>
-          <span class="sc-chip p-br opt" style="--cc:#f23645;--z:-14;--bd:7.6s;--bdl:-5s"><i></i><span>Resistance 25400<small>support 25350</small></span></span>
+          <span class="sc-chip p-tr" style="--cc:#22d3a6;--z:-20;--bd:8.2s"><i></i><span>Chain bias &#9650; 48<small>buildup weighted by OI</small></span></span>
+          <span class="sc-chip p-l" style="--cc:#4c7dff;--z:20;--bd:9.4s;--bdl:-3s"><i></i><span>PCR 1.30 &middot; Max pain 25250<small>expected move &plusmn;282</small></span></span>
+          <span class="sc-chip p-br opt" style="--cc:#f23645;--z:-14;--bd:7.6s;--bdl:-5s"><i></i><span>Resistance 26000<small>support 25000</small></span></span>
         </div>
-        <figcaption class="sc-cap"><b>Real recording</b> &middot; NIFTY option chain &middot; 17 Nov 2026 expiry</figcaption>
+        <figcaption class="sc-cap"><b>Real recording</b> &middot; NIFTY option chain &middot; 23 Nov 2026 expiry</figcaption>
       </figure>
       <div class="sc-copy">
-        <div class="sc-k"><span class="sc-tag">REC 05</span> Option chain &middot; Alt+O</div>
+        <div class="sc-k"><span class="sc-tag">REC 07</span> Option chain &middot; Alt+O</div>
         <h3 class="d2 sc-h">The whole chain on one screen, <em>already read for you.</em></h3>
         <p class="lede">
           Calls on the left, puts on the right, the strike in the middle, refreshed every five seconds. Above
@@ -288,11 +363,12 @@
           buildup tag and a sparkline of today&rsquo;s premium.
         </p>
         <ul class="sc-pts">
-          <li style="--i:0"><i>01</i><div><b>The numbers that matter, in one strip</b><span>ATM IV, put-minus-call skew, PCR by OI and by volume, max pain, expected move, chain bias, lot size and days to expiry. In the clip: PCR <em>1.01</em>, max pain <em>25400</em>, expected move <em>&plusmn;13</em>, chain bias <em>&#9650; 28</em>.</span></div></li>
+          <li style="--i:0"><i>01</i><div><b>The numbers that matter, in one strip</b><span>ATM IV, put-minus-call skew, PCR by OI and by volume, max pain, expected move, chain bias, lot size and days to expiry. In the clip: ATM IV <em>12.66</em>, PCR <em>1.30</em>, max pain <em>25250</em>, expected move <em>&plusmn;282</em>, chain bias <em>&#9650; 48</em>, <em>5</em> days to expiry.</span></div></li>
           <li style="--i:1"><i>02</i><div><b>Four mini charts</b><span>NIFTY today, open interest by strike, OI change today and the IV smile. Resistance and support strikes are named under the OI chart, so the walls are read for you.</span></div></li>
           <li style="--i:2"><i>03</i><div><b>Buildup on every row</b><span><em>SB</em> short buildup, <em>SC</em> short covering, <em>LU</em> long unwinding, <em>LB</em> long buildup, next to OI change. Day range bars show where the premium sits today, with the open marked.</span></div></li>
-          <li style="--i:3"><i>04</i><div><b>Key levels you can click</b><span>Opening range <em>25,267 &ndash; 25,358</em>, resistance <em>25400</em>, support <em>25350</em> and max pain are pinned above the table. Click one to jump to that strike.</span></div></li>
-          <li style="--i:4"><i>05</i><div><b>Record any contract&rsquo;s book</b><span>Click &#9673; beside a call or put and it joins the heat recorder beside NIFTY, with its own 200-level book. The clip records <em>25300 PE</em>, <em>25350 CE</em> and <em>25400 CE</em>.</span></div></li>
+          <li style="--i:3"><i>04</i><div><b>Key levels you can click</b><span>Opening range <em>25,116 &ndash; 25,256</em>, resistance <em>26000</em>, support <em>25000</em> and max pain <em>25250</em> are pinned above the table. Click one to jump to that strike.</span></div></li>
+          <li style="--i:4"><i>05</i><div><b>Record any contract&rsquo;s book</b><span>Click &#9673; beside a call or put and it joins the heat recorder beside NIFTY, every second. In the clip <em>25000 CE</em> gets its own 200-level book and <em>25000 PE</em> a 20-level one, once the 200-level slots are taken.</span></div></li>
+          <li style="--i:5"><i>06</i><div><b>One click from strike to chart</b><span>Click a call or put and it opens on its own chart with order flow. The clip ends on <em>25350 CE</em>: hover a candle and it reads <em>Delta +194 lots (+47.3%)</em>, buy <em>302</em>, sell <em>108</em>.</span></div></li>
         </ul>
         <div class="sc-why">
           <span>How it helps you</span>
@@ -300,14 +376,13 @@
           sitting, which side is adding and which is covering, and how far the market expects to move today
           are all on one screen, next to the chart you trade from.</p>
         </div>
-        <div class="sc-more"><a class="tlink" href="#chain">Every column, explained</a></div>
       </div>
     </article>
 
-    <!-- ── SHOT 06 · SMART MONEY ───────────────────────────────── -->
+    <!-- ── SHOT 08 · SMART MONEY ───────────────────────────────── -->
     <article class="sc tall" id="watch-smc" style="--sc:#f23645;--sc2:#38bdf8">
       <div class="sc-copy">
-        <div class="sc-k"><span class="sc-tag">SHOT 06</span> Smart money concepts</div>
+        <div class="sc-k"><span class="sc-tag">SHOT 08</span> Smart money concepts</div>
         <h3 class="d2 sc-h">Structure, liquidity and the trade, <em>drawn on the candles.</em></h3>
         <p class="lede">
           Smart money traders mark the same things on every chart by hand: breaks of structure, order blocks,
@@ -326,14 +401,13 @@
           importantly, you can see where everyone else&rsquo;s stop is sitting, so yours goes somewhere the
           hunt is unlikely to reach.</p>
         </div>
-        <div class="sc-more"><a class="tlink" href="#smc">Smart money mode in depth</a></div>
       </div>
       <figure class="sc-media">
         <div class="sc-float">
           <div class="sc-frame" data-px style="--nw:1920;--nh:1080">
             <img src="/media/smc.png" width="1920" height="1080" loading="lazy" decoding="async"
                  alt="NIFTY one-minute chart in smart money mode: BOS and CHoCH lines, HH HL LH LL swing labels, supply and demand order blocks, fair value gaps with fill percentage, stop pools with star scores, sweeps and stop hunts, and a short entry with stop and two targets">
-            <span class="sc-rec shot">SHOT 06 &middot; FROM THE APP</span>
+            <span class="sc-rec shot">SHOT 08 &middot; FROM THE APP</span>
           </div>
           <span class="sc-chip p-tr" style="--cc:#38bdf8;--z:-22;--bd:8.4s"><i></i><span>STOPS &#9650; 25,476.95<small>&#9733; 38 &middot; 33%</small></span></span>
           <span class="sc-chip p-l" style="--cc:#f23645;--z:20;--bd:9.6s;--bdl:-4s"><i></i><span>Short entry 25,416&ndash;25,418<small>SL 25,421.77</small></span></span>
@@ -343,14 +417,14 @@
       </figure>
     </article>
 
-    <!-- ── SHOT 07 · INDICATORS ────────────────────────────────── -->
+    <!-- ── SHOT 09 · INDICATORS ────────────────────────────────── -->
     <article class="sc tall" id="watch-ind" style="--sc:#8b5cf6;--sc2:#4c7dff">
       <figure class="sc-media">
         <div class="sc-float">
           <div class="sc-frame" data-px style="--nw:1920;--nh:1080">
             <img src="/media/indicators.png" width="1920" height="1080" loading="lazy" decoding="async"
                  alt="The Indicators and overlays dialog on the Smart money group, nine of ten on: market structure, swing labels, support and resistance, order blocks, fair value gaps, liquidity, stop-loss liquidity and more, with a colour picker open showing hex f23645, a palette and an opacity slider">
-            <span class="sc-rec shot">SHOT 07 &middot; FROM THE APP</span>
+            <span class="sc-rec shot">SHOT 09 &middot; FROM THE APP</span>
           </div>
           <span class="sc-chip p-tr" style="--cc:#8b5cf6;--z:-20;--bd:8.8s"><i></i><span>Smart money 9/10<small>one group, one switch each</small></span></span>
           <span class="sc-chip p-l" style="--cc:#f23645;--z:20;--bd:9.8s;--bdl:-3s"><i></i><span>#f23645 &middot; 100%<small>any colour, any opacity</small></span></span>
@@ -358,7 +432,7 @@
         <figcaption class="sc-cap"><b>Screenshot</b> &middot; Indicators &amp; overlays &middot; Smart money group</figcaption>
       </figure>
       <div class="sc-copy">
-        <div class="sc-k"><span class="sc-tag">SHOT 07</span> Indicators &amp; overlays</div>
+        <div class="sc-k"><span class="sc-tag">SHOT 09</span> Indicators &amp; overlays</div>
         <h3 class="d2 sc-h">Every overlay in one dialog, <em>and every colour is yours.</em></h3>
         <p class="lede">
           Overlays are grouped the way you think about them, each group shows how many are on, and every line
@@ -375,14 +449,13 @@
           <p>A busy chart is only useful if you can read it. Turn on exactly what your strategy uses, colour it
           so it stands apart from the candles, and switch the rest off in a click.</p>
         </div>
-        <div class="sc-more"><a class="tlink" href="#levels">The levels engine</a></div>
       </div>
     </article>
 
-    <!-- ── SHOT 08 · BAR REPLAY ────────────────────────────────── -->
+    <!-- ── SHOT 10 · BAR REPLAY ────────────────────────────────── -->
     <article class="sc tall" id="watch-replay" style="--sc:#38bdf8;--sc2:#8b5cf6">
       <div class="sc-copy">
-        <div class="sc-k"><span class="sc-tag">SHOT 08</span> Bar replay</div>
+        <div class="sc-k"><span class="sc-tag">SHOT 10</span> Bar replay</div>
         <h3 class="d2 sc-h">Pick a candle. <em>The future disappears.</em></h3>
         <p class="lede">
           Choose any point in history and the chart rewinds to it. Everything after that candle is hidden until
@@ -400,14 +473,13 @@
           without hindsight. Test a setup on days you have never seen, and find out whether you would really
           have taken it.</p>
         </div>
-        <div class="sc-more"><a class="tlink" href="#replay">The replay guarantee</a></div>
       </div>
       <figure class="sc-media">
         <div class="sc-float">
           <div class="sc-frame" data-px style="--nw:1920;--nh:1080">
             <img src="/media/replay.png" width="1920" height="1080" loading="lazy" decoding="async"
                  alt="Bar replay on a NIFTY one-minute chart: a dashed line at Tue 17 Nov 26 14:32 with the note that this candle and everything after it stay hidden until played, the later candles dimmed, and a bar at the bottom reading Choose where the replay starts with Random, Date and Cancel">
-            <span class="sc-rec shot">SHOT 08 &middot; FROM THE APP</span>
+            <span class="sc-rec shot">SHOT 10 &middot; FROM THE APP</span>
           </div>
           <span class="sc-chip p-tr" style="--cc:#38bdf8;--z:-20;--bd:8.4s"><i></i><span>Replay from 14:32<small>Tue 17 Nov &rsquo;26</small></span></span>
           <span class="sc-chip p-l" style="--cc:#8b5cf6;--z:22;--bd:9.2s;--bdl:-4s"><i></i><span>Random &middot; Date<small>or click any candle</small></span></span>
@@ -439,9 +511,9 @@
         <h5>Modes</h5>
         <ul>
           <li><a href="features.html#watch-gvp">Golden volume profile</a></li>
-          <li><a href="features.html#watch-book">Order flow</a></li>
+          <li><a href="features.html#watch-fp">Order flow</a></li>
           <li><a href="features.html#watch-smc">Smart money</a></li>
-          <li><a href="features.html#watch-book">Liquidity heatmap</a></li>
+          <li><a href="features.html#watch-heat">Liquidity heatmap</a></li>
         </ul>
       </div>
       <div>

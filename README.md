@@ -58,7 +58,7 @@ The particles are tiny (most are one screen pixel, some a little larger), and th
 **Sharpness rule.** Every recording and screenshot is a `[data-px]` element with its source size in `--nw`/`--nh`. `js/media.js` sizes it to source pixels ÷ devicePixelRatio and nudges it onto whole device pixels; it falls back to fit-to-width only on screens narrower than the source. Never put a transform, float, tilt or pixel-altering overlay on the media itself. Verified by screenshotting the page and finding `bias.png` and `gvp-plan.png` in it with 100.00% identical pixels.
 
 The raw files live in `MEEEEDIAAA/` (excluded from deploys by `.vercelignore` and from git).
-`media/*.mp4` are encoded with `python tools/encode_media.py` (native resolution, CRF 16–17, SSIM ≥ 0.995 against the originals): hero 8.5 MB (first 40 s), order book 9.5 MB, option flow 2.9 MB, option chain 1.0 MB. Re-run it after replacing a recording; tune segments and quality in its `JOBS` table.
+`media/*.mp4` are encoded with `python tools/encode_media.py` (native resolution, CRF 16–17, SSIM ≥ 0.995 against the originals): hero 8.5 MB (first 40 s), order book 9.5 MB, option flow 2.9 MB, option chain 7.9 MB, liquidity heatmap 7.6 MB, footprint & delta 15.2 MB. Re-run it after replacing a recording; tune segments and quality in its `JOBS` table.
 
 The palette still comes from `/static/css/boot.css` for anything the product owns. **The
 boot splash is unaffected by the site theme**: `.boot-word`, `.boot-sub` and `.boot-status`
