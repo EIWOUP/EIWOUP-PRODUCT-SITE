@@ -231,6 +231,76 @@ const play = v => { const p = v.play(); if (p && p.catch) p.catch(() => {}); };
   });
 })();
 
+/* ─────────────────────────────────────────────── two-screen slider
+   A showcase frame with [data-slides] holds more than one screenshot in
+   .sl-track. ‹ › (or the dots, the arrow keys while focused, or a swipe)
+   change screen: the new one glides in from its side along a soft curve
+   while it sharpens out of a slight blur, and the old one drifts the other
+   way and fades. When it lands it carries no transform or filter, so it is
+   as sharp as the file. It also moves on by itself every 7 s while the
+   block is on screen, and stops for good once you touch it. */
+(function slides() {
+  const CURVE = 'cubic-bezier(.22,1,.36,1)';
+  $$('.sc-frame[data-slides]').forEach(f => {
+    const imgs = $$('.sl-track > img', f);
+    if (imgs.length < 2) return;
+    const dots = $$('.sl-pager button', f);
+    const cap = f.closest('figure')?.querySelector('[data-slide-cap]');
+    let cur = 0, busy = false, auto = !REDUCED, timer = 0;
+    f.dataset.cur = '0';
+
+    function go(n, dir) {
+      n = (n + imgs.length) % imgs.length;
+      if (n === cur || busy) return;
+      dir = dir || (n > cur ? 1 : -1);
+      const from = imgs[cur], to = imgs[n];
+      cur = n; f.dataset.cur = String(n);
+      dots.forEach((d, k) => { d.classList.toggle('on', k === n); d.setAttribute('aria-selected', String(k === n)); });
+      if (cap) cap.innerHTML = to.dataset.cap || '';
+      to.classList.add('on');
+      if (REDUCED) { from.classList.remove('on'); return; }
+      busy = true;
+      from.classList.add('leaving');
+      const out = from.animate([
+        { opacity: 1, transform: 'none', filter: 'blur(0)' },
+        { opacity: 0, transform: `translateX(${-dir * 5}%) scale(.985)`, filter: 'blur(6px)' },
+      ], { duration: 620, easing: CURVE });
+      to.animate([
+        { opacity: 0, transform: `translateX(${dir * 7}%) scale(.985)`, filter: 'blur(6px)' },
+        { opacity: 1, transform: 'none', filter: 'blur(0)' },
+      ], { duration: 780, easing: CURVE }).finished.then(() => { busy = false; }, () => { busy = false; });
+      out.finished.then(() => from.classList.remove('on', 'leaving'), () => from.classList.remove('on', 'leaving'));
+    }
+    const stop = () => { auto = false; clearInterval(timer); };
+    const user = (n, dir) => { stop(); go(n, dir); };
+    const swallow = e => { e.stopPropagation(); };            // never open the gallery from the controls
+
+    $('.sl-prev', f)?.addEventListener('click', e => { swallow(e); user(cur - 1, -1); });
+    $('.sl-next', f)?.addEventListener('click', e => { swallow(e); user(cur + 1, 1); });
+    dots.forEach((d, k) => d.addEventListener('click', e => { swallow(e); user(k); }));
+    f.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); user(cur - 1, -1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); user(cur + 1, 1); }
+    });
+    // swipe: a horizontal drag changes screen and does not count as a click
+    let x0 = null, swiped = false;
+    f.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button === 0) { x0 = e.clientX; swiped = false; } });
+    f.addEventListener('pointerup', e => {
+      if (x0 == null) return;
+      const dx = e.clientX - x0; x0 = null;
+      if (Math.abs(dx) > 40) { swiped = true; user(cur + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1); }
+    });
+    f.addEventListener('click', e => { if (swiped) { swiped = false; e.stopPropagation(); e.preventDefault(); } }, true);
+    f.addEventListener('pointerenter', () => { f.classList.add('hover'); });
+    f.addEventListener('pointerleave', () => { f.classList.remove('hover'); });
+    // on its own, only while the block is on screen and nobody is pointing at it
+    if (auto) timer = setInterval(() => {
+      if (!auto || document.hidden || f.classList.contains('hover') || !f.closest('.sc')?.classList.contains('live')) return;
+      go(cur + 1, 1);
+    }, 7000);
+  });
+})();
+
 /* ───────────────────────────────────────────────────────── gallery
    Click any screen in the showcase (or its "Wide view" button). The page
    fades back behind a blur and the screen assembles out of its own light,
@@ -256,18 +326,21 @@ const play = v => { const p = v.play(); if (p && p.catch) p.catch(() => {}); };
   const K = Math.log(1 / 3) / Math.log(0.67);
   const ease = t => 1 - Math.pow(1 - t, K);
 
-  const items = frames.map(f => {
+  const items = frames.flatMap(f => {
     const sc = f.closest('.sc');
     const cs = getComputedStyle(f);
-    return {
+    const base = {
       frame: f,
-      media: f.querySelector(':scope > img, :scope > video'),
       nw: parseFloat(cs.getPropertyValue('--nw')), nh: parseFloat(cs.getPropertyValue('--nh')),
       tag: (f.querySelector('.sc-rec')?.textContent || '').replace(/\s*·.*$/, '').trim(),
       title: (sc?.querySelector('.sc-k')?.textContent || '').replace(/^\s*(REC|SHOT)\s+\d+\s*/, '').trim(),
       cap: (f.closest('figure')?.querySelector('figcaption')?.textContent || '').trim(),
       color: (sc && getComputedStyle(sc).getPropertyValue('--sc').trim()) || '#4c7dff',
     };
+    // a two-screen slider gives the gallery one screen per picture
+    const media = f.hasAttribute('data-slides') ? $$('.sl-track > img', f) : [f.querySelector(':scope > img, :scope > video')];
+    return media.map((m, k) => ({ ...base, media: m, slide: media.length > 1 ? k : -1,
+      cap: m?.dataset.cap ? `Screenshot · ${m.dataset.cap.replace(/^\d+ \/ \d+ · /, '')}` : base.cap }));
   }).filter(it => it.media && it.nw && it.nh);
   if (!items.length) return;
 
@@ -967,27 +1040,32 @@ void main() {
   }
 
   /* ── wiring ── */
-  items.forEach((it, i) => {
-    const f = it.frame;
+  // one set of listeners per frame; a slider opens on the screen it is showing
+  const byFrame = new Map();
+  items.forEach((it, i) => { if (!byFrame.has(it.frame)) byFrame.set(it.frame, []); byFrame.get(it.frame).push(i); });
+  byFrame.forEach((idx, f) => {
+    const pick = () => idx[Math.min(idx.length - 1, +(f.dataset.cur || 0))];
+    const title = items[idx[0]].title;
     f.classList.add('wv-able');
     f.setAttribute('tabindex', '0');
     f.setAttribute('role', 'button');
-    f.setAttribute('aria-label', `Open ${it.title || 'this screen'} in the gallery`);
+    f.setAttribute('aria-label', `Open ${title || 'this screen'} in the gallery`);
     f.addEventListener('click', e => {
-      const r = it.media.getBoundingClientRect();
+      const i = pick(), r = items[i].media.getBoundingClientRect();
       open(i, clamp((e.clientX - r.left) / r.width, 0, 1), clamp((e.clientY - r.top) / r.height, 0, 1));
     });
-    f.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(i); } });
+    f.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(pick()); } });
     // decode this screen's pixels for the dust as soon as the pointer or focus comes near it
-    f.addEventListener('pointerenter', () => warm(it), { once: true });
-    f.addEventListener('focus', () => warm(it), { once: true });
+    const warmAll = () => idx.forEach(i => warm(items[i]));
+    f.addEventListener('pointerenter', warmAll, { once: true });
+    f.addEventListener('focus', warmAll, { once: true });
     const cap = f.closest('figure')?.querySelector('figcaption');
     if (cap) {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'sc-wide';
       b.innerHTML = '<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M9.5 2.5h4v4M6.5 13.5h-4v-4M13.5 2.5 9 7M2.5 13.5 7 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Wide view';
-      b.addEventListener('click', e => { e.stopPropagation(); open(i); });
+      b.addEventListener('click', e => { e.stopPropagation(); open(pick()); });
       cap.appendChild(b);
     }
   });

@@ -52,6 +52,9 @@ The golden volume profile stays gold inside the replicas, because in the product
 
 **Gallery.** Clicking any showcase frame, or its "Wide view" button, opens a gallery. The screen assembles in a circle spreading from the point you clicked. Particles sampled from its own pixels burst out and settle while it sharpens out of a blur and fades in, and it dissolves in a circle from the point you click. ‹ › and the arrow keys step through the screens, and one click anywhere (or Esc) closes it. Key 1 shows true pixels (`gallery()` in `js/media.js`).
 
+
+**Two-screen slider.** A showcase frame with `data-slides` holds several screenshots in `.sl-track` (the golden volume profile card uses it). ‹ ›, the dots, the arrow keys or a swipe change screen; the new one glides in on a soft curve and lands with no transform, so it stays pixel-sharp. It advances by itself every 7 s while on screen until someone touches it. In the gallery, every screenshot is its own screen, and clicking the frame opens the one that is showing (`slides()` and `gallery()` in `js/media.js`).
+
 The particles are tiny (most are one screen pixel, some a little larger), and there are up to about 400–550 thousand per picture. They run on the graphics chip (WebGL 2). Each particle's path is computed in a shader, and its colour comes straight from the picture. While the picture moves, a shader also draws its ring, blur and fade. The real `<img>`/`<video>` waits hidden underneath and takes over, pixel-exact, for the last stretch. Screenshots are decoded and uploaded while the page is idle, so a click never waits on a decode. If frames are missed, the next animation uses fewer particles. Without WebGL 2, a canvas fallback draws a few thousand particles and uses CSS mask and blur.
 
 
