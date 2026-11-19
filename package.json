@@ -1,0 +1,10 @@
+{
+  "name": "eimc-site",
+  "private": true,
+  "type": "module",
+  "description": "eimc.vercel.app: static site + /api functions backed by PostgreSQL (Neon)",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "pg": "8.13.1"
+  }
+}

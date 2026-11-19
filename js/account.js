@@ -100,7 +100,11 @@ function period() {
   const total = Math.round((b - a) / DAY), used = Math.min(total, Math.max(0, Math.floor((Date.now() - a) / DAY)));
   return { total, used, left: Math.max(0, Math.ceil((b - Date.now()) / DAY)), pct: Math.min(100, (Date.now() - a) / (b - a) * 100) };
 }
-const plan = () => planById(A.subscription.plan);
+const plan = () => planById(A.subscription.plan) || planById('free');
+/* the plan's state as the database reports it */
+const STATUS = { active: ['Active', 'ok'], trialing: ['Trial', 'info'], past_due: ['Payment due', 'warn'], halted: ['Paused', 'warn'],
+  expired: ['Expired', 'warn'], cancelled: ['Ending', 'warn'], free: ['Free', ''] };
+const statusPill = s => pill(...(STATUS[s.status] || ['Active', 'ok']));
 const defaultMethod = () => A.methods.find(m => m.default) || A.methods[0];
 
 /* ═════════════════════════════════════════════════════════ sections */
@@ -120,8 +124,8 @@ S.overview = () => {
   <section class="ov-hero card glow">
     <div class="ov-plan">
       <div class="ov-k">Your plan</div>
-      <div class="ov-name">${esc(s.planName)} ${s.cancelAtPeriodEnd ? pill('Ends ' + date(s.currentEnd, { year: undefined }), 'warn') : pill('Active', 'ok')}</div>
-      <div class="ov-px">${money(s.price)}<span> / month + GST</span></div>
+      <div class="ov-name">${esc(s.planName)} ${s.cancelAtPeriodEnd ? pill('Ends ' + date(s.currentEnd, { year: undefined }), 'warn') : statusPill(s)}</div>
+      <div class="ov-px">${money(s.price)}<span> / ${s.cycle === 'yearly' ? 'year' : 'month'} + GST</span></div>
       <div class="ov-meta">${s.cancelAtPeriodEnd
         ? `Your plan stays on until <b>${date(s.currentEnd)}</b>, then it stops.`
         : `Renews on <b>${date(s.currentEnd)}</b> &middot; ${money(s.total)} via ${esc(defaultMethod().label)}`}</div>
@@ -243,14 +247,14 @@ S.subscription = () => {
 
   ${s.cancelAtPeriodEnd ? '' : `
   <section class="card danger-zone">
-    <div><h2>Cancel subscription</h2><p class="muted">You keep Pro until ${date(s.currentEnd)}. The free terminal on demo data keeps working after that.</p></div>
+    <div><h2>Cancel subscription</h2><p class="muted">You keep ${esc(plan().name)} until ${date(s.currentEnd)}. The free terminal on demo data keeps working after that.</p></div>
     <button class="btn btn-sm btn-danger" data-act="cancel">Cancel subscription</button>
   </section>`}`;
 };
 
 /* ── orders & invoices ────────────────────────────────────────────── */
 S.orders = () => {
-  const s = A.subscription, spent = A.orders.reduce((n, o) => n + o.total, 0);
+  const s = A.subscription, spent = A.orders.reduce((n, o) => n + (o.status === 'paid' ? o.total : 0), 0);
   return `
   ${head('Orders &amp; invoices', 'Every payment, with a GST invoice for your records.')}
   <section class="tiles three">
@@ -271,7 +275,7 @@ S.orders = () => {
             <td>${date(o.date)}<small>${time(o.date)}</small></td>
             <td>${esc(o.item)}<small>${date(o.period[0], { year: undefined })} &ndash; ${date(o.period[1], { year: undefined })}</small></td>
             <td class="r mono">${money(o.total)}${o.gst ? `<small>incl. ${money(o.gst)} GST</small>` : ''}</td>
-            <td>${pill(o.status === 'paid' ? 'Paid' : 'Completed', 'ok')}</td>
+            <td>${o.status === 'failed' ? pill('Failed', 'warn') : o.status === 'refunded' ? pill('Refunded') : pill(o.status === 'paid' ? 'Paid' : 'Completed', 'ok')}</td>
             <td class="r">${o.invoice ? `<button class="btn btn-sm" data-invoice="${esc(o.id)}">${ICON.down}PDF</button>` : '<span class="muted">No charge</span>'}</td>
           </tr>`).join('')}
         </tbody>

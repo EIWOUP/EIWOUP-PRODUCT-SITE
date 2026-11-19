@@ -3,17 +3,14 @@
    Customer sign-in and the account data behind it.
 
    EVERYTHING the pages know about a customer comes through the
-   `backend` object below. Today that is a dummy backend that runs in the
-   browser with one demo customer (client ID 2222004, a one-month Pro
-   subscription). When the online database is ready, replace
-   `dummyBackend` with an API client that has the same method names and
-   returns the same shapes. login.js, account.js and the header never
-   touch storage or data directly, so nothing else has to change.
+   `backend` object below. On the live site that is `httpBackend`: the
+   /api functions (api/*.js) check the password against the PostgreSQL
+   database and keep the session in an HttpOnly cookie. login.js,
+   account.js and the header never touch storage or data directly.
 
-   ⚠ The dummy check is NOT security. Anyone can read this file. The real
-   backend must check the password on the server, return a short-lived
-   token (HTTP-only cookie preferred), and send the account data only to
-   a valid token. Do not put real customer data in this file.
+   The old in-browser `dummyBackend` (client ID 2222004) is kept only for
+   offline design work: add ?demo=1 to a page URL to use it. It is NOT
+   security - anyone can read this file.
    ════════════════════════════════════════════════════════════════════ */
 
 import { DEMO_ID, DEMO_PASSWORD, demoAccount, SEED_IDEAS } from '/js/account-data.js';
@@ -107,8 +104,62 @@ function mergeIdeas(db) {
     .map(i => ({ ...i, voted: voted.has(i.id), votes: i.votes + (voted.has(i.id) && !i.mine ? 1 : 0) }));
 }
 
-/* Swap this line for the real API client when the database is online. */
-const backend = dummyBackend;
+/* ── the real backend: /api functions on Vercel, PostgreSQL behind them ──
+   The password is checked on the server. The proof of login is an
+   HttpOnly cookie (eimc_sid) that page scripts cannot read; the
+   `eimc.session` entry in storage only remembers "this browser is signed
+   in" so pages can redirect without a round trip. */
+async function request(path, opts = {}) {
+  let res;
+  try {
+    res = await fetch(path, {
+      credentials: 'same-origin',
+      headers: opts.body ? { 'Content-Type': 'application/json' } : undefined,
+      ...opts,
+    });
+  } catch {
+    throw new AuthError('Could not reach the server. Check your internet connection and try again.', 'network');
+  }
+  let data = null;
+  try { data = await res.json(); } catch { /* empty or not JSON */ }
+  if (!res.ok) {
+    if (res.status === 401 && data?.code === 'expired') clearLocal();
+    throw new AuthError(data?.error || 'Something went wrong. Try again.', data?.code || (res.status === 429 ? 'locked' : 'auth'));
+  }
+  return data;
+}
+const act = (action, ...args) => request('/api/account', { method: 'POST', body: JSON.stringify({ action, args }) });
+
+const httpBackend = {
+  async signIn(id, password, remember) {
+    const r = await request('/api/login', { method: 'POST', body: JSON.stringify({ id, password, remember: !!remember }) });
+    return { token: 'cookie', userId: r.userId, name: r.name, issued: Date.now(), serverExpires: r.expires };
+  },
+  async signOut() { await request('/api/logout', { method: 'POST', body: '{}' }); },
+  account: () => request('/api/account'),
+  saveProfile: (s, p) => act('saveProfile', p),
+  savePrefs: (s, p) => act('savePrefs', p),
+  saveBilling: (s, b) => act('saveBilling', b),
+  setDefaultMethod: (s, id) => act('setDefaultMethod', id),
+  setCancel: (s, cancel, reason) => act('setCancel', !!cancel, reason || ''),
+  setNextCycle: (s, cycle) => act('setNextCycle', cycle),
+  removeDevice: (s, id) => act('removeDevice', id),
+  createTicket: (s, t) => act('createTicket', t),
+  submitIdea: (s, i) => act('submitIdea', i),
+  vote: (s, id, on) => act('vote', id, !!on),
+  changePassword: (s, current, next) => act('changePassword', current, next),
+};
+
+/* The live site uses the database. The dummy backend above is kept for
+   offline design work: open any page with ?demo=1 to use it. */
+const useDummy = (() => { try { return new URLSearchParams(location.search).has('demo') || sessionStorage.getItem('eimc.demo') === '1'; } catch { return false; } })();
+try { if (useDummy) sessionStorage.setItem('eimc.demo', '1'); } catch { /* fine */ }
+const backend = useDummy ? dummyBackend : httpBackend;
+
+function clearLocal() {
+  for (const k of ['local', 'session']) { try { store(k)?.removeItem(KEY); } catch { /* fine */ } }
+  document.documentElement.classList.remove('signed-in');
+}
 
 /* ── session ─────────────────────────────────────────────────────── */
 const SESSION_DAYS = 30;
@@ -131,9 +182,9 @@ export function lockedFor() { return Math.max(0, tries.until - Date.now()); }
 export async function signIn(id, password, remember) {
   if (lockedFor()) throw new AuthError('Too many attempts. Wait a moment and try again.', 'locked');
   try {
-    const s = await backend.signIn(String(id).trim(), String(password));
+    const s = await backend.signIn(String(id).trim(), String(password), remember);
     tries.n = 0;
-    const v = { ...s, expires: remember ? Date.now() + SESSION_DAYS * 864e5 : null };
+    const v = { ...s, expires: remember ? (s.serverExpires || Date.now() + SESSION_DAYS * 864e5) : null };
     store(remember ? 'local' : 'session')?.setItem(KEY, JSON.stringify(v));
     document.documentElement.classList.add('signed-in');
     return v;
@@ -145,9 +196,8 @@ export async function signIn(id, password, remember) {
 
 export async function signOut() {
   const s = session();
-  try { if (s) await backend.signOut(s); } finally {
-    for (const k of ['local', 'session']) { try { store(k)?.removeItem(KEY); } catch { /* fine */ } }
-    document.documentElement.classList.remove('signed-in');
+  try { if (s) await backend.signOut(s); } catch { /* still forget it locally */ } finally {
+    clearLocal();
   }
 }
 
