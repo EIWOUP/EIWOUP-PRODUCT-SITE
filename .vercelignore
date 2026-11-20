@@ -5,3 +5,5 @@ MEEEEDIAAA/
 _backup-*/
 tools/
 .claude/
+# Never upload any .env file
+.env*
