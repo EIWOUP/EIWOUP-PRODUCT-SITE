@@ -1054,3 +1054,87 @@ html[data-theme="light"] .fps-cv { background: #0b0f17; border-color: rgb(14 22 
 html.vt-theme::view-transition-old(root), html.vt-theme::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 html.vt-theme::view-transition-group(theme-dust), html.vt-theme::view-transition-new(theme-dust) { animation: none; }
 html.vt-theme::view-transition-old(theme-dust) { display: none; }
+
+/* ─────────────────────────────────────────── notifications (js/notify.js)
+   The bell sits between the theme switch and the account button. Unread
+   messages drop out of it as pop-downs; everything is built from the
+   same tokens as .theme-tg and .acct-pop, so both themes follow. */
+.ntf { position: relative; margin-right: 10px; flex: none; }
+.ntf-btn {
+  position: relative; display: grid; place-items: center; width: 38px; height: 38px;
+  border-radius: 999px; border: 1px solid var(--line); background: rgb(var(--tint) / .035); color: var(--bone-2);
+  transition: background .2s, border-color .2s, color .2s, transform .3s var(--ease);
+}
+.ntf-btn:hover, .ntf.open .ntf-btn { background: rgb(var(--acc) / .1); border-color: rgb(var(--acc-hi) / .5); color: var(--gold-hi); }
+.ntf-btn:active { transform: scale(.92); }
+.ntf-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.ntf-btn svg { width: 18px; height: 18px; transform-origin: 50% 2px; }
+.ntf-btn.ring svg { animation: ntf-ring 1s var(--ease); }
+@keyframes ntf-ring { 0%,100% { transform: none; } 15% { transform: rotate(16deg); } 30% { transform: rotate(-13deg); } 45% { transform: rotate(9deg); } 60% { transform: rotate(-5deg); } 75% { transform: rotate(2deg); } }
+.ntf-badge {
+  position: absolute; top: -3px; right: -3px; display: none; min-width: 18px; height: 18px; padding: 0 5px;
+  place-items: center; border-radius: 999px; font: 700 10px/1 var(--sans); font-style: normal; color: #f5f8ff;
+  background: var(--metal); box-shadow: 0 0 0 2px rgb(var(--g0)), 0 6px 14px -6px rgb(var(--acc) / .9);
+}
+.ntf.has .ntf-badge { display: grid; animation: ntf-pop .45s var(--ease); }
+.ntf.has .ntf-btn::after {
+  content: ''; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+  border: 1px solid rgb(var(--acc-hi) / .55); animation: ntf-pulse 2.4s var(--ease) infinite;
+}
+@keyframes ntf-pop { from { transform: scale(.3); opacity: 0; } 60% { transform: scale(1.15); } to { transform: none; opacity: 1; } }
+@keyframes ntf-pulse { 0% { transform: scale(1); opacity: .9; } 70%,100% { transform: scale(1.5); opacity: 0; } }
+
+.ntf-pop {
+  position: absolute; right: -54px; top: calc(100% + 10px); width: 340px; max-width: calc(100vw - 32px); padding: 8px; z-index: 6;
+  border-radius: 14px; border: 1px solid var(--line); background: rgb(var(--g1) / .98); backdrop-filter: blur(18px);
+  box-shadow: 0 34px 80px -24px rgb(var(--sh) / var(--sh-k)), inset 0 1px 0 rgb(var(--hl) / .06);
+  opacity: 0; transform: translateY(-6px); pointer-events: none; transition: opacity .18s, transform .22s var(--ease);
+}
+.ntf.open .ntf-pop { opacity: 1; transform: none; pointer-events: auto; }
+.ntf-h { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px 12px; margin-bottom: 4px; border-bottom: 1px solid var(--line-2); }
+.ntf-h b { font: 700 14px/1.2 var(--sans); color: var(--bone); }
+.ntf-all { font: 700 12px/1 var(--sans); color: var(--gold-hi); padding: 6px 8px; border-radius: 8px; transition: background .15s; }
+.ntf-all:hover { background: rgb(var(--acc) / .1); }
+.ntf-list { list-style: none; margin: 0; padding: 0; max-height: min(360px, 60vh); overflow: auto; }
+.ntf-list li, .ntf-toast { display: flex; gap: 11px; align-items: flex-start; }
+.ntf-list li { position: relative; padding: 10px; border-radius: 10px; transition: background .15s; }
+.ntf-list li:hover { background: rgb(var(--tint) / .05); }
+.ntf-list li.new::after { content: ''; position: absolute; top: 15px; right: 10px; width: 7px; height: 7px; border-radius: 50%; background: var(--gold-hi); box-shadow: 0 0 0 3px rgb(var(--acc) / .18); }
+.ntf-ic { display: grid; place-items: center; width: 32px; height: 32px; flex: none; border-radius: 9px; background: rgb(var(--acc) / .12); color: var(--gold-hi); }
+.ntf-ic svg { width: 16px; height: 16px; }
+.ntf-list b, .ntf-toast b { display: block; padding-right: 14px; font: 700 13.5px/1.35 var(--sans); color: var(--bone); }
+.ntf-list p, .ntf-toast p { margin: 3px 0 0; font: 400 12.5px/1.45 var(--sans); color: var(--bone-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ntf-list span:not(.ntf-ic), .ntf-toast div > span { display: block; margin-top: 5px; font: 400 11px/1 var(--font-num); color: var(--ash); }
+.ntf-empty { justify-content: center; padding: 26px 10px !important; color: var(--ash); font-size: 13px; }
+.ntf-foot { display: flex; justify-content: center; gap: 6px; margin-top: 4px; padding: 11px 10px 6px; border-top: 1px solid var(--line-2); font: 700 12.5px/1 var(--sans); color: var(--gold-hi); }
+.ntf-foot:hover { color: var(--hi); }
+
+/* pop-downs: fixed under the bell, dropping out of it */
+.ntf-stack { position: fixed; right: 16px; z-index: 60; display: grid; gap: 10px; width: min(360px, calc(100vw - 32px)); pointer-events: none; }
+.ntf-toast {
+  position: relative; overflow: hidden; padding: 13px 14px 15px; border-radius: 14px; pointer-events: auto;
+  border: 1px solid rgb(var(--acc-hi) / .35); background: rgb(var(--g1) / .97); backdrop-filter: blur(18px);
+  box-shadow: 0 30px 70px -26px rgb(var(--sh) / var(--sh-k)), 0 0 0 1px rgb(var(--acc) / .08), inset 0 1px 0 rgb(var(--hl) / .08);
+  transform-origin: var(--ox, 90%) -40px;
+  opacity: 0; transform: translateY(-28px) scale(.6); filter: blur(6px);
+  transition: opacity .35s, transform .7s cubic-bezier(.18, 1.25, .3, 1), filter .45s;
+}
+.ntf-toast::before {   /* a light sweep across the card as it lands */
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(105deg, transparent 30%, rgb(var(--acc-hi) / .16) 48%, transparent 66%);
+  transform: translateX(-100%);
+}
+.ntf-toast.in { opacity: 1; transform: none; filter: none; }
+.ntf-toast.in::before { transform: translateX(100%); transition: transform 1.1s var(--ease) .2s; }
+.ntf-toast.out { opacity: 0; transform: translateY(-14px) scale(.96); filter: blur(3px); transition: opacity .3s, transform .4s var(--ease), filter .3s; }
+.ntf-toast:hover { border-color: rgb(var(--acc-hi) / .6); }
+.ntf-life { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--metal); transform-origin: left; transform: scaleX(1); }
+.ntf-toast.in .ntf-life { transform: scaleX(0); transition: transform 3s linear; }
+@media (prefers-reduced-motion: reduce) {
+  .ntf-toast, .ntf-toast.out { transform: none; filter: none; transition: opacity .2s; }
+  .ntf.has .ntf-btn::after, .ntf.has .ntf-badge { animation: none; }
+}
+@media (max-width: 880px) { .ntf-pop { right: -48px; } }
+@media (max-width: 520px) { .ntf-pop { position: fixed; top: 64px; left: 16px; right: 16px; width: auto; max-width: none; } .ntf { margin-right: 8px; } }
+html[data-theme="light"] :is(.ntf-pop, .ntf-toast) { background: rgb(255 255 255 / .98); box-shadow: 0 30px 60px -28px rgb(20 32 72 / .4), 0 0 0 1px var(--line-2); }
+html[data-theme="light"] .ntf-toast { border-color: rgb(47 90 230 / .3); }

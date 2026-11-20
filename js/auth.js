@@ -145,14 +145,15 @@ export async function mountHeader() {
     await signOut();
     location.href = 'index.html';
   });
-  if (!signedIn()) return;
+  if (!signedIn()) return null;
   try {
     const a = await api.account();
     box.querySelectorAll('[data-acct-initials]').forEach(n => { n.textContent = initials(a.profile.name); });
     box.querySelectorAll('[data-acct-name]').forEach(n => { n.textContent = a.profile.name; });
     box.querySelectorAll('[data-acct-id]').forEach(n => { n.textContent = `Client ID ${a.profile.clientId}`; });
     box.querySelectorAll('[data-acct-plan]').forEach(n => { n.textContent = a.subscription.planName; });
-  } catch { /* the menu still works without the name */ }
+    return a;
+  } catch { return null; /* the menu still works without the name */ }
 }
 
 export const initials = name => (name || '?').split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');

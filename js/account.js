@@ -88,6 +88,8 @@ function guard(e) {
 
 /* ── state ────────────────────────────────────────────────────────── */
 let A = null;              // the account, as the backend returned it
+// the header bell marks messages read too: keep this page's badge in step
+addEventListener('eimc:notes-read', e => { if (e.detail?.from !== 'bell' || !A) return; (A.notifications || []).forEach(n => { n.read = true; }); badges(); });
 async function load() { A = await api.account(); return A; }
 
 const head = (title, sub, extra = '') => `
@@ -595,7 +597,7 @@ function wire(tab) {
 
   // opening Notifications marks the team's messages as read (the "New" pills stay until the next visit)
   if (tab === 'notifications' && unread()) {
-    api.markNotificationsRead().then(() => { A.notifications.forEach(n => { n.read = true; }); badges(); }).catch(() => {});
+    api.markNotificationsRead().then(() => { A.notifications.forEach(n => { n.read = true; }); badges(); dispatchEvent(new CustomEvent('eimc:notes-read')); }).catch(() => {});
   }
   on('[data-act="resume"]', 'click', e => busy(e.currentTarget, async () => {
     try { await api.setCancel(false); await refresh(); toast('Welcome back — your subscription will renew as normal.'); } catch (x) { guard(x); }

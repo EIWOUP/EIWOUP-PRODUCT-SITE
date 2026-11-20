@@ -10,13 +10,14 @@
 import { mountUI } from '/js/ui.js';
 import { mountHeader } from '/js/auth.js';
 import { mountThemeToggle } from '/js/theme-toggle.js';
+import { mountNotifications } from '/js/notify.js';
 
 const $  = (s, c = document) => c.querySelector(s);
 const $$ = (s, c = document) => [...c.querySelectorAll(s)];
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 mountUI();
-mountHeader();
+mountHeader().then(a => { if (a) mountNotifications(a); });
 mountThemeToggle();
 
 /* ── live Pro price in the page text ─────────────────────────────────
