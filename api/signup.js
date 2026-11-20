@@ -83,7 +83,7 @@ export default async function handler(req, res) {
 
       await c.query(`INSERT INTO notifications (user_id, channel, title, body) VALUES ($1, 'in_app', $2, $3)`, [u.id,
         `Welcome to EIMC, ${d.first}`,
-        `Your client ID is ${u.client_id}. Your 1-day Pro trial is on: download the terminal, paste your licence key from Account → Licence & devices, and connect Dhan.`]);
+        `Your client ID is ${u.client_id}. Your 1-day Pro trial is on: download EIMC Terminal and sign in with this account (client ID or email, and your password).`]);
       await c.query(`INSERT INTO login_history (user_id, login_id, success, ip_address, user_agent) VALUES ($1, $2, true, $3, $4)`,
         [u.id, d.email, ip, ua]);
       await c.query(`INSERT INTO audit_log (user_id, actor, action, details) VALUES ($1, 'customer', 'customer.signup', $2)`,
