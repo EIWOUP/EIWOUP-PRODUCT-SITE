@@ -2,18 +2,22 @@
 
 Static marketing and checkout site for **EIMC Terminal v1.25.218.93**.
 
-Hand-written HTML, CSS and vanilla ES modules. **No build system** — no `package.json`,
-no bundler, no install step. EIMC's own frontend is also plain ES modules with no bundler,
-which is what lets the product's boot animation be used completely unmodified.
+Hand-written HTML, CSS and vanilla ES modules, with no bundler and no build step. EIMC's own
+frontend is also plain ES modules with no bundler, which is what lets the product's boot
+animation be used completely unmodified. `/api/*.js` are Vercel functions backed by
+PostgreSQL; `package.json` only lists their one dependency (`pg`).
 
 ## Run it locally
 
 ```sh
-python -m http.server 8000
+npm install
+node tools/dev-server.mjs
 ```
 
-Then open <http://127.0.0.1:8000>. Opening over `file://` will **not** work: the boot splash
-uses ES modules and a Web Worker, and both need a real origin.
+Then open <http://localhost:3000>. The dev server runs `/api` like Vercel does and reads
+`DATABASE_URL` (and, for the terminal licence API, `EIMC_SIGNING_KEY` / `EIMC_SIGNING_KEY_ID`)
+from `.env.local`, which is never committed. Opening over `file://` will **not** work: the
+boot splash uses ES modules and a Web Worker, and both need a real origin.
 
 ## Deploy
 
@@ -240,6 +244,25 @@ There is no boot splash any more. Visitors land straight on the page, and the he
 - **Real accounts.** `js/auth.js` calls `/api/login`, `/api/logout` and `/api/account`, which check the password and keep the session in an HttpOnly cookie, backed by the PostgreSQL (Neon) database that EIMC-Admin also edits. There is no in-browser demo mode any more.
 - **Notifications** shows the push and in-app messages the EIMC team sends from EIMC-Admin. Opening it marks them as read.
 - `login.html` and `account.html` are `noindex` and disallowed in `robots.txt`.
+
+## Terminal licence API (`api/app/*`)
+
+What EIMC Terminal calls to sign in and stay licensed. Customers use their **website** account
+(client ID, email or mobile + password); nobody needs a Dhan account.
+
+| Route | What it does |
+|---|---|
+| `GET /api/app/status` | Public. Latest version + download link, minimum supported version, service status, notices for everyone. Edge-cached 30 s. |
+| `POST /api/app/login` | `{id, password, device_id, device_label, os, app_version}`. Takes one of the account's PC slots and returns a signed **licence token** plus a **refresh token**. |
+| `POST /api/app/refresh` | `{refresh_token, device_id, app_version}`. Called at launch and about hourly. Re-checks everything and rotates the refresh token; an old token coming back is treated as stolen and that PC is signed out. |
+| `POST /api/app/logout` | `{refresh_token, device_id}`. Signs the PC out and frees its slot. |
+
+- **Licence token**: Ed25519-signed, 24 h (`app_policy.licence_ttl_hours`), never past the end of the paid period, bound to the PC. Same format the terminal's `licensing/tokens.py` verifies.
+- **Who decides**: the rules live in the database, `eimc.app_access()` and `eimc.app_register_device()` (`DB/sql/08_licensing.sql`), so this API and the market-data relay always agree. A customer whose trial or subscription ended still gets a licence, on **Free** (demo data, `live: false`), like the website shows them.
+- **Error codes** the terminal turns into screens: `AUTH`, `LOCKED`, `BANNED`, `NO_LICENCE`, `DEVICE_LIMIT`, `DEVICE_BLOCKED`, `SIGNED_OUT`, `STALE_REFRESH`, `UPDATE_REQUIRED` (426, with the download link), `SERVICE_DOWN` (503, with the message).
+- **Environment** (Vercel → Settings → Environment Variables, Production only): `EIMC_SIGNING_KEY` and `EIMC_SIGNING_KEY_ID`, from `C:\EIMC\_secrets\eimc-licence-signing-k1.env`. Never commit them. Without them the routes answer 500 `SERVER`.
+- **Database**: needs `08_licensing.sql`. Apply it to Neon with `DB\setup-database.ps1 -Target neon -Migrate 08_licensing.sql`.
+- **Test** (local only, makes a throwaway key): `node tools/test-app-api.mjs` with `DATABASE_URL` pointing at a local database whose name contains `test` (`DB\setup-database.ps1 -Database eimc_app_test`).
 
 ## Light theme
 

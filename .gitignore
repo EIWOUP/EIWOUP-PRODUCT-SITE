@@ -8,3 +8,4 @@ _backup-*/
 .claude/
 .env
 .env.*
+!.env.example

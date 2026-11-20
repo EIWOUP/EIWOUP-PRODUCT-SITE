@@ -24,7 +24,9 @@ const PORT = +process.env.PORT || 3000;
 http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   try {
-    const api = url.pathname.match(/^\/api\/([a-z0-9-]+)$/);
+    // /api/<name> and one folder deep, /api/<folder>/<name> (Vercel routes api/app/login.js the
+    // same way). Names starting with "_" are helpers, never routes.
+    const api = url.pathname.match(/^\/api\/((?:[a-z0-9-]+\/)?[a-z0-9-]+)$/);
     if (api) {
       const file = path.join(root, 'api', `${api[1]}.js`);
       if (!fs.existsSync(file)) { res.statusCode = 404; return res.end('{"error":"not found"}'); }
