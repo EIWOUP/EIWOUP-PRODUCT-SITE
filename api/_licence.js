@@ -151,7 +151,10 @@ export async function issueLicence({ access, userId, deviceId, appVersion, pol }
     plan = 'free'; live = false;
     feat = (await one(`SELECT coalesce(array_agg(feature_code ORDER BY feature_code), '{}') AS f FROM plan_features WHERE plan_code = 'free'`)).f;
   }
-  const claims = { sub: String(userId), plan, feat: [...feat].sort(), dev: deviceId, ver: appVersion, live, until, iat: now, exp };
+  // `relay`: where the terminal gets live data (the eimc-relay server). Inside the signed licence, so a
+  // terminal can never be pointed at another server, and moving the relay is one Vercel setting.
+  const relay = live ? (process.env.RELAY_PUBLIC_URL || '').trim().replace(/\/+$/, '') || null : null;
+  const claims = { sub: String(userId), plan, feat: [...feat].sort(), dev: deviceId, ver: appVersion, live, until, relay, iat: now, exp };
   return {
     token: mint(claims),
     licence: { plan, live, features: claims.feat, accessUntil: until ? new Date(until * 1000).toISOString() : null,
