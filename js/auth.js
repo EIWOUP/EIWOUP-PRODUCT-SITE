@@ -13,7 +13,7 @@ const KEY = 'eimc.session';
 const store = s => { try { return s === 'local' ? localStorage : sessionStorage; } catch { return null; } };
 
 export class AuthError extends Error {
-  constructor(message, code = 'auth') { super(message); this.code = code; }
+  constructor(message, code = 'auth', field = null) { super(message); this.code = code; this.field = field; }
 }
 
 /* ── the real backend: /api functions on Vercel, PostgreSQL behind them ──
@@ -36,7 +36,7 @@ async function request(path, opts = {}) {
   try { data = await res.json(); } catch { /* empty or not JSON */ }
   if (!res.ok) {
     if (res.status === 401 && data?.code === 'expired') clearLocal();
-    throw new AuthError(data?.error || 'Something went wrong. Try again.', data?.code || (res.status === 429 ? 'locked' : 'auth'));
+    throw new AuthError(data?.error || 'Something went wrong. Try again.', data?.code || (res.status === 429 ? 'locked' : 'auth'), data?.field || null);
   }
   return data;
 }
@@ -100,6 +100,16 @@ export async function signIn(id, password, remember) {
     if (++tries.n >= 5) { tries.until = Date.now() + 30000; tries.n = 0; }
     throw e;
   }
+}
+
+/* Create an account (js/signup.js). The server signs the new customer in
+   straight away, so the same "signed in" marker is stored as for a login. */
+export async function signUp(details) {
+  const r = await request('/api/signup', { method: 'POST', body: JSON.stringify(details) });
+  const v = { token: 'cookie', userId: r.userId, name: r.name, issued: Date.now(), expires: r.expires };
+  store('local')?.setItem(KEY, JSON.stringify(v));
+  document.documentElement.classList.add('signed-in');
+  return r;
 }
 
 export async function signOut() {

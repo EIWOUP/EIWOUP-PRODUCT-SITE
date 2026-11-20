@@ -458,7 +458,7 @@ S.notifications = () => `
 /* ── licence & devices ────────────────────────────────────────────── */
 S.devices = () => {
   const l = A.licence, s = A.subscription;
-  const masked = l.key.replace(/^(EIMC-[A-Z]+-)(.*)(-[A-Z0-9]{4})$/, (_, a, b, c) => a + b.replace(/[A-Z0-9]/g, '•') + c);
+  const masked = l.key.replace(/^(EIMC-[A-Z0-9]{4}-)(.*)(-[A-Z0-9]{4})$/, (_, a, b, c) => a + b.replace(/[A-Z0-9]/g, '•') + c);
   return `
   ${head('Licence &amp; devices', 'Your licence key, and the PCs the terminal is active on.')}
   <section class="card lic">

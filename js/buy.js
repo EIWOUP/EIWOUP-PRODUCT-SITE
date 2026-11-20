@@ -14,6 +14,7 @@
 import {
   PLANS, priceOf, inr, CURRENCY, GST_RATE, TRIAL_DAYS, CAPS, hasCap,
 } from '/js/pricing-data.js';
+import { signedIn } from '/js/auth.js';
 
 const q = new URLSearchParams(location.search);
 const plan = PLANS.find(p => p.id === (q.get('plan') || 'pro').toLowerCase()) || null;
@@ -60,9 +61,12 @@ if (!plan || plan.monthly === 0) {
       </div>
       ${isTrial ? `<p class="dim mt16" style="font-size:12.5px">Due today: <b class="up">${CURRENCY}0</b>. No card is taken for the trial.</p>` : ''}
 
-      <button class="btn btn-block ${isTrial ? 'btn-gold' : 'btn-fill'} mt24" id="pay">
-        ${isTrial ? `Start my ${TRIAL_DAYS}-day trial` : `Pay ${CURRENCY}${inr(total)}`}
-      </button>
+      ${isTrial
+        ? (signedIn()
+          ? `<a class="btn btn-block btn-gold mt24" href="account.html#subscription">See my trial in my account</a>`
+          : `<a class="btn btn-block btn-gold mt24" href="signup.html">Create account &amp; start my ${TRIAL_DAYS}-day trial</a>
+             <p class="dim mt16" style="font-size:12.5px">Already have an account? <a class="tlink" href="login.html?next=account.html%23subscription">Log in</a></p>`)
+        : `<button class="btn btn-block btn-fill mt24" id="pay">Pay ${CURRENCY}${inr(total)}</button>`}
 
       <div class="stub" id="pay-note" hidden>
         <b>Placeholder checkout</b>

@@ -49,7 +49,7 @@
 .chk input:focus-visible + span { box-shadow: 0 0 0 4px rgb(var(--acc) / .25); }
 
 .btn.busy { color: transparent !important; pointer-events: none; }
-.btn.busy::after { content: ""; position: absolute; width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; animation: spin .7s linear infinite; }
+.btn.busy::after { content: ""; position: absolute; left: 50%; top: 50%; margin: -8px 0 0 -8px; width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; animation: spin .7s linear infinite; }
 .btn svg { width: 15px; height: 15px; }
 .btn-danger { border-color: rgb(var(--danger-c) / .4); color: var(--red-t); background: rgb(var(--red-c) / .06); }
 .btn-danger:hover:not(.btn-gold):not(.btn-bone) { background: rgb(var(--red-c) / .14); border-color: rgb(var(--danger-c) / .7); color: var(--red-t); }
@@ -100,8 +100,7 @@
 .lg-err { display: none; padding: 12px 14px; border-radius: 10px; border: 1px solid rgb(var(--danger-c) / .35); background: rgb(var(--red-c) / .08); font: 400 13.5px/1.45 var(--sans); color: #ffb3ba; }
 .lg-err.on { display: block; }
 .lg-go { margin-top: 4px; }
-.lg-go .spin { display: none; width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; animation: spin .7s linear infinite; }
-.lg-go.busy .spin { display: inline-block; }
+.lg-go .spin { display: none; }   /* one spinner only: the centred .btn.busy::after above */
 .lg-go.busy .arw, .lg-go.ok .arw { display: none; }
 .lg-go:disabled { opacity: 1; cursor: progress; }
 .lg-go.ok { border-color: rgb(var(--teal-c) / .7); box-shadow: 0 10px 30px -14px rgb(var(--teal-c) / .8); }
@@ -453,3 +452,29 @@ html[data-theme="light"] .sw i::after { background: #ffffff; box-shadow: 0 1px 3
 html[data-theme="light"] .sw input:checked + i { box-shadow: none; }
 html[data-theme="light"] .lic-key { background: var(--sur-2); }
 html[data-theme="light"] .tbl tr.soon td { background: rgb(47 90 230 / .04); }
+
+/* ─────────────────────────────────────────── sign-up (signup.html, js/signup.js) */
+.inp-pre { flex: none; padding-right: 10px; margin-right: -2px; border-right: 1px solid var(--line-2); font: 400 15px/1 var(--font-num); color: var(--smoke); }
+.lg-form .chk { align-items: flex-start; line-height: 1.45; }
+.lg-form .chk span { margin-top: 1px; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.pw-meter { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 9px; }
+.pw-meter i { height: 4px; border-radius: 4px; background: rgb(var(--tint) / .1); transition: background .25s var(--ease); }
+.pw-meter[data-s="1"] i:nth-child(-n+1) { background: var(--red); }
+.pw-meter[data-s="2"] i:nth-child(-n+2) { background: var(--heat); }
+.pw-meter[data-s="3"] i:nth-child(-n+3) { background: var(--gold-hi); }
+.pw-meter[data-s="4"] i { background: var(--teal); }
+.su-done { text-align: center; animation: su-in .5s var(--ease); }
+.su-done:focus { outline: none; }
+@keyframes su-in { from { opacity: 0; transform: translateY(10px) scale(.98); } }
+.su-tick { display: grid; place-items: center; width: 64px; height: 64px; margin: 0 auto 22px; border-radius: 50%; color: #f5f8ff; background: var(--metal); box-shadow: 0 16px 36px -14px rgb(var(--acc) / .9), inset 0 1px 0 rgb(var(--hl) / .4); animation: su-pop .6s cubic-bezier(.18, 1.35, .3, 1); }
+.su-tick svg { width: 30px; height: 30px; stroke-dasharray: 24; stroke-dashoffset: 24; animation: su-draw .5s var(--ease) .25s forwards; }
+@keyframes su-pop { from { transform: scale(.4); opacity: 0; } }
+@keyframes su-draw { to { stroke-dashoffset: 0; } }
+.su-id { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 26px auto 14px; padding: 16px 18px; max-width: 360px; border-radius: 14px; border: 1px solid rgb(var(--acc-hi) / .4); background: rgb(var(--acc) / .08); }
+.su-id span { font: 700 11px/1 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--ash); }
+.su-id b { font: 700 24px/1 var(--font-num); letter-spacing: .04em; color: var(--bone); }
+.su-note { margin-bottom: 26px; }
+.su-done .lg-alt { display: grid; gap: 10px; }
+@media (prefers-reduced-motion: reduce) { .su-done, .su-tick { animation: none; } .su-tick svg { animation: none; stroke-dashoffset: 0; } }
+.lg-list b [data-price] { display: inline; margin: 0; font: inherit; color: inherit; }   /* "Then Rs 299 a month" stays on one line */
