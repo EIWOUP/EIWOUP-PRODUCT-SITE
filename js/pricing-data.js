@@ -5,13 +5,14 @@
 
    Plans on sale: Free (demo data) and Pro (everything, live data).
    Pro is on a launch price (monthly) with the regular price in listPrice.
+   The numbers below are the fallback: the live values come from the
+   database (/api/plans, edited in EIMC-Admin) and overwrite them.
    The capability keys are EIMC's own, from license_server/plans.py.
    ═══════════════════════════════════════════════════════════════ */
 
 export const CURRENCY = '₹';
 export const GST_RATE = 0.18;           // India, SaaS
-export const TRIAL_DAYS = 1;            // the Pro trial offer
-export const YEARLY_MONTHS = 10;        // kept for old yearly subscriptions only
+export const TRIAL_DAYS = 1;            // the Pro trial offer (monthly billing only)
 
 /* What Dhan itself charges for its Data APIs (paid to Dhan, not to EIMC).
    Shown on the pricing page so nobody is surprised or scammed. */
@@ -84,28 +85,41 @@ export const PLANS = [
   },
 ];
 
-/* Plans no longer sold. Kept only so older subscriptions still show a name. */
-const RETIRED = [
-  { id: 'basic', name: 'Basic', blurb: 'This plan is no longer sold. Pro now includes every feature.', monthly: 499, caps: ['charts', 'replay', 'levels'], liveData: true, highlights: [] },
-  { id: 'elite', name: 'Elite', blurb: 'This plan is no longer sold. Pro now includes every feature.', monthly: 2999, caps: ALL, liveData: true, highlights: [] },
-];
+/* ── live prices from the database ────────────────────────────────
+   /api/plans returns what EIMC-Admin has set (price, regular price,
+   features, wording). Every page that imports this file waits for it,
+   so a price changed in the admin shows up everywhere on the next load.
+   If the database cannot be reached in time, the numbers above are used. */
+async function loadLive() {
+  if (typeof fetch !== 'function' || typeof location === 'undefined' || !/^https?:$/.test(location.protocol)) return;
+  const ctl = typeof AbortController === 'function' ? new AbortController() : null;
+  const timer = ctl && setTimeout(() => ctl.abort(), 1500);
+  try {
+    const r = await fetch('/api/plans', { signal: ctl?.signal, headers: { Accept: 'application/json' } });
+    if (!r.ok) return;
+    const { plans } = await r.json();
+    for (const row of plans || []) {
+      const plan = PLANS.find(p => p.id === row.code);
+      if (!plan) continue;
+      if (Number.isFinite(row.monthly)) plan.monthly = row.monthly;
+      plan.listPrice = Number.isFinite(row.listPrice) && row.listPrice > plan.monthly ? row.listPrice : undefined;
+      if (!plan.listPrice) delete plan.flag;
+      if (row.description) plan.blurb = row.description;
+      if (Array.isArray(row.features) && row.features.length) plan.caps = CAPS.map(c => c.key).filter(k => row.features.includes(k));
+      if (Number.isFinite(row.devices)) plan.devices = row.devices;
+    }
+  } catch { /* offline or slow: keep the built-in prices */ } finally { if (timer) clearTimeout(timer); }
+}
+await loadLive();
 
 /* ── helpers ─────────────────────────────────────────────────── */
 
-export const yearlyOf = p => p.monthly * YEARLY_MONTHS;
-
-export const planById = id => PLANS.find(p => p.id === id) || RETIRED.find(p => p.id === id) || null;
+export const planById = id => PLANS.find(p => p.id === id) || null;
 
 export const hasCap = (plan, key) => plan.caps.includes(key);
 
 /** 1499 -> "1,499" (Indian digit grouping) */
 export const inr = n => n.toLocaleString('en-IN', { maximumFractionDigits: 0 });
 
-/** What one billing period costs, before tax. */
-export const priceOf = (plan, cycle) => (cycle === 'yearly' ? yearlyOf(plan) : plan.monthly);
-
-/** The saving a yearly plan makes against twelve monthly payments. */
-export const yearlySaving = p => p.monthly * 12 - yearlyOf(p);
-
-/** 12 - YEARLY_MONTHS months free, as a percentage, for the toggle badge. */
-export const SAVE_PCT = Math.round((1 - YEARLY_MONTHS / 12) * 100);   // 17
+/** What one billing period costs, before tax. Only monthly billing is sold. */
+export const priceOf = plan => plan.monthly;

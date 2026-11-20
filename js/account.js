@@ -4,12 +4,12 @@
    the URL hash (#overview, #subscription …), so every section can be
    linked to directly — the header menu does.
 
-   All data comes from api.* in js/auth.js. Today that is the dummy
-   backend; later it is the online database, with no change here.
+   All data comes from api.* in js/auth.js: the /api functions and the
+   PostgreSQL database that EIMC-Admin also edits.
    ════════════════════════════════════════════════════════════════════ */
 
 import { api, signOut, signedIn, initials } from '/js/auth.js';
-import { PLANS, CAPS, planById, inr, yearlyOf, yearlySaving, GST_RATE } from '/js/pricing-data.js';
+import { PLANS, CAPS, planById, inr, GST_RATE } from '/js/pricing-data.js';
 
 const $ = (s, c = document) => c.querySelector(s);
 const $$ = (s, c = document) => [...c.querySelectorAll(s)];
@@ -125,7 +125,7 @@ S.overview = () => {
     <div class="ov-plan">
       <div class="ov-k">Your plan</div>
       <div class="ov-name">${esc(s.planName)} ${s.cancelAtPeriodEnd ? pill('Ends ' + date(s.currentEnd, { year: undefined }), 'warn') : statusPill(s)}</div>
-      <div class="ov-px">${money(s.price)}<span> / ${s.cycle === 'yearly' ? 'year' : 'month'} + GST</span></div>
+      <div class="ov-px">${money(s.price)}<span> / month + GST</span></div>
       <div class="ov-meta">${s.cancelAtPeriodEnd
         ? `Your plan stays on until <b>${date(s.currentEnd)}</b>, then it stops.`
         : `Renews on <b>${date(s.currentEnd)}</b> &middot; ${money(s.total)} via ${esc(defaultMethod().label)}`}</div>
@@ -182,7 +182,6 @@ S.overview = () => {
 /* ── subscription ─────────────────────────────────────────────────── */
 S.subscription = () => {
   const s = A.subscription, pl = plan(), p = period(), m = defaultMethod();
-  const yearly = yearlyOf(pl), save = yearlySaving(pl);
   const order = s.plan === 'pro' ? ['pro'] : [s.plan, 'pro'].filter(id => planById(id));
   return `
   ${head('Subscription', 'Your plan, what it costs and when it renews.')}
@@ -204,14 +203,14 @@ S.subscription = () => {
       </div>
     </div>
     <dl class="kv mt24">
-      <div><dt>Billing cycle</dt><dd>Monthly${s.cycleNext === 'yearly' ? ' <em class="hint">switches to yearly on ' + date(s.currentEnd) + '</em>' : ''}</dd></div>
-      <div><dt>Price</dt><dd>${money(s.price)} ${s.cycle === 'yearly' ? 'a year' : 'a month'}</dd></div>
+      <div><dt>Billing cycle</dt><dd>Monthly</dd></div>
+      <div><dt>Price</dt><dd>${money(s.price)} a month</dd></div>
       <div><dt>GST (${Math.round(GST_RATE * 100)}%)</dt><dd>${money(s.gst)}</dd></div>
-      <div><dt>Charged each ${s.cycle === 'yearly' ? 'year' : 'month'}</dt><dd><b>${money(s.total)}</b></dd></div>
+      <div><dt>Charged each month</dt><dd><b>${money(s.total)}</b></dd></div>
       <div><dt>Current period</dt><dd>${date(s.currentStart)} &ndash; ${date(s.currentEnd)}</dd></div>
       <div><dt>${s.cancelAtPeriodEnd ? 'Ends on' : 'Next renewal'}</dt><dd>${date(s.currentEnd)}</dd></div>
       <div><dt>Pays with</dt><dd>${esc(m.label)} &middot; ${esc(m.detail)} <a class="tlink sm" href="#payments">Change</a></dd></div>
-      <div><dt>Seats</dt><dd>${s.seats} PCs &middot; ${A.devices.length} in use</dd></div>
+      <div><dt>Seats</dt><dd>${s.seats} PC${s.seats === 1 ? '' : 's'} &middot; ${A.devices.length} in use</dd></div>
     </dl>
   </section>
 
@@ -219,7 +218,7 @@ S.subscription = () => {
     <div class="card-h"><h2>Change plan</h2><a class="tlink" href="pricing.html#compare">Full comparison</a></div>
     <div class="pl3">
       ${order.map(id => {
-        const q = planById(id), cur = id === s.plan, up = id === 'pro' && ['free', 'basic'].includes(s.plan);
+        const q = planById(id), cur = id === s.plan, up = id === 'pro' && s.plan === 'free';
         return `<div class="pl ${cur ? 'cur' : ''}">
           <div class="pl-n">${esc(q.name)} ${cur ? pill('Your plan', 'ok') : ''}</div>
           <div class="pl-p">${money(q.monthly)}<span>/mo</span></div>
@@ -431,9 +430,19 @@ const PREFS = [
   ['setups', 'Weekly setup digest', 'How the DQRS setups did last week, every Saturday.'],
   ['offers', 'Offers', 'Occasional discounts. Never more than one a month.'],
 ];
+const unread = () => (A.notifications || []).filter(n => !n.read).length;
 S.notifications = () => `
-  ${head('Notifications', 'Choose which emails we send you.')}
+  ${head('Notifications', 'Messages from the EIMC team, and which emails we send you.')}
   <section class="card">
+    <div class="card-h"><h2>Messages</h2>${unread() ? pill(`${unread()} new`, 'info') : ''}</div>
+    <ul class="sess inbox">
+      ${(A.notifications || []).length ? A.notifications.map(n => `
+      <li>${n.channel === 'push' ? ICON.chat : ICON.mail}<div><b>${esc(n.title)} ${n.read ? '' : pill('New', 'info')}</b>${n.body ? `<span>${esc(n.body)}</span>` : ''}<span>${date(n.created)} &middot; ${time(n.created)}</span></div></li>`).join('')
+      : '<li class="empty">No messages yet.</li>'}
+    </ul>
+  </section>
+  <section class="card">
+    <div class="card-h"><h2>Emails</h2></div>
     <ul class="toggles">
       ${PREFS.map(([k, t, d, locked]) => `
       <li>
@@ -568,6 +577,7 @@ function badges() {
   const open = A.tickets.filter(t => t.status !== 'resolved').length;
   const set = (k, v, cls = '') => { const n = $(`[data-badge="${k}"]`); if (n) { n.textContent = v || ''; n.className = v ? cls : ''; } };
   set('support', open || '');
+  set('notifications', unread() || '');
   set('subscription', A.subscription.cancelAtPeriodEnd ? 'Ends' : '', 'warn');
 }
 function who() {
@@ -583,11 +593,10 @@ function wire(tab) {
 
   on('[data-invoice]', 'click', e => invoice(e.currentTarget.dataset.invoice));
 
-  on('[data-cycle]', 'click', async e => {
-    const c = e.currentTarget.dataset.cycle;
-    if (c === A.subscription.cycleNext) return;
-    try { await api.setNextCycle(c); await refresh(); toast(c === 'yearly' ? `You switch to yearly on ${date(A.subscription.currentEnd)}.` : 'You stay on monthly billing.'); } catch (x) { guard(x); }
-  });
+  // opening Notifications marks the team's messages as read (the "New" pills stay until the next visit)
+  if (tab === 'notifications' && unread()) {
+    api.markNotificationsRead().then(() => { A.notifications.forEach(n => { n.read = true; }); badges(); }).catch(() => {});
+  }
   on('[data-act="resume"]', 'click', e => busy(e.currentTarget, async () => {
     try { await api.setCancel(false); await refresh(); toast('Welcome back — your subscription will renew as normal.'); } catch (x) { guard(x); }
   }));

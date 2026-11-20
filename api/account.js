@@ -14,8 +14,8 @@ const num = v => (v == null ? 0 : Number(v));
 const r2 = n => Math.round(n * 100) / 100;
 const str = (v, max = 200) => String(v ?? '').trim().slice(0, max);
 const BRAND = { visa: 'Visa', mastercard: 'Mastercard', rupay: 'RuPay', amex: 'Amex', diners: 'Diners' };
-const cycleWord = c => (c === 'yearly' ? 'yearly' : c === 'trial' ? 'trial' : 'monthly');
-const plus = (d, cycle) => { const x = new Date(d); cycle === 'yearly' ? x.setFullYear(x.getFullYear() + 1) : x.setMonth(x.getMonth() + 1); return x; };
+const cycleWord = c => (c === 'trial' ? 'trial' : 'monthly');   // only monthly billing is sold
+const plus = d => { const x = new Date(d); x.setMonth(x.getMonth() + 1); return x; };
 
 class UserError extends Error { constructor(m, code, status = 400) { super(m); this.code = code; this.status = status; } }
 
@@ -30,13 +30,13 @@ async function account(uid) {
       WHERE u.id = $1`, [uid]);
 
   const s = await one(
-    `SELECT s.*, pl.name AS plan_name, pl.price_monthly, pl.price_yearly, pl.max_devices,
+    `SELECT s.*, pl.name AS plan_name, pl.price_monthly, pl.max_devices,
             eimc.access_until(s) AS access_until,
             EXISTS (SELECT 1 FROM subscriptions h WHERE h.user_id = s.user_id AND h.billing_cycle = 'trial' AND h.id <> s.id) AS had_trial
        FROM subscriptions s JOIN plans pl ON pl.code = s.plan_code
       WHERE s.user_id = $1 AND s.is_current`, [uid]);
 
-  const [methods, devices, orders, tickets, logins, ideas, lic] = await Promise.all([
+  const [methods, devices, orders, tickets, logins, ideas, lic, notes] = await Promise.all([
     many(`SELECT * FROM payment_methods WHERE user_id = $1 AND status <> 'removed' ORDER BY is_default DESC, created_at DESC`, [uid]),
     many(`SELECT * FROM devices WHERE user_id = $1 AND NOT revoked ORDER BY last_seen DESC`, [uid]),
     many(`SELECT o.*, i.invoice_no,
@@ -55,6 +55,9 @@ async function account(uid) {
                  EXISTS (SELECT 1 FROM feature_votes v WHERE v.feature_request_id = f.id AND v.user_id = $1) AS voted
             FROM feature_requests f ORDER BY f.created_at DESC`, [uid]),
     one(`SELECT * FROM licences WHERE user_id = $1`, [uid]),
+    // messages the EIMC team sends from the admin panel (push and in-app)
+    many(`SELECT id, channel, title, body, is_read, created_at FROM notifications
+           WHERE user_id = $1 AND channel IN ('in_app', 'push') ORDER BY created_at DESC LIMIT 50`, [uid]),
   ]);
 
   // ---- subscription (free plan if none)
@@ -63,13 +66,13 @@ async function account(uid) {
   if (s) {
     const trial = s.status === 'trialing';
     const start = s.current_period_start || s.started_at;
-    const end = trial ? (s.trial_end || s.current_period_end) : (s.current_period_end || plus(start, s.billing_cycle));
-    const cycle = trial ? 'monthly' : cycleWord(s.billing_cycle);
-    const price = cycle === 'yearly' ? num(s.price_yearly) : num(s.price_monthly);
+    const end = trial ? (s.trial_end || s.current_period_end) : (s.current_period_end || plus(start));
+    const cycle = 'monthly';
+    const price = num(s.price_monthly);
     const gst = r2(price * GST);
     sub = {
       plan: s.plan_code, planName: s.plan_name + (trial ? ' trial' : ''),
-      cycle, cycleNext: s.next_cycle || cycle, status: s.status,
+      cycle, cycleNext: 'monthly', status: s.status,
       price, gst, total: r2(price + gst),
       currentStart: iso(start), currentEnd: iso(end),
       accessUntil: iso(s.access_until), hasAccess: !!s.access_until,
@@ -77,7 +80,7 @@ async function account(uid) {
       seats: s.seats || s.max_devices, trialUsed: trial || s.had_trial,
     };
   } else {
-    const end = plus(now, 'monthly');
+    const end = plus(now);
     sub = { plan: 'free', planName: 'Free', cycle: 'monthly', cycleNext: 'monthly', status: 'free', price: 0, gst: 0, total: 0,
       currentStart: iso(now), currentEnd: iso(end), accessUntil: null, hasAccess: false,
       autoRenew: false, cancelAtPeriodEnd: false, seats: 1, trialUsed: false };
@@ -122,14 +125,15 @@ async function account(uid) {
     orders: orders.map(o => ({
       id: o.order_no, invoice: o.invoice_no, date: iso(o.created_at),
       item: itemName(o.plan_code, o.billing_cycle, o.description),
-      period: [iso(o.created_at), iso(plus(o.created_at, o.billing_cycle))],
+      period: [iso(o.created_at), iso(plus(o.created_at))],
       amount: num(o.amount) - num(o.discount), gst: num(o.gst_amount), total: num(o.total),
       method: o.paid_with || '—', status: o.status,
     })),
-    upcoming: { date: sub.currentEnd, item: `${s ? s.plan_name : 'Free'} — ${sub.cycleNext}`,
-      amount: sub.cycleNext === 'yearly' && s ? num(s.price_yearly) : sub.price,
-      gst: r2((sub.cycleNext === 'yearly' && s ? num(s.price_yearly) : sub.price) * GST),
-      total: r2((sub.cycleNext === 'yearly' && s ? num(s.price_yearly) : sub.price) * (1 + GST)) },
+    upcoming: { date: sub.currentEnd, item: `${s ? s.plan_name : 'Free'} — monthly`,
+      amount: sub.price, gst: r2(sub.price * GST), total: r2(sub.price * (1 + GST)) },
+    notifications: notes.map(n => ({
+      id: `note-${n.id}`, channel: n.channel, title: n.title, body: n.body || '', read: n.is_read, created: iso(n.created_at),
+    })),
     tickets: tickets.map(t => ({
       id: t.ticket_no, subject: t.subject, category: t.category, status: ticketStatus(t.status),
       created: iso(t.created_at), updated: iso(t.updated_at), last: t.last_reply || '',
@@ -226,10 +230,8 @@ const actions = {
       [uid, on ? 'subscription.cancel' : 'subscription.resume', JSON.stringify({ reason: str(reason, 500) || null })]);
   },
 
-  async setNextCycle(uid, [cycle]) {
-    if (!['monthly', 'yearly'].includes(cycle)) throw new UserError('Choose monthly or yearly.');
-    const r = await q(`UPDATE subscriptions SET next_cycle = $2 WHERE user_id = $1 AND is_current`, [uid, cycle]);
-    if (!r.rowCount) throw new UserError('There is no subscription to change.');
+  async markNotificationsRead(uid) {
+    await q(`UPDATE notifications SET is_read = true WHERE user_id = $1 AND NOT is_read AND channel IN ('in_app', 'push')`, [uid]);
   },
 
   async removeDevice(uid, [id]) {

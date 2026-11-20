@@ -12,7 +12,7 @@
    ════════════════════════════════════════════════════════════════════ */
 
 import {
-  PLANS, priceOf, inr, yearlySaving, CURRENCY, GST_RATE, TRIAL_DAYS, CAPS, hasCap,
+  PLANS, priceOf, inr, CURRENCY, GST_RATE, TRIAL_DAYS, CAPS, hasCap,
 } from '/js/pricing-data.js';
 
 const q = new URLSearchParams(location.search);
@@ -37,13 +37,13 @@ if (!plan || plan.monthly === 0) {
   if (side) side.remove();
 } else {
   const isTrial = !!plan.trial;
-  const net = priceOf(plan, cycle);
+  const net = priceOf(plan);
   const gst = Math.round(net * GST_RATE);
   const total = net + gst;
-  const per = cycle === 'yearly' ? 'year' : 'month';
+  const per = 'month';
 
   host.innerHTML = `
-    <div class="kicker plain">Checkout &middot; ${cycle === 'yearly' ? 'Yearly' : 'Monthly'}</div>
+    <div class="kicker plain">Checkout &middot; Monthly</div>
     <h1 class="d2">${isTrial ? `${TRIAL_DAYS} day${TRIAL_DAYS === 1 ? "" : "s"} of ${plan.name}, <em>free</em>` : `EIMC ${plan.name}`}</h1>
     <p class="lede mt24">${isTrial
       ? `The trial starts the moment you activate it and runs for ${TRIAL_DAYS} day${TRIAL_DAYS === 1 ? "" : "s"} with every Pro capability unlocked on live data. The billing below is what begins afterwards — nothing is charged today.`
@@ -51,10 +51,7 @@ if (!plan || plan.monthly === 0) {
 
     <div class="box mt32">
       <div class="brow"><span class="k">Plan</span><span class="v">EIMC ${plan.name}</span></div>
-      <div class="brow"><span class="k">Billing</span><span class="v">${cycle === 'yearly' ? 'Yearly' : 'Monthly'}</span></div>
-      ${cycle === 'yearly'
-        ? `<div class="brow"><span class="k">Yearly saving</span><span class="v up">− ${CURRENCY}${inr(yearlySaving(plan))}</span></div>`
-        : ''}
+      <div class="brow"><span class="k">Billing</span><span class="v">Monthly</span></div>
       <div class="brow"><span class="k">Subtotal</span><span class="v">${CURRENCY}${inr(net)} / ${per}</span></div>
       <div class="brow"><span class="k">GST (18%)</span><span class="v">${CURRENCY}${inr(gst)}</span></div>
       <div class="brow total">

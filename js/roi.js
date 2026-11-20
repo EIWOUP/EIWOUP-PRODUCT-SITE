@@ -17,7 +17,7 @@
    market-data.js updates the whole argument.
    ════════════════════════════════════════════════════════════════════ */
 
-import { PLANS, CURRENCY, priceOf, planById } from '/js/pricing-data.js';
+import { PLANS, CURRENCY, planById } from '/js/pricing-data.js';
 import { LOTS } from '/js/market-data.js';
 
 /** Points per month a plan costs, given a contract size and lot count. */
@@ -95,14 +95,13 @@ export function renderROI(host) {
 
   const draw = () => {
     const plan = planById(state.plan);
-    const per  = state.cycle === 'yearly' ? priceOf(plan, 'yearly') / 12 : plan.monthly;
+    const per  = plan.monthly;
     const pts  = pointsOf(per, state.lot, state.lots);
     const stopRs = STOP_POINTS * state.lot * state.lots;
 
     el.points.textContent = f1(pts);
     el.post.innerHTML = `of <b>${state.sym}</b>, on <b>${state.lots} lot${state.lots > 1 ? 's' : ''}</b>`
-      + ` &mdash; <span class="num">${CURRENCY}${f0(per)}</span> a month`
-      + (state.cycle === 'yearly' ? ' <span class="dim">(yearly, averaged)</span>' : '');
+      + ` &mdash; <span class="num">${CURRENCY}${f0(per)}</span> a month`;
 
     el.stop.textContent = `${CURRENCY}${f0(stopRs)}`;
     el.cost.textContent = `${CURRENCY}${f0(per)}`;

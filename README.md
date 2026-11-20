@@ -121,7 +121,7 @@ js/ui.js            the product UI replicas — chart, depth ladder, option chai
 js/fx.js            the interaction layer (table above)
 js/site.js          nav, reveal, counters
 js/modes.js         the four MODES + long-form copy
-js/pricing-data.js  EVERY price and entitlement — the single source of truth
+js/pricing-data.js  every price and entitlement; live values come from /api/plans (the DB)
 js/pricing.js       plan cards + capability matrix
 js/perf.js          the live FPS meter
 js/buy.js           the placeholder checkout
@@ -155,7 +155,14 @@ Swap in real screenshots later by replacing the `[data-ui="terminal"]` and
 
 ## Changing prices
 
-Edit `js/pricing-data.js`. Every page reads from it. The capability keys (`charts`,
+Change the price in **EIMC-Admin → Plans & pricing**. It writes the `plans` table, and
+`api/plans.js` serves the on-sale plans to `js/pricing-data.js`, which every page reads.
+Page copy marks prices with `<span data-price="pro">` / `data-price="pro-list"`, and
+`js/site.js` fills them. The numbers inside `js/pricing-data.js` (and in the HTML) are only
+the fallback for when the database cannot be reached. `<meta>` descriptions are static, so
+update them by hand after a price change. Plans on sale: Free and Pro, monthly only, one PC.
+
+The capability keys (`charts`,
 `replay`, `levels`, `smartmoney`, `setups`, `goldvp`, `optionchain`, `optionflow`, `book`,
 `heat`, `live`) are EIMC's own, from `.removed-licensing/license_server/plans.py`, so the
 site and the licence server cannot drift apart.
@@ -229,8 +236,8 @@ There is no boot splash any more. Visitors land straight on the page, and the he
 
 - `login.html`: client ID + password, show/hide, Caps Lock warning, "keep me logged in for 30 days", a slow-down after 5 wrong tries, and `?next=` to return to the page you came from (same-site pages only).
 - `account.html`: Overview, Subscription (billing cycle, change plan, cancel/resume), Orders & invoices (printable GST invoice), Payment methods + billing details/GSTIN, Personal info (+ data export), Login & security, Notifications, Licence & devices, Contact support (tickets), and Feature requests (ideas board with votes). Each section has its own link, e.g. `account.html#orders`.
-- **Demo data only.** `js/auth.js` holds a dummy backend, and `js/account-data.js` holds one invented customer: client ID `2222004`, password `2222004`, Pro monthly, six days into the month. Edits are saved in the visitor's browser.
-- **Going online:** replace `dummyBackend` in `js/auth.js` with an API client that has the same method names. Nothing else changes. The password check, rate limiting and the session token must live on the server; the dummy check in the browser is not security.
+- **Real accounts.** `js/auth.js` calls `/api/login`, `/api/logout` and `/api/account`, which check the password and keep the session in an HttpOnly cookie, backed by the PostgreSQL (Neon) database that EIMC-Admin also edits. There is no in-browser demo mode any more.
+- **Notifications** shows the push and in-app messages the EIMC team sends from EIMC-Admin. Opening it marks them as read.
 - `login.html` and `account.html` are `noindex` and disallowed in `robots.txt`.
 
 ## Light theme

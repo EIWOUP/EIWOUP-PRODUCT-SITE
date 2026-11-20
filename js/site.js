@@ -19,6 +19,23 @@ mountUI();
 mountHeader();
 mountThemeToggle();
 
+/* ── live Pro price in the page text ─────────────────────────────────
+   <span data-price="pro">299</span> and data-price="pro-list" are filled
+   from the database prices (js/pricing-data.js -> /api/plans), so an
+   admin price change reaches the copy too. Loaded without blocking. */
+if (document.querySelector('[data-price], [data-price-count]')) {
+  import('/js/pricing-data.js').then(({ planById, inr }) => {
+    const pro = planById('pro');
+    if (!pro) return;
+    const val = { pro: pro.monthly, 'pro-list': pro.listPrice || pro.monthly };
+    $$('[data-price]').forEach(n => { const v = val[n.dataset.price]; if (v != null) n.textContent = inr(v); });
+    $$('[data-price-count]').forEach(n => {
+      const v = val[n.dataset.priceCount];
+      if (v != null) { n.dataset.count = String(v); n.textContent = inr(v); }
+    });
+  }).catch(() => { /* keep the printed prices */ });
+}
+
 /* ── nav ─────────────────────────────────────────────────────────── */
 (function nav() {
   const bar = $('#nav');
@@ -73,10 +90,11 @@ mountThemeToggle();
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (!e.isIntersecting) return;
     io.unobserve(e.target);
-    const el = e.target, to = parseFloat(el.dataset.count), t0 = performance.now(), dur = 1100;
+    const el = e.target, t0 = performance.now(), dur = 1100;
     const dp = (el.dataset.dp | 0);
     const tick = now => {
       const k = Math.min(1, (now - t0) / dur);
+      const to = parseFloat(el.dataset.count);   // read each frame: a live price can arrive mid-count
       el.textContent = (to * (1 - Math.pow(1 - k, 3)))
         .toLocaleString('en-IN', { minimumFractionDigits: dp, maximumFractionDigits: dp });
       if (k < 1) requestAnimationFrame(tick);
