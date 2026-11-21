@@ -20,6 +20,7 @@ export const TOTAL_COUNT = 120;          // monthly charges one subscription may
 const CHECKOUT_MINUTES = 60;             // an unpaid checkout expires after this
 const REUSE_MINUTES = 45;                // ...and is offered again to the same customer until then
 const MIN_LEAD_MS = 60 * 60e3;           // start later only if the paid days run at least an hour more
+const CHECKOUTS_PER_HOUR = 8;            // new Razorpay subscriptions one customer may open in an hour
 
 const r2 = n => Math.round(n * 100) / 100;
 const ts = s => (s ? new Date(Number(s) * 1000) : null);
@@ -112,6 +113,9 @@ export async function startCheckout(uid, planCode) {
         AND starts_at IS NOT DISTINCT FROM $4 AND created_at > now() - make_interval(mins => $5)
       ORDER BY created_at DESC LIMIT 1`, [uid, mode(), gp.provider_plan_id, startsAt, REUSE_MINUTES]);
   if (reuse) return { checkout: reuse, plan };
+  // each new checkout is a subscription created at Razorpay: a script must not be able to make thousands
+  const recent = await one(`SELECT count(*)::int AS n FROM checkouts WHERE user_id = $1 AND created_at > now() - interval '1 hour'`, [uid]);
+  if (recent.n >= CHECKOUTS_PER_HOUR) throw new BillingError('Too many checkouts were opened in the last hour. Try again later, or write to support@eimc.app.', 'busy', 429);
 
   if (st.cancelFirst) await cancelAtGateway(st.cancelFirst, false);
   const u = await one(`SELECT client_id FROM users WHERE id = $1`, [uid]);

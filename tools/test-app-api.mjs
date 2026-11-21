@@ -75,6 +75,11 @@ async function waitForServer() {
 /* ---------------------------------------------------------------- the test */
 async function main() {
   await waitForServer();
+  // other suites (the admin's) may have run on this test database: back to the seeded state
+  await sql(`UPDATE app_releases SET is_latest = false`);
+  await sql(`UPDATE app_releases SET is_latest = true WHERE version = $1 AND channel = 'stable'`, [VER]);
+  await sql(`UPDATE app_policy SET min_supported_version = '0.0.0.0'`);
+  await sql(`UPDATE service_status SET is_down = false`);
 
   // status: public, cached, reports the seeded release
   let r = await call('/api/app/status', null, 'GET');

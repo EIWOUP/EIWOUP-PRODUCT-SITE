@@ -1,6 +1,6 @@
 # EIMC Terminal — product website
 
-Static marketing and checkout site for **EIMC Terminal v1.25.218.93**.
+Static marketing and checkout site for **EIMC Terminal** (the version in every footer is the latest release in the database).
 
 Hand-written HTML, CSS and vanilla ES modules, with no bundler and no build step. EIMC's own
 frontend is also plain ES modules with no bundler, which is what lets the product's boot

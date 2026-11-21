@@ -343,6 +343,12 @@ async function main() {
   ok(r.status === 200 && fake.cancels.some(c => c.id === sidB && c.atCycleEnd === false), 'B cancels the scheduled subscription: cancelled at Razorpay');
   r = await call('/api/subscribe', null, { method: 'GET', cookie: B.cookie });
   ok(r.json.canBuy === true, 'B: can subscribe again later');
+  await sql(`INSERT INTO eimc.checkouts (user_id, plan_code, mode, provider_subscription_id, provider_plan_id, price, amount_paise, status)
+             SELECT $1, 'pro', 'test', 'sub_FLOOD' || $2 || k, 'plan_x', 299, 35282, 'replaced' FROM generate_series(1, 8) k`, [B.uid, RUN]);
+  const subsBefore = fake.subs.size;
+  r = await call('/api/subscribe', { action: 'start', plan: 'pro' }, { cookie: B.cookie });
+  ok(r.status === 429 && fake.subs.size === subsBefore, 'more than 8 new checkouts an hour: refused before anything is created at Razorpay');
+  await sql(`DELETE FROM eimc.checkouts WHERE provider_subscription_id LIKE 'sub_FLOOD%'`);
 
   // ---------------------------------------------------------------- odd webhooks
   r = await hook('subscription.charged', { subscription: { entity: { id: 'sub_SOMEONE_ELSE', status: 'active', paid_count: 1 } } });

@@ -25,6 +25,9 @@ export async function mountNotices() {
     s = await r.json();
   } catch { return; }
 
+  // the version in every footer is the latest release (EIMC-Admin -> Releases & access)
+  if (s.version?.latest) document.querySelectorAll('[data-app-version]').forEach(n => { n.textContent = `v${s.version.latest}`; });
+
   const items = [];
   if (s.service?.down) {
     items.push({ key: `down-${hash(`${s.service.reason}|${s.service.message}`)}`, level: 'critical',
