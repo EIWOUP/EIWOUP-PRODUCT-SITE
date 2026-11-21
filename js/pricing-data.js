@@ -14,9 +14,6 @@ export const CURRENCY = '₹';
 export const GST_RATE = 0.18;           // India, SaaS
 export const TRIAL_DAYS = 1;            // the Pro trial offer (monthly billing only)
 
-/* What Dhan itself charges for its Data APIs (paid to Dhan, not to EIMC).
-   Shown on the pricing page so nobody is surprised or scammed. */
-export const DHAN_API_MONTHLY = 499;
 
 /* The 11 capabilities, in the order the pricing table lists them.
    `key` matches plans.py exactly. */
@@ -29,9 +26,9 @@ export const CAPS = [
   { key: 'goldvp',      name: 'Golden volume profile — TradingView-exact' },
   { key: 'optionchain', name: 'Option chain with greeks, buildup and max pain' },
   { key: 'optionflow',  name: 'Option flow — buyers vs sellers, scored 0–100' },
-  { key: 'book',        name: 'Live order-book density, 200 levels' },
+  { key: 'book',        name: 'Live order-book density, up to 200 levels' },
   { key: 'heat',        name: 'Liquidity heatmap & Order flow recording' },
-  { key: 'live',        name: 'Live real-money orders through Dhan' },
+  { key: 'live',        name: 'Live NSE / BSE / MCX market data, no broker account needed' },
 ];
 
 const ALL = CAPS.map(c => c.key);
@@ -53,13 +50,13 @@ export const PLANS = [
       'Demo (synthetic) market data',
       'Bar replay on demo data',
       'Paper trading to practise',
-      'No account, no card, no expiry',
+      'Free account, no card, no expiry',
     ],
   },
   {
     id: 'pro',
     name: 'Pro',
-    blurb: 'Everything EIMC does, on your own Dhan account with live market data.',
+    blurb: 'Everything EIMC does, on live NSE, BSE and MCX market data. No broker account, no daily token.',
     monthly: 299,           // launch price for the first customers
     listPrice: 499,         // the regular price after the launch offer
     caps: ALL,
@@ -69,7 +66,7 @@ export const PLANS = [
     trial: true,
     cta: 'Start 1-day free trial',
     highlights: [
-      'Live NSE / BSE / MCX data from your Dhan account',
+      'Live NSE / BSE / MCX market data, straight from EIMC',
       'Tick-by-tick live candles, 10 timeframes',
       'Scored liquidity Levels',
       'Smart money concepts — BOS, CHoCH, order blocks, FVG',
@@ -80,7 +77,7 @@ export const PLANS = [
       'Liquidity heatmap (Bookmap-style)',
       'Order flow and footprint recording (ATAS-style)',
       'Bar replay on real history',
-      'Live real-money orders via Dhan, with server-checked guardrails',
+      'Paper trading on live prices, to practise without risk',
     ],
   },
 ];

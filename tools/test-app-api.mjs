@@ -47,7 +47,7 @@ function ok(cond, what) {
 }
 async function call(route, payload, method = 'POST') {
   const r = await fetch(BASE + route, {
-    method, headers: { 'content-type': 'application/json', 'user-agent': 'EIMC Terminal test', 'x-forwarded-for': '10.9.8.7' },
+    method, headers: { 'content-type': 'application/json', 'user-agent': 'EIMC Terminal test', 'x-forwarded-for': IP },
     body: method === 'POST' ? JSON.stringify(payload || {}) : undefined,
   });
   let json = null; try { json = await r.json(); } catch { /* not json */ }
@@ -63,6 +63,7 @@ const sql = (t, p) => db.query(t, p);
 const devA = crypto.randomBytes(16).toString('hex');      // 32 hex, like licensing/fingerprint.py
 const devB = crypto.randomBytes(16).toString('hex');
 const VER = '1.25.218.93';
+const IP = `10.9.${1 + Math.floor(Math.random() * 250)}.${1 + Math.floor(Math.random() * 250)}`;   // fresh per run: sign-ups are limited per IP
 
 async function waitForServer() {
   for (let i = 0; i < 50; i++) {
@@ -161,7 +162,8 @@ async function main() {
   ok(r.json.service.down === true, 'status shows the outage too');
   await sql(`UPDATE service_status SET is_down = false`);
 
-  // notices: everyone vs one plan
+  // notices: everyone vs one plan (start clean: an earlier run on this test database left its own)
+  await sql(`DELETE FROM announcements`);
   await sql(`INSERT INTO announcements (title, body, shown_on) VALUES ('All', 'for everyone', 'terminal')`);
   await sql(`INSERT INTO announcements (title, body, shown_on, plan_code) VALUES ('Pro', 'pro only', 'both', 'pro')`);
   await sql(`INSERT INTO announcements (title, body, shown_on) VALUES ('Site', 'site only', 'site')`);

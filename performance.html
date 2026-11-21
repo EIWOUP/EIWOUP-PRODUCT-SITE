@@ -156,8 +156,8 @@
       <table class="t">
         <thead><tr><th>Measure</th><th>Figure</th><th>Source</th></tr></thead>
         <tbody>
-          <tr><td>Order-book depth</td><td><b>200 levels</b> on NSE EQ and F&amp;O, falling back to 20, then 5</td><td><code class="src">depth.py</code></td></tr>
-          <tr><td>Depth socket budget</td><td><b>4 &times; 200-level + 1 &times; 20-level</b>, inside Dhan&rsquo;s 5 per account; gives one back on code 805 and retries every 30 min</td><td><code class="src">depth.py:60</code></td></tr>
+          <tr><td>Order-book depth</td><td><b>200 levels</b> on the instruments EIMC streams deep (up to three, such as NIFTY&rsquo;s near-month future), <b>20 levels</b> on up to five books you pick, 5 levels on the rest</td><td><code class="src">depth.py</code></td></tr>
+          <tr><td>Depth sockets</td><td>Held by EIMC&rsquo;s market-data server, not your PC: each book is fetched once and shared with everyone watching it</td><td><code class="src">eimc-relay</code></td></tr>
           <tr><td>Book push rate</td><td>A fresh snapshot to the interface every <b>0.25 s</b></td><td><code class="src">depth.py:43</code></td></tr>
           <tr><td>Liquidity recording</td><td><b>Once a second</b>, 09:00&ndash;15:35 IST on market days, app open or not</td><td><code class="src">heatrec.py:3</code></td></tr>
           <tr><td>Recording retention</td><td><b>5 sessions</b> kept on disk</td><td><code class="src">heatrec.py:53</code></td></tr>
@@ -192,7 +192,7 @@
           <div class="r"><div class="k">Install</div><div class="v">Per-user. No administrator rights, no UAC prompt.</div></div>
           <div class="r"><div class="k">Window</div><div class="v">Opens maximised. Default 1600 &times; 950, minimum 1100 &times; 700.</div></div>
           <div class="r"><div class="k">User data</div><div class="v"><code class="src">%LOCALAPPDATA%\EIMC</code> &mdash; never written inside the install folder, left alone by uninstall</div></div>
-          <div class="r"><div class="k">Account</div><div class="v">Dhan with the Data APIs subscription for live data; none at all for demo mode</div></div>
+          <div class="r"><div class="k">Account</div><div class="v">A free EIMC account to sign in; Pro (or the trial) for live data; no broker account needed</div></div>
           <div class="r"><div class="k">Network</div><div class="v">The local server refuses any request whose Host or Origin header is not its own</div></div>
         </div>
       </div>
@@ -201,13 +201,12 @@
           <b>Built for the desk, not a browser tab.</b> EIMC compiles to machine code with Nuitka and ships
           as a standalone Windows app in a native WebView2 window &mdash; the Python source does not ship.
           The backend is FastAPI with pandas and numpy; the frontend is plain ES modules with no framework
-          and no bundler, drawing on TradingView&rsquo;s Lightweight Charts. Credentials go into the Windows
+          and no bundler, drawing on TradingView&rsquo;s Lightweight Charts. Your sign-in goes into the Windows
           Credential Manager through keyring, not into a config file.
         </div>
-        <div class="note warn mt24">
-          <b>Token expiry.</b> Dhan access tokens last 24 hours. You generate a fresh one each day at
-          web.dhan.co &#8594; Profile &#8594; DhanHQ Trading APIs. For live orders, Dhan may also require
-          your IP to be whitelisted.
+        <div class="note mt24">
+          <b>No tokens to renew.</b> Sign in once with your EIMC account; the terminal renews its licence in
+          the background and gets live data from EIMC, so there is nothing to paste each morning.
         </div>
       </div>
     </div>
@@ -262,7 +261,7 @@
         <h5>Setup</h5>
         <ul>
           <li><a href="download.html">Download</a></li>
-          <li><a href="download.html#dhan">Connect Dhan</a></li>
+          <li><a href="download.html#signin">Sign in</a></li>
           <li><a href="download.html#keys">Keyboard</a></li>
           <li><a href="performance.html">Performance</a></li>
         </ul>
@@ -270,6 +269,7 @@
     </div>
     <div class="footer-base">
       <span>&copy; <span data-year>2026</span> EIMC &middot; Terminal v1.25.218.93</span>
+      <span class="legal"><a href="terms.html">Terms</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="refund.html">Cancellation &amp; refunds</a> &middot; <a href="contact.html">Contact</a></span>
       <span class="r">Chart engine: Lightweight Charts &copy; TradingView (Apache-2.0)</span>
     </div>
   </div>

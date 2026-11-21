@@ -90,9 +90,9 @@
     <h1 class="d1">Everything for professional analysis, <em>in one subscription.</em></h1>
     <p class="lede">
       The free tier is not a crippled demo &mdash; it is the whole terminal, every mode and every indicator,
-      running on generated data with no account and no expiry. What a paid plan buys is the live market:
-      your own Dhan account, real NSE, BSE and MCX data, and the analysis that only means something
-      against it.
+      running on generated data with no card and no expiry. What a paid plan buys is the live market:
+      real NSE, BSE and MCX data streamed to the terminal by EIMC, with no broker account to open and no
+      token to paste, and the analysis that only means something against it.
     </p>
   </div>
 </section>
@@ -104,8 +104,8 @@
       <div>
         <h3>One day of Pro, free &mdash; no card</h3>
         <p>Every feature on live data: smart money concepts, DQRS setups, the golden volume profile, the
-        option chain, option flow, order-book density, the liquidity heatmap and live orders. A trial is
-        limited by time, not by features.</p>
+        option chain, option flow, order-book density and the liquidity heatmap. A trial is limited by
+        time, not by features.</p>
       </div>
       <a class="btn btn-gold" href="buy.html?plan=pro&amp;cycle=monthly">Start the trial</a>
     </div>
@@ -114,111 +114,28 @@
       <div><b>No card for the trial</b><p>One day of full Pro on live data. You enter a card only if you decide to keep it.</p></div>
       <div><b>The free tier never expires</b><p>If you walk away you keep the whole interface on demo data. Nothing is deleted and nothing nags.</p></div>
       <div><b>Launch price</b><p>Pro is &#8377;<span data-price="pro">299</span> a month for our first customers instead of the regular &#8377;<span data-price="pro-list">499</span>. Cancel any time.</p></div>
-      <div><b>Your own broker</b><p>EIMC is not a data vendor. It runs on your Dhan account, so you are not renting market data twice.</p></div>
+      <div><b>Market data included</b><p>No broker account, no separate data subscription, no token to renew each morning. Sign in and the market is live.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════════════ DHAN API NOTICE ═══ -->
-<section class="band band-alt" id="dhan-api">
+<!-- ══════════════════════════════════════════ MARKET DATA ═══ -->
+<section class="band band-alt" id="data">
+  <span id="dhan-api" aria-hidden="true"></span>
   <div class="wrap narrow">
-    <div class="kicker"><b>Important notice</b></div>
-    <h2 class="d2">You also need Dhan&rsquo;s Data API, <em>bought from Dhan.</em></h2>
-    <div class="note warn mt32" role="note">
-      <p><b>Live market data comes from Dhan, and Dhan charges for it separately.</b> To use Pro on live data
-      you need a <b>Data API subscription in your own Dhan account</b>. Dhan charges
-      <b>&#8377;499 + GST per month</b> for it, auto-debited from your Dhan balance. This fee goes to Dhan,
-      not to EIMC, and it is not included in the Pro price.</p>
-      <p class="mt16"><b>Stay safe from scams:</b> buy the Data API only inside your own Dhan account
-      (web.dhan.co). EIMC never sells Dhan access tokens, never collects the Dhan fee, and will never
-      ask for your Dhan password or OTP. If anyone offers to sell you a Dhan token or API key, it is a scam.</p>
-      <p class="mt16 dim" style="font-size:13px">Dhan sets its own price and may change it. Check the current
-      price in your Dhan account before you subscribe. The Free plan needs no Dhan account at all.</p>
+    <div class="kicker"><b>Market data</b></div>
+    <h2 class="d2">The live market is <em>part of Pro.</em></h2>
+    <div class="note gold mt32" role="note">
+      <p><b>Nothing else to buy.</b> Pro includes live NSE, BSE and MCX data, streamed to the terminal by
+      EIMC. You do not need a broker account, a data-API subscription or a daily access token: sign in to
+      the terminal with your EIMC account and the charts are live.</p>
+      <p class="mt16"><b>Stay safe from scams:</b> EIMC never asks for a broker password, OTP or access token,
+      and sells nothing outside this website. If anyone offers you EIMC access or a "token" for it, it is a scam.</p>
     </div>
-
-    <h3 class="mt48 mb32" style="font-size:22px">How to get your Dhan API access</h3>
-    <div class="steps">
-      <div class="step"><div><h4>Open a Dhan account</h4><p>If you do not have one, open a trading account at
-        <b>dhan.co</b> and complete the KYC. EIMC works only with Dhan.</p></div></div>
-      <div class="step"><div><h4>Log in to Dhan on the web</h4><p>Go to <b>web.dhan.co</b> and log in. Click
-        your <b>Profile</b> and open <b>Access DhanHQ APIs</b> (also shown as <b>DhanHQ Trading APIs</b>).</p></div></div>
-      <div class="step"><div><h4>Subscribe to the Data APIs</h4><p>Open the <b>Data APIs</b> tab and subscribe:
-        &#8377;499 + GST a month, paid to Dhan. Keep enough balance in your Dhan account, because Dhan
-        renews it automatically every 30 days.</p></div></div>
-      <div class="step"><div><h4>Generate an access token</h4><p>On the same page, set the toggle to
-        <b>Access Token</b> and click <b>Generate</b>. Copy the token and your <b>Dhan Client ID</b>.
-        Keep the token private, like a password.</p></div></div>
-      <div class="step"><div><h4>Paste it into EIMC</h4><p>In the terminal, open <b>Settings</b> (the sliders icon,
-        top right). Paste your Client ID and the token, then click <b>Save &amp; test</b>. You should see
-        <b>Login OK</b> and <b>Data APIs OK</b>.</p></div></div>
-      <div class="step"><div><h4>Make a new token each day</h4><p>Dhan access tokens expire every 24 hours, so you
-        generate a fresh one each trading day. For live real-money orders, Dhan may also ask you to
-        whitelist your IP: <b>DhanHQ Trading APIs &#8594; Static IP Setting</b>.</p></div></div>
-    </div>
-    <p class="mt32"><a class="tlink" href="download.html#dhan">Full setup guide on the download page</a></p>
-  </div>
-</section>
-
-<!-- ═════════════════════════════════════════════════════ POINTS ═══ -->
-<section class="band track">
-  <div class="wrap">
-    <div class="kicker"><b>What it costs</b></div>
-    <h2 class="d2">In rupees it is a subscription. <em>In points it is nothing.</em></h2>
-    <p class="lede mt24 mb48">
-      You do not think in rupees per month, you think in points. So here it is in points. A NIFTY 50
-      lot is 65 units, which makes Pro about <b data-pts>23</b> points a month &mdash; move the sliders
-      and check it against your own last bad trade.
-    </p>
-    <div data-ui="roi"></div>
-    <div class="note gold mt32">
-      <b>The honest version of this argument.</b> A tool cannot promise you points, and this one does
-      not: EIMC measures what happened and shows what is resting in the book. What it can tell you
-      is the size of the bet. One <b>30-point</b> stop-out on a single lot is &#8377;1,950 &mdash; more
-      than a month of Pro. That is the whole question, and one day of it costs nothing to answer.
-    </div>
-  </div>
-</section>
-
-
-<!-- ════════════════════════════════════════════════ THE RIVALS ═══ -->
-<section class="band band-alt">
-  <div class="wrap">
-    <div class="kicker"><b>In context</b></div>
-    <h2 class="d2">What the alternatives cost, <em>and what they do here.</em></h2>
-    <p class="lede mt24 mb48">
-      Each figure was read off that vendor&rsquo;s own pricing page and converted at a rate that rounds in
-      their favour. The third column is the one that decides it: the order-flow platforms worth having
-      were built for CME futures and crypto, and neither can draw a NIFTY 50 order book &mdash; because
-      NIFTY 50 does not have one.
-    </p>
-    <div data-ui="rivals"></div>
-    <p class="mt32">
-      <a class="tlink" href="why.html">The full comparison, and the test behind every claim we make</a>
-    </p>
-  </div>
-</section>
-
-<section class="band" id="compare">
-  <div class="wrap">
-    <div class="kicker"><b>Compare</b></div>
-    <h2 class="d2">Free vs Pro.</h2>
-    <p class="lede mt24 mb48">
-      These rows are not marketing groupings. They are EIMC&rsquo;s own entitlements &mdash; the exact
-      capability keys the licence server signs into your token &mdash; so what you read here is what the
-      app checks.
-    </p>
-    <div class="tw" id="compare-table"></div>
-  </div>
-</section>
-
-<section class="band band-alt">
-  <div class="wrap">
-    <div class="kicker"><b>Licensing</b></div>
-    <h2 class="d2 mb48">How your licence behaves.</h2>
-    <div class="idx">
-      <div><span class="no">OFFLINE</span><h3>It survives a dropped connection</h3><p>Your licence is valid for 7 days and refreshes on every launch that can reach the server. If the network is down, EIMC keeps running on the cached licence until it genuinely expires. One failed DNS lookup must never lock a paying customer out of their charts during market hours.</p></div>
-      <div><span class="no">SERVER</span><h3>The app cannot grant itself features</h3><p>Entitlement is decided server-side and signed into the token; the app only reads back what was verified. Nothing in the interface is the thing that unlocks a feature &mdash; otherwise anyone who can open DevTools would have Pro for free.</p></div>
-      <div><span class="no">DEVICE</span><h3>One licence, your machine</h3><p>A licence is bound to the device that activated it, so copying the licence file to another PC will not work. Switching machines is a sign-in, not a purchase.</p></div>
+    <div class="steps mt48">
+      <div class="step"><div><h4>Make an account</h4><p><a class="tlink" href="signup.html">Sign up</a> in a minute. You get a 1-day Pro trial, no card needed.</p></div></div>
+      <div class="step"><div><h4>Install and sign in</h4><p><a class="tlink" href="download.html">Download the terminal</a> and sign in with your client ID or email and password. It stays signed in.</p></div></div>
+      <div class="step"><div><h4>Subscribe when you are ready</h4><p>Pro renews monthly by card or UPI Autopay, and you can cancel any time from your account.</p></div></div>
     </div>
   </div>
 </section>
@@ -231,17 +148,15 @@
       <details open>
         <summary>What exactly do I get for free?</summary>
         <p>Every mode, every indicator, the full interface &mdash; running on EIMC&rsquo;s demo (synthetic)
-        data generator. Bar replay works on it too. There is no account, no card and no expiry. What you
-        cannot do on the free tier is connect your own Dhan account, so you are not looking at the live
-        market. It exists so you can judge the product properly before paying for anything.</p>
+        data generator. Bar replay works on it too. It needs only a free account: no card and no expiry.
+        What the free tier does not have is the live market. It exists so you can judge the product
+        properly before paying for anything.</p>
       </details>
       <details>
-        <summary>Do I need a Dhan account?</summary>
-        <p>For Pro, yes &mdash; EIMC is a terminal for your Dhan account, not a data vendor. You need Dhan&rsquo;s
-        <b>Data APIs</b> subscription for chart data, which Dhan charges separately (&#8377;499 + GST a month,
-        paid to Dhan). For live orders you also need the Trading APIs enabled, and Dhan may require your IP to
-        be whitelisted. Access tokens expire every 24 hours, so you paste a fresh one each day.
-        <a class="tlink" href="#dhan-api">How to get it</a></p>
+        <summary>Do I need a broker or Dhan account?</summary>
+        <p>No. Pro includes the live market data: EIMC streams it to the terminal, so there is no broker
+        account to open, no data subscription to buy and no token to paste each morning. EIMC is an analysis
+        tool and places no orders; trade with whichever broker you like.</p>
       </details>
       <details>
         <summary>What happens when the 1-day Pro trial ends?</summary>
@@ -270,10 +185,10 @@
         terminal goes back to the Free plan on demo data. Your settings and drawings stay.</p>
       </details>
       <details>
-        <summary>Is my Dhan token safe?</summary>
-        <p>Credentials go into the <b>Windows Credential Manager</b> through keyring, not into a config file
-        in the install folder. The EIMC server is local-only: it refuses any request arriving with a Host or
-        Origin header other than its own, so nothing on the network can talk to it.</p>
+        <summary>How do I pay, and is it safe?</summary>
+        <p>By card or UPI Autopay through <b>Razorpay</b>, renewing each month. EIMC never sees your card
+        number or UPI PIN. The terminal keeps its sign-in in the <b>Windows Credential Manager</b>, and its
+        local server refuses any request whose Host or Origin header is not its own.</p>
       </details>
       <details>
         <summary>Is this investment advice?</summary>
@@ -333,7 +248,7 @@
         <h5>Setup</h5>
         <ul>
           <li><a href="download.html">Download</a></li>
-          <li><a href="download.html#dhan">Connect Dhan</a></li>
+          <li><a href="download.html#signin">Sign in</a></li>
           <li><a href="download.html#keys">Keyboard</a></li>
           <li><a href="performance.html">Performance</a></li>
         </ul>
@@ -341,6 +256,7 @@
     </div>
     <div class="footer-base">
       <span>&copy; <span data-year>2026</span> EIMC &middot; Terminal v1.25.218.93</span>
+      <span class="legal"><a href="terms.html">Terms</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="refund.html">Cancellation &amp; refunds</a> &middot; <a href="contact.html">Contact</a></span>
       <span class="r">Chart engine: Lightweight Charts &copy; TradingView (Apache-2.0)</span>
     </div>
   </div>

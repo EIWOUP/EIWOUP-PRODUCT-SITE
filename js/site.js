@@ -11,6 +11,7 @@ import { mountUI } from '/js/ui.js';
 import { mountHeader } from '/js/auth.js';
 import { mountThemeToggle } from '/js/theme-toggle.js';
 import { mountNotifications } from '/js/notify.js';
+import { mountNotices } from '/js/notices.js';
 
 const $  = (s, c = document) => c.querySelector(s);
 const $$ = (s, c = document) => [...c.querySelectorAll(s)];
@@ -19,6 +20,7 @@ const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 mountUI();
 mountHeader().then(a => { if (a) mountNotifications(a); });
 mountThemeToggle();
+mountNotices();
 
 /* ── live Pro price in the page text ─────────────────────────────────
    <span data-price="pro">299</span> and data-price="pro-list" are filled

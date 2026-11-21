@@ -5,12 +5,12 @@
 <script>try{document.documentElement.style.setProperty("--dpr",String(devicePixelRatio||1));if(localStorage.getItem("eimc.theme")!=="dark")document.documentElement.dataset.theme="light"}catch(e){}</script>
 <script>try{if(localStorage.getItem("eimc.session")||sessionStorage.getItem("eimc.session"))document.documentElement.classList.add("signed-in")}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Download — install and connect Dhan | EIMC Terminal</title>
-<meta name="description" content="Download EIMC Terminal for Windows 10 and 11, 64-bit. Per-user install, no administrator rights, WebView2 bundled. Then connect your Dhan account in three steps, or run the free demo mode with no credentials.">
+<title>Download — install and sign in | EIMC Terminal</title>
+<meta name="description" content="Download EIMC Terminal for Windows 10 and 11, 64-bit. Per-user install, no administrator rights, WebView2 bundled. Then sign in with your EIMC account: live market data comes with Pro, with no broker account or daily token.">
 <meta name="theme-color" content="#f3f5f9">
 <link rel="canonical" href="https://eimc.vercel.app/download.html">
 <meta property="og:title" content="Download EIMC Terminal">
-<meta property="og:description" content="Download EIMC Terminal for Windows 10 and 11, 64-bit. Per-user install, no administrator rights, WebView2 bundled. Then connect your Dhan account in three steps, or run the free demo mode with no credentials.">
+<meta property="og:description" content="Download EIMC Terminal for Windows 10 and 11, 64-bit. Per-user install, no administrator rights, WebView2 bundled. Then sign in with your EIMC account: live market data comes with Pro, with no broker account or daily token.">
 <meta property="og:image" content="/assets/eimc.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20x%3D%224%22%20y%3D%224%22%20width%3D%2256%22%20height%3D%2256%22%20rx%3D%2215%22%20fill%3D%22%23141821%22%2F%3E%3Cpath%20d%3D%22M13%2041%20L24%2045%20L31%2038%20L41%2018%20L55%2012%22%20fill%3D%22none%22%20stroke%3D%22%23f5c842%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2212%22%20r%3D%224%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E">
 <link rel="stylesheet" href="/static/vendor/fonts.css">
@@ -94,19 +94,14 @@
       have it.
     </p>
     <div class="btns mt32">
-      <button class="btn btn-lg btn-fill" id="dl">Download EIMC-Setup-1.25.218.93.exe</button>
+      <a class="btn btn-lg btn-fill" id="dl" href="#" aria-disabled="true">Download for Windows</a>
       <a class="btn btn-lg" href="features.html">See what it does first</a>
     </div>
-    <div class="stub" id="dl-note" hidden>
-      <b>Installer not hosted yet</b>
-      Drop <span class="num">EIMC-Setup-1.25.218.93.exe</span> into the site root and point this button at
-      it &mdash; it is built with <span class="num">iscc installer\eimc.iss</span> from the Nuitka
-      standalone folder. Until then this is a placeholder, exactly like the checkout.
-    </div>
-    <p class="hero-meta">
+    <p class="hero-meta" id="dl-meta">
       Free forever on demo data &nbsp;&middot;&nbsp; Windows 10 / 11, 64-bit &nbsp;&middot;&nbsp;
       your data stays in <code class="src">%LOCALAPPDATA%\EIMC</code>
     </p>
+    <div class="note mt24" id="dl-check" hidden></div>
   </div>
 </section>
 
@@ -120,7 +115,7 @@
           <div class="step"><div><h4>Runs without administrator rights</h4><p>A per-user install on purpose. No UAC prompt &mdash; and, the reason that matters later, an auto-updater can replace the files without elevation.</p></div></div>
           <div class="step"><div><h4>Installs WebView2 only if it is missing</h4><p>EIMC runs in a native Microsoft Edge WebView2 window. The installer carries the evergreen bootstrapper and runs it silently when the runtime is not already present.</p></div></div>
           <div class="step"><div><h4>Creates shortcuts, offers a desktop icon</h4><p>Start-menu entry always; the desktop shortcut is a tick-box during setup.</p></div></div>
-          <div class="step"><div><h4>Never writes inside the install folder</h4><p>Your charts, drawings, recordings and credentials live in <code class="src">%LOCALAPPDATA%\EIMC</code> and are left alone by both install and uninstall. Override with <code class="src">EIMC_DATA_DIR</code>.</p></div></div>
+          <div class="step"><div><h4>Never writes inside the install folder</h4><p>Your charts, drawings, recordings and sign-in live in <code class="src">%LOCALAPPDATA%\EIMC</code> and are left alone by both install and uninstall. Override with <code class="src">EIMC_DATA_DIR</code>.</p></div></div>
         </div>
       </div>
       <div class="row-media">
@@ -137,44 +132,41 @@
           layout, drawings and recordings back with it.
         </div>
         <div class="note mt24">
-          <b>Prefer to run from source?</b> <code class="src">pip install -r requirements.txt</code>, then
-          <code class="src">python server.py</code>, and open <code class="src">http://127.0.0.1:8765</code>.
-          Or double-click <code class="src">run.bat</code>, which does both. Keep the console window open
-          &mdash; closing it stops the server.
+          <b>Check the download.</b> The SHA-256 above is the installer's fingerprint. In PowerShell,
+          <code class="src">Get-FileHash .\EIMC-Setup-*.exe</code> must print the same value; if it does not,
+          do not run the file and tell us.
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="band band-alt" id="dhan">
+<section class="band band-alt" id="signin">
+  <span id="dhan" aria-hidden="true"></span>
   <div class="wrap">
     <div class="row wide-left">
       <div class="row-copy">
-        <div class="kicker"><span class="n">02</span> <b>Connect</b></div>
-        <h2 class="d2 mb32">Connect your Dhan account.</h2>
-        <p class="lede mb32">EIMC is a terminal for your own Dhan account, so the data is yours and nothing is resold to you. Three steps, about a minute.</p>
+        <div class="kicker"><span class="n">02</span> <b>Sign in</b></div>
+        <h2 class="d2 mb32">Sign in once. That is the whole setup.</h2>
+        <p class="lede mb32">No broker account, no API subscription, no token to paste each morning. EIMC brings the live market to the terminal itself.</p>
         <div class="steps">
-          <div class="step"><div><h4>Generate an access token</h4><p>web.dhan.co &#8594; Profile &#8594; <b>DhanHQ Trading APIs</b>. Set the toggle to <b>Access Token</b>, then click <b>Generate</b>.</p></div></div>
-          <div class="step"><div><h4>Paste it into EIMC</h4><p>Open <b>Settings</b> (the sliders icon, top right). Paste your Client ID and the token, then click <b>Save &amp; test</b>.</p></div></div>
-          <div class="step"><div><h4>Check both lights</h4><p>You should see <b>Login OK</b> and <b>Data APIs OK</b>. Chart data needs the Data APIs subscription &mdash; Login OK on its own is not enough.</p></div></div>
+          <div class="step"><div><h4>Make an EIMC account</h4><p><a class="tlink" href="signup.html">Sign up</a> with your email and mobile number. Every new account gets a 1-day Pro trial, no card needed.</p></div></div>
+          <div class="step"><div><h4>Open the terminal and sign in</h4><p>Use your <b>client ID or email</b> and your <b>password</b>. The terminal stays signed in on that PC, so you do this once.</p></div></div>
+          <div class="step"><div><h4>The market is live</h4><p>On Pro (or the trial), NSE, BSE and MCX data streams in by itself. On Free, every mode runs on demo data.</p></div></div>
         </div>
       </div>
       <div class="row-media">
-        <div class="note warn">
-          <b>Tokens expire every 24 hours.</b> Dhan issues a fresh one daily, so pasting a new token each
-          morning is part of the routine &mdash; not a bug.
+        <div class="note">
+          <b>Your plan follows you.</b> Subscribe, renew or cancel on this website; the terminal picks the change
+          up within the hour, or at once when you restart it.
         </div>
         <div class="note mt24">
-          <b>No credentials? Use demo.</b> Choose <b>Demo (synthetic)</b> and the whole terminal runs on
-          generated data: every mode, every indicator, bar replay included. That is the free tier, and it
-          never expires.
+          <b>PCs.</b> Your plan works on a set number of PCs at a time. Moving to a new PC? Remove the old one under
+          <a class="tlink" href="account.html#devices">Account &rarr; Licence &amp; devices</a>, then sign in on the new one.
         </div>
         <div class="note mt24">
-          <b>For live orders only.</b> Pro&rsquo;s real-money orders need the Trading APIs enabled, and
-          Dhan may require your IP to be whitelisted: web.dhan.co &#8594; DhanHQ Trading APIs &#8594;
-          <b>Static IP Setting</b>. Credentials are stored in the Windows Credential Manager, never in a
-          file in the install folder.
+          <b>We never ask for a broker login.</b> EIMC will never ask for a Dhan or any other broker password,
+          OTP or access token. Anyone who does is not us.
         </div>
       </div>
     </div>
@@ -223,7 +215,7 @@
       <div class="r"><div class="k">Runtime</div><div class="v">Microsoft Edge WebView2 &mdash; bundled, installed silently only if missing</div></div>
       <div class="r"><div class="k">Privileges</div><div class="v">None. Per-user install, no UAC prompt.</div></div>
       <div class="r"><div class="k">Display</div><div class="v">Opens maximised; window default 1600 &times; 950, minimum 1100 &times; 700</div></div>
-      <div class="r"><div class="k">Account</div><div class="v">Dhan with the Data APIs subscription for live data &middot; Trading APIs as well for live orders &middot; none at all for demo mode</div></div>
+      <div class="r"><div class="k">Account</div><div class="v">A free EIMC account to sign in &middot; Pro (or the trial) for live market data &middot; no broker account needed</div></div>
       <div class="r"><div class="k">Markets</div><div class="v">NSE &middot; BSE &middot; MCX</div></div>
       <div class="r"><div class="k">Data location</div><div class="v"><code class="src">%LOCALAPPDATA%\EIMC</code>, or wherever <code class="src">EIMC_DATA_DIR</code> points</div></div>
       <div class="r"><div class="k">Network</div><div class="v">The local server refuses any request whose Host or Origin header is not its own</div></div>
@@ -279,7 +271,7 @@
         <h5>Setup</h5>
         <ul>
           <li><a href="download.html">Download</a></li>
-          <li><a href="download.html#dhan">Connect Dhan</a></li>
+          <li><a href="download.html#signin">Sign in</a></li>
           <li><a href="download.html#keys">Keyboard</a></li>
           <li><a href="performance.html">Performance</a></li>
         </ul>
@@ -287,6 +279,7 @@
     </div>
     <div class="footer-base">
       <span>&copy; <span data-year>2026</span> EIMC &middot; Terminal v1.25.218.93</span>
+      <span class="legal"><a href="terms.html">Terms</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="refund.html">Cancellation &amp; refunds</a> &middot; <a href="contact.html">Contact</a></span>
       <span class="r">Chart engine: Lightweight Charts &copy; TradingView (Apache-2.0)</span>
     </div>
   </div>
@@ -296,13 +289,36 @@
 <script type="module" src="/js/boot.js"></script>
 <script type="module" src="/js/site.js"></script>
 <script type="module">
-  const btn = document.getElementById('dl');
-  btn?.addEventListener('click', () => {
-    const note = document.getElementById('dl-note');
-    if (note) { note.hidden = false; note.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-    btn.disabled = true;
-    btn.textContent = 'Installer not hosted yet';
-  });
+  // The installer, its version and its SHA-256 come from EIMC-Admin → Releases & access (the release
+  // marked latest), through /api/app/status: publishing a release there updates this page.
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const btn = document.getElementById('dl'), meta = document.getElementById('dl-meta'), check = document.getElementById('dl-check');
+  const off = text => { btn.textContent = text; btn.classList.add('is-off'); btn.addEventListener('click', e => e.preventDefault()); };
+  try {
+    const r = await fetch('/api/app/status?for=site', { headers: { Accept: 'application/json' } });
+    const v = r.ok ? (await r.json()).version : null;
+    if (v?.latest && v.downloadUrl && /^https:\/\//.test(v.downloadUrl)) {
+      btn.href = v.downloadUrl;
+      btn.removeAttribute('aria-disabled');
+      btn.textContent = `Download EIMC Terminal ${v.latest}`;
+      const bits = [`Version ${esc(v.latest)}`];
+      if (v.releasedAt) bits.push(new Date(v.releasedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' }));
+      if (v.sizeBytes) bits.push(`${(v.sizeBytes / 1048576).toFixed(0)} MB`);
+      bits.push('Windows 10 / 11, 64-bit', 'free forever on demo data');
+      meta.innerHTML = bits.join(' &nbsp;&middot;&nbsp; ');
+      if (v.sha256 || v.notes) {
+        check.hidden = false;
+        check.innerHTML = [v.notes ? `<b>What is new in ${esc(v.latest)}.</b> ${esc(v.notes)}` : '',
+          v.sha256 ? `<div class="${v.notes ? 'mt16' : ''}"><b>SHA-256</b> <code class="src" style="word-break:break-all">${esc(v.sha256)}</code></div>` : ''].join('');
+      }
+    } else {
+      off('Download coming soon');
+      meta.innerHTML = 'The installer is being prepared. <a class="tlink" href="signup.html">Make your account</a> now, and write to <a class="tlink" href="mailto:support@eimc.app">support@eimc.app</a> for early access.';
+    }
+  } catch {
+    off('Download unavailable right now');
+    meta.textContent = 'Could not reach the server. Refresh the page in a moment.';
+  }
 </script>
 <script type="module" src="/js/fx.js"></script>
 </body>

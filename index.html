@@ -6,12 +6,12 @@
 <script>try{if(localStorage.getItem("eimc.session")||sessionStorage.getItem("eimc.session"))document.documentElement.classList.add("signed-in")}catch(e){}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>EIMC Terminal — the NIFTY 50 order book that does not exist anywhere else</title>
-<meta name="description" content="NIFTY 50 has no order book, so every depth tool refuses to draw on it. EIMC records the near-month future's 200-level book every second and shifts it onto the index — with footprint, a liquidity heatmap, a TradingView-exact volume profile, scored stop pools and the full NSE option chain. Through your own Dhan account. Pro costs about 23 NIFTY points a month.">
+<meta name="description" content="NIFTY 50 has no order book, so every depth tool refuses to draw on it. EIMC records the near-month future's 200-level book every second and shifts it onto the index — with footprint, a liquidity heatmap, a TradingView-exact volume profile, scored stop pools and the full NSE option chain. Live data included, no broker account needed. Pro costs about 23 NIFTY points a month.">
 <meta name="theme-color" content="#f3f5f9">
 <link rel="canonical" href="https://eimc.vercel.app/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="EIMC Terminal — NIFTY 50 has no order book. We built it one.">
-<meta property="og:description" content="200-level depth recorded every second and shifted onto the index itself. Order flow, liquidity heatmap, volume profile, scored stop pools and the full NSE option chain — through your own Dhan account.">
+<meta property="og:description" content="200-level depth recorded every second and shifted onto the index itself. Order flow, liquidity heatmap, volume profile, scored stop pools and the full NSE option chain — live data included, no broker account needed.">
 <meta property="og:image" content="/assets/eimc.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20x%3D%224%22%20y%3D%224%22%20width%3D%2256%22%20height%3D%2256%22%20rx%3D%2215%22%20fill%3D%22%23141821%22%2F%3E%3Cpath%20d%3D%22M13%2041%20L24%2045%20L31%2038%20L41%2018%20L55%2012%22%20fill%3D%22none%22%20stroke%3D%22%23f5c842%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2255%22%20cy%3D%2212%22%20r%3D%224%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E">
@@ -123,7 +123,7 @@
             <span class="hx-hot" style="--x:33%;--y:34%;--i:1;--hc:#22d3a6"><i></i><span>Footprint: the volume at every price inside each candle</span></span>
             <span class="hx-hot l" style="--x:78.6%;--y:49.5%;--i:2;--hc:#f23645"><i></i><span>Live price, every tick</span></span>
             <span class="hx-hot l" style="--x:91%;--y:58%;--i:3;--hc:#22d3a6"><i></i><span>Option flow: who is strong, scored live</span></span>
-            <span class="hx-hot" style="--x:62%;--y:6.6%;--i:4;--hc:#4c7dff"><i></i><span>Paper or live orders, straight from the chart</span></span>
+            <span class="hx-hot" style="--x:62%;--y:6.6%;--i:4;--hc:#4c7dff"><i></i><span>Paper trades, straight from the chart</span></span>
             <span class="hx-hot up" style="--x:31%;--y:96.6%;--i:5;--hc:#38bdf8"><i></i><span>26 ticks a second on the live feed</span></span>
           </div>
           <span class="hx-ring" aria-hidden="true"></span>
@@ -160,8 +160,8 @@
     <p class="lede">
       EIMC records the near-month future&rsquo;s <b>200-level order book once a second</b> and shifts it
       onto the index itself &mdash; with footprint and delta, a liquidity heatmap, a TradingView-exact
-      volume profile, scored stop pools and the full NSE option chain. Through your own Dhan account,
-      on your own machine.
+      volume profile, scored stop pools and the full NSE option chain. Live data included: no broker
+      account, no daily token, on your own machine.
     </p>
     <a class="hv-watch" href="features.html#watch"><span class="pl"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M5 3.2v9.6c0 .5.5.8.9.5l7.4-4.8c.4-.3.4-.8 0-1.1L5.9 2.7c-.4-.3-.9 0-.9.5z"/></svg></span>Watch the order book, option flow and bias in motion</a>
   </div>
@@ -305,7 +305,7 @@
         <h5>Setup</h5>
         <ul>
           <li><a href="download.html">Download</a></li>
-          <li><a href="download.html#dhan">Connect Dhan</a></li>
+          <li><a href="download.html#signin">Sign in</a></li>
           <li><a href="download.html#keys">Keyboard</a></li>
           <li><a href="performance.html">Performance</a></li>
         </ul>
@@ -313,6 +313,7 @@
     </div>
     <div class="footer-base">
       <span>&copy; <span data-year>2026</span> EIMC &middot; Terminal v1.25.218.93</span>
+      <span class="legal"><a href="terms.html">Terms</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="refund.html">Cancellation &amp; refunds</a> &middot; <a href="contact.html">Contact</a></span>
       <span class="r">Chart engine: Lightweight Charts &copy; TradingView (Apache-2.0)</span>
     </div>
   </div>

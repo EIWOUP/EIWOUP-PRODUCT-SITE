@@ -77,11 +77,11 @@ export function renderRivals(host) {
         <tr class="rv-us">
           <td class="rv-n">
             <b>EIMC Terminal</b><span>${elite.name} &mdash; every feature</span>
-            <p>Order flow, recorded depth, profile, structure, the chain and live orders</p>
+            <p>Order flow, recorded depth, profile, structure, the chain and paper trading</p>
           </td>
           <td class="rv-p">
             <b class="num">${money(elite.monthly)}</b><span>/ month</span>
-            <p>Launch price (regular ${money(pro.listPrice || pro.monthly)}) &middot; data is your own Dhan account</p>
+            <p>Launch price (regular ${money(pro.listPrice || pro.monthly)}) &middot; live market data included</p>
           </td>
           <td class="rv-d">
             <span class="rv-tag yes">Built for NIFTY 50</span>

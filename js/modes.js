@@ -110,14 +110,14 @@ export const DETAIL = {
     paras: [
       "Dhan keeps no order-book history, so EIMC records its own — once a second, 09:00 to 15:35 IST, whether the app is open or not. Five sessions are kept.",
       "<b>NIFTY 50 is always recorded.</b> An index has no book of its own, so EIMC takes its near-month future's book and shifts it onto the index chart by the basis. That is a depth map for NIFTY that does not otherwise exist. <b>Options you pick</b> join the heat recorder from the Option Chain — click ◉ beside any call or put, up to six, NSE only.",
-      "Depth is the constraint and EIMC is built around it. Dhan's 200-level feed carries one instrument per socket, and an account may hold five — a sixth makes Dhan drop the oldest with code 805. EIMC takes four 200-level sockets (NIFTY plus the first three options) and one 20-level socket carrying every other recorded book. The five lights in the recorder box show exactly this.",
+      "Depth is the constraint and EIMC is built around it. The 200-level feed carries one instrument per socket and an account may hold only five, so EIMC's market-data server holds them for everyone: up to three instruments streamed at 200 levels (NIFTY's near-month future first), and 20-level books for the rest, each fetched once and shared with every customer watching it.",
     ],
     specs: [
       ['Recording', 'Once a second, 09:00 – 15:35 IST, app open or closed'],
       ['Always on', 'NIFTY 50 — its near-month future’s book, shifted onto the index by the basis'],
       ['Your picks', 'Up to 6 options from the Option Chain heat recorder (NSE)'],
-      ['Socket budget', '4 × 200-level + 1 × 20-level, inside Dhan’s 5 per account'],
-      ['On contention', 'Gives a 200-level socket back on code 805 and retries every 30 minutes'],
+      ['Depth', '200 levels on up to 3 instruments EIMC streams deep, 20 levels on up to 5 books you pick'],
+      ['Sockets', 'Held and shared by EIMC’s market-data server, never by your PC'],
       ['Retention', '5 sessions'],
       ['Tunable', 'EIMC_DEEP_SOCKETS in .env, 1–5, default 4'],
     ],

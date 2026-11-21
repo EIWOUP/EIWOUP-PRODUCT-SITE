@@ -11,7 +11,7 @@
 
    `t` is the tier gate, and it matches pricing-data.js exactly:
      'free'  — works on demo data with no account
-     'pro'   — everything on live data (needs a Dhan connection)
+     'pro'   — everything on live data (Pro or the trial)
 
    Keep the wording concrete. "Scored 0–100 from four inputs" earns
    trust; "powerful analytics" spends it.
@@ -27,7 +27,7 @@ export const GROUPS = [
   { id: 'options', name: 'Options',             note: 'The full chain, and who is winning it' },
   { id: 'dqrs',    name: 'DQRS setups',         note: 'Five mechanical setups, forward-tested' },
   { id: 'replay',  name: 'Bar replay',          note: 'Provably blind to the future' },
-  { id: 'trade',   name: 'Trading',             note: 'Paper by default, live behind a wall' },
+  { id: 'trade',   name: 'Paper trading',       note: 'Practise on live prices and in replay, no real orders' },
   { id: 'ind',     name: 'Indicators',          note: "TradingView's formulas, browser and server in parity" },
   { id: 'ux',      name: 'Interface & workflow', note: 'Keyboard, modes, memory' },
   { id: 'sys',     name: 'System & security',   note: 'Local-only, per-user, your credentials' },
@@ -117,9 +117,8 @@ export const ITEMS = [
   ['depth', 'pro', 'The book recorded every second', 'Dhan keeps no order-book history, so EIMC records its own — once a second, 09:00 to 15:35 IST on market days, whether the app is open or not.'],
   ['depth', 'pro', 'Five sessions kept', 'A week of recorded liquidity on disk, replayable.'],
   ['depth', 'pro', 'Depth for NIFTY 50, which has no book', "The near-month future's 200-level book, shifted onto the index chart by the basis."],
-  ['depth', 'pro', 'Up to six options recorded', 'Pick them in the option chain. The first three get 200 levels; options four to six record 20.'],
-  ['depth', 'pro', 'Socket budget managed for you', "An account may hold five depth sockets. EIMC takes four for 200-level work and one 20-level socket for the rest, gives one back if Dhan answers 805, and retries every 30 minutes."],
-  ['depth', 'pro', 'Socket lights', 'Five indicators in the recorder box show exactly which instrument holds which socket.'],
+  ['depth', 'pro', 'Up to six options recorded', 'Pick them in the option chain. Up to five books record 20 levels; the instruments EIMC streams deep record 200.'],
+  ['depth', 'pro', 'Depth sockets are our job', "The exchange data provider limits how many depth feeds one account may hold. EIMC's market-data server holds them and shares each book with everyone watching it, so there is nothing to juggle on your PC."],
   ['depth', 'pro', 'Resting buy versus sell pressure', 'Across the five depth levels, per option leg, in the chain.'],
 
   /* options */
@@ -170,62 +169,22 @@ export const ITEMS = [
   ['replay', 'pro', 'Intra-bar formation', 'Each candle forms tick by tick from lower-timeframe data: 1m for charts up to 25m, 5m for 1H–4H, 15m for 1D, daily for 1W and 1M.'],
   ['replay', 'free', 'Speed 1× to 1800×, or Max', 'Of market time. Space plays and pauses, Shift+→ finishes the candle, Shift+← hides it again.'],
   ['replay', 'free', 'Keeps your place', 'Change timeframe or symbol and the replay moment is preserved. It pauses itself when you switch browser tabs.'],
-  ['replay', 'free', 'Paper trading with a scorecard', 'Trades, win rate and P&L, filling at the replay\'s prices. Live orders are refused by both the browser and the server.'],
+  ['replay', 'free', 'Paper trading with a scorecard', 'Trades, win rate and P&L, filling at the replay\'s prices. No real order is ever sent.'],
   ['replay', 'free', 'No leaking the hidden future', 'Open replay trades are closed at the current price when you rewind or jump.'],
   ['replay', 'free', 'Live-only data hidden', 'Watchlist quotes, the option chain and the order book disappear during a replay, so nothing leaks from the present.'],
 
   /* trading */
-  ['trade', 'free', 'Paper mode on every page load', 'The default, every single time — not a setting you can forget.'],
-  ['trade', 'pro', 'Live orders through your Dhan account', 'Switch with the PAPER/LIVE badge, then type LIVE to confirm.'],
-  ['trade', 'pro', 'Live mode is visually unmistakable', 'A red frame round the chart and a banner carrying Exit all and Back to Paper.'],
-  ['trade', 'pro', 'Server-side order checks', 'Every real order is re-checked by the server, and none of these can be bypassed from the browser.'],
-  ['trade', 'pro', 'The server uses its own price', 'A live Dhan price is required, and the server trusts its own, not the browser\'s.'],
-  ['trade', 'pro', '5% typo guard', 'A limit price more than 5% from the live price is refused.'],
-  ['trade', 'pro', 'Value, quantity and daily-loss limits', 'Defaults ₹50,000 and ₹2,000, editable in the Live dialog.'],
-  ['trade', 'pro', '3-second duplicate guard', 'An identical order inside 3 s is refused, and only one real order is processed at a time.'],
-  ['trade', 'pro', 'Exits read your real position first', 'Exit and Exit all read your actual open quantity from Dhan, so they never sell more than you hold.'],
-  ['trade', 'pro', 'Exact targets from your real fill', 'After the entry fills, the app reads your average fill price from Dhan\'s trade book and re-prices the exits.'],
-  ['trade', 'pro', 'Rounding that favours you', 'The target rounds up to the tick, so a 0.20% target is never 0.19%. The stop rounds toward entry, so the loss never exceeds your stop %.'],
-  ['trade', 'pro', 'Dhan Super Orders', 'When both target and stop are set, Dhan links the exits so filling one cancels the other.'],
-  ['trade', 'pro', 'Drag to modify', 'Drag the TP/SL lines or a pending limit line to change the order; ✕ exits or cancels.'],
-  ['trade', 'pro', 'Position lines on the chart', 'Average shows your position average, Last fill shows the latest fill with its TP/SL.'],
+  ['trade', 'free', 'Paper trading only', 'EIMC never sends an order to a broker. Every trade is a paper trade, on live prices with Pro and in bar replay.'],
+  ['trade', 'free', 'A scorecard that keeps you honest', 'Trades, win rate and P&L for every paper trade, so practice is measured, not remembered.'],
+  ['trade', 'free', 'Targets and stops in one click', 'Set a target and a stop with the entry; both appear on the chart and close the paper trade when hit.'],
+  ['trade', 'free', 'Rounding that favours you', 'The target rounds up to the tick, so a 0.20% target is never 0.19%. The stop rounds toward entry, so the loss never exceeds your stop %.'],
+  ['trade', 'free', 'Drag to modify', 'Drag the TP/SL lines or a pending limit line to change the paper order; ✕ exits or cancels.'],
+  ['trade', 'free', 'Position lines on the chart', 'Average shows your position average, Last fill shows the latest fill with its TP/SL.'],
   ['trade', 'free', 'Quantity remembered per symbol', 'And your last-used order settings come back with you.'],
-  ['trade', 'pro', 'Shift+B and Shift+S', 'Buy and sell from the keyboard, with a confirmation unless you enable one-click for the session.'],
-
-  /* indicators */
-  ['ind', 'free', "TradingView's formulas", 'EMA, Wilder RMA with an SMA seed, RSI, ATR, Supertrend, MACD, DMI/ADX and VWAP with bands.'],
-  ['ind', 'free', 'Browser and server in parity', 'The engine exists twice — in the browser for per-tick updates and on the server — and a parity test keeps the two bar-for-bar identical.'],
-  ['ind', 'free', 'EMA ×4', 'Four independent exponential moving averages.'],
-  ['ind', 'free', 'VWAP with σ bands', 'Plus Bollinger and Supertrend.'],
-  ['ind', 'free', 'RSI, MACD, ADX/DMI', 'In their own panes, following each tick live.'],
-  ['ind', 'free', 'Hidden RSI divergence', 'Regular and hidden, both detected.'],
-  ['ind', 'free', 'SMA 20 / 50 / 200', 'The intraday set.'],
-  ['ind', 'free', 'Volume with its average', 'And a visible-range volume profile with POC and value area that recomputes as you zoom.'],
-  ['ind', 'free', 'Every indicator configurable', 'A ⚙ beside each one, and the oscillator panes follow every tick too.'],
-  ['ind', 'free', 'Colour and opacity picker', 'A palette, a hex box, a system colour picker and an opacity slider, with one tab per colour for indicators that draw several.'],
-  ['ind', 'free', 'Labels take their indicator\'s colour', 'Restyle an indicator and the CHoCH, BOS, HH/HL, SWEEP and SUPPLY OB text it draws follows.'],
-  ['ind', 'free', 'Your chart comes back', 'Every colour, setting and toggle is remembered, and ↶ restores one indicator to its default.'],
-  ['ind', 'free', 'Candle colours are yours', 'One colour for up, one for down; bodies, wicks and volume bars all follow.'],
-  ['ind', 'free', 'Multi-timeframe matrix', 'Trend across 5m to 1M, how many timeframes agree, and confluence zones that line up on two or more.'],
-
-  /* interface */
-  ['ux', 'free', 'Modes — one switch per family', 'Golden volume profile, Smart money, Order book, Liquidity heatmap / Order flow, Trend and Intraday. Alt+D opens the menu.'],
-  ['ux', 'free', 'A mode remembers its contents', 'Switch it off and back on and exactly what was on inside it returns.'],
-  ['ux', 'free', 'Modes and Indicators cannot disagree', "A mode's state is read back from its indicators, so the two views are always the same truth."],
-  ['ux', 'free', 'Chart only, and Everything on', 'Strip to bare candles, or bring the lot back, in one click.'],
-  ['ux', 'free', 'Insights panel', 'Overview with quote, day range, an animated bias gauge and factor checklist, trade plan and notes; plus Levels, MTF and Signals tabs.'],
-  ['ux', 'free', 'Signals log', 'BOS, CHoCH, sweeps, divergences, order blocks and Supertrend flips — click one to jump to it on the chart.'],
-  ['ux', 'free', 'Level ladder', 'Every level around the current price, clickable to highlight.'],
-  ['ux', 'free', 'Full keyboard control', 'Timeframes on 1–0, drawings on Alt+T/H/B/M, Alt+D modes, Alt+P replay, Alt+O chain, Alt+R reset, Alt+L live, Alt+S snapshot.'],
-  ['ux', 'free', 'Runs in your browser', 'A local server and a real browser engine — no custom UI toolkit to learn, and your charts are a tab.'],
-
-  /* system */
-  ['sys', 'free', 'Per-user install, no admin rights', 'Windows 10 or 11, 64-bit. No UAC prompt, nothing written outside your profile.'],
-  ['sys', 'free', 'Your data stays on your machine', 'Charts, drawings, recordings and credentials live in %LOCALAPPDATA%\\EIMC.'],
-  ['sys', 'pro', 'Credentials in Windows Credential Manager', 'Through keyring — not a config file in the install folder.'],
+  ['sys', 'free', 'Sign-in kept in Windows Credential Manager', 'Through keyring — not a config file in the install folder.'],
   ['sys', 'free', 'The server is local-only', 'It refuses any request arriving with a Host or Origin header other than its own, so nothing on the network can talk to it.'],
-  ['sys', 'pro', 'Rate-limited, chunked Dhan calls', "Within Dhan's published limits, so your account is never the thing that breaks."],
-  ['sys', 'pro', 'Offline licence grace', 'Your licence is valid for 7 days and refreshes on every launch that reaches the server. One failed DNS lookup never locks you out during market hours.'],
+  ['sys', 'pro', 'Shared, cached market data', "Candles, quotes and the option chain are fetched once and shared across customers, inside the data provider's published limits."],
+  ['sys', 'pro', 'Signed in, and staying signed in', 'Your licence renews by itself in the background. A dropped connection never signs you out: the last licence keeps working for up to a day.'],
   ['sys', 'pro', 'Entitlement decided server-side', 'Signed into the token; the app only reads back what was verified. Nothing in the interface is what unlocks a feature.'],
   ['sys', 'free', 'Uncapped rendering', 'Up to 144 FPS, with no shadowBlur and no CSS filters in a hot path, gradients cached and rebuilt only on resize, and every animation loop suspended off-screen.'],
   ['sys', 'free', 'Demo data generator', 'The whole terminal, every mode, running on synthetic data with no account, no card and no expiry.'],

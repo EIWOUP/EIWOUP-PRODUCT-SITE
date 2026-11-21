@@ -159,7 +159,9 @@ Swap in real screenshots later by replacing the `[data-ui="terminal"]` and
 
 ## Changing prices
 
-Change the price in **EIMC-Admin → Plans & pricing**. It writes the `plans` table, and
+Change the price in **EIMC-Admin → Plans & pricing**. New subscriptions are charged the new price
+(the site makes a new Razorpay plan for it on the first sale); customers already subscribed keep the
+price they signed up at. It writes the `plans` table, and
 `api/plans.js` serves the on-sale plans to `js/pricing-data.js`, which every page reads.
 Page copy marks prices with `<span data-price="pro">` / `data-price="pro-list"`, and
 `js/site.js` fills them. The numbers inside `js/pricing-data.js` (and in the HTML) are only
@@ -175,9 +177,8 @@ site and the licence server cannot drift apart.
 
 | What | Where | To finish |
 |---|---|---|
-| Payment gateway | `js/buy.js` → `startCheckout()` | Replace that one function body (Razorpay — the licence server already models its subscription states) |
-| Installer download | `download.html` → `#dl` handler | Drop `EIMC-Setup-1.25.218.93.exe` in the site root and point the button at it |
-| Legal pages | not built | Terms, Privacy and Refund URLs are normally required for Razorpay merchant onboarding |
+| Seller details | `js/business.js` | Legal name, address, state, GSTIN, phone, jurisdiction: printed on invoices and the legal / contact pages. Required by Razorpay's website review |
+| Legal text | `terms.html`, `privacy.html`, `refund.html` | Sensible drafts; have them read by someone qualified, especially the refund rules |
 | **Product screenshots** | `js/ui.js` replicas stand in | **The highest-value thing left.** Capture the four modes + the option chain and swap the mount points. See below. |
 
 
@@ -239,7 +240,7 @@ investment advice.
 There is no boot splash any more. Visitors land straight on the page, and the header has **Log in** at the top right. Once signed in, that becomes an account menu (initials + plan) with Overview, Subscription, Orders, Support and Log out. The "Start trial" button hides for signed-in customers.
 
 - `login.html`: client ID + password, show/hide, Caps Lock warning, "keep me logged in for 30 days", a slow-down after 5 wrong tries, and `?next=` to return to the page you came from (same-site pages only).
-- `account.html`: Overview, Subscription (billing cycle, change plan, cancel/resume), Orders & invoices (printable GST invoice), Payment methods + billing details/GSTIN, Personal info (+ data export), Login & security, Notifications, Licence & devices, Contact support (tickets), and Feature requests (ideas board with votes). Each section has its own link, e.g. `account.html#orders`.
+- `account.html`: Overview, Subscription (subscribe, cancel at Razorpay, a scheduled continuation), Orders & invoices (printable GST invoice: CGST+SGST or IGST by state), Payment methods (the card / UPI mandate in use) + billing details/GSTIN, Personal info (+ data export), Login & security, Notifications, Licence & devices, Contact support (tickets), and Feature requests (ideas board with votes). Each section has its own link, e.g. `account.html#orders`.
 - **Self sign-up** (`signup.html`, `js/signup.js`, `api/signup.js`): name, email, Indian mobile and password. One transaction creates the user, profile, security and notification rows, a licence key, a **1-day Pro trial** (no card) and a welcome message, then signs the customer in and shows their client ID. One account per email and per mobile (so one trial each), at most 3 sign-ups per IP per hour, and a hidden honeypot field. The login page and the buy page's trial button lead here. The account shows in EIMC-Admin marked **Website**.
 - **Real accounts.** `js/auth.js` calls `/api/login`, `/api/logout` and `/api/account`, which check the password and keep the session in an HttpOnly cookie, backed by the PostgreSQL (Neon) database that EIMC-Admin also edits. There is no in-browser demo mode any more.
 - **Notifications** shows the push and in-app messages the EIMC team sends from EIMC-Admin. Opening it marks them as read.
@@ -263,6 +264,34 @@ What EIMC Terminal calls to sign in and stay licensed. Customers use their **web
 - **Environment** (Vercel → Settings → Environment Variables, Production only): `EIMC_SIGNING_KEY` and `EIMC_SIGNING_KEY_ID`, from `C:\EIMC\_secrets\eimc-licence-signing-k1.env`. Never commit them. Without them the routes answer 500 `SERVER`. `RELAY_PUBLIC_URL` (e.g. `https://relay.yourdomain.com`) is written into every live licence as `relay`, so terminals know where live data comes from; inside the signature, it cannot be changed on the PC.
 - **Database**: needs `08_licensing.sql`. Apply it to Neon with `DB\setup-database.ps1 -Target neon -Migrate 08_licensing.sql`.
 - **Test** (local only, makes a throwaway key): `node tools/test-app-api.mjs` with `DATABASE_URL` pointing at a local database whose name contains `test` (`DB\setup-database.ps1 -Database eimc_app_test`).
+
+## Payments (Razorpay, `api/subscribe.js`, `api/razorpay-webhook.js`)
+
+Pro is a **monthly Razorpay subscription** (card e-mandate or UPI Autopay) that Razorpay charges by
+itself each month. Nothing about cards is stored here beyond the last 4 digits or a masked UPI ID.
+
+| Route | What it does |
+|---|---|
+| `GET /api/subscribe` | For `buy.html`: on sale?, the price incl. GST, the customer's current plan, and whether a new subscription would start now or when their paid days / trial end. |
+| `POST /api/subscribe {action:'start', plan}` | Creates the Razorpay subscription (re-offers one opened in the last 45 min) and returns what Checkout needs. |
+| `POST /api/subscribe {action:'verify', …}` | Checks Checkout's signature (HMAC of `payment_id\|subscription_id`), reads the subscription back from Razorpay and books it. |
+| `POST /api/razorpay-webhook` | Razorpay's events, signature-checked on the raw body, stored once in `payment_events` (event id unique), then applied. A failure answers 500 so Razorpay retries. |
+
+- **One booking path.** Checkout's confirmation and the webhooks both end in `applyGateway()` (`api/_billing.js`), under a per-subscription lock: each payment becomes exactly one order + payment + GST invoice (`EIMC/26-00042`) whichever arrives first, and an older event arriving late never undoes a newer state.
+- **Never charged twice for the same days.** Someone still in a trial or a paid month subscribes with Razorpay's `start_at` = when those days end.
+- **Cancelling** (Account → Subscription) cancels at Razorpay first (at the end of the paid month), then in the database. Razorpay cannot undo a cancel, so "keep my subscription" means subscribing again, which starts when the paid days end.
+- **Failed payments**: Razorpay retries (`subscription.pending` → past due, 3 days' grace), then `halted` (Pro stops). Subscribing again cancels the failing one first. The customer gets an in-app message for each.
+- **Refunds** are made in the Razorpay dashboard; `refund.processed` marks the payment, order and invoice refunded (full refunds only). Access is not ended automatically: decide that in EIMC-Admin.
+- **Sales gate**: with live keys, Pro is not on sale while live market data is off (EIMC-Admin → Market data), so nobody pays for data that is not flowing yet. Test keys always work. `EIMC_SELL_BEFORE_LIVE=1` overrides.
+- **Setup** (Vercel env, Production): `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`. In Razorpay: enable **Subscriptions**, then add the webhook `https://eimc.vercel.app/api/razorpay-webhook` with the same secret and the events listed at the top of `api/razorpay-webhook.js`. No plan needs creating by hand.
+- **Database**: needs `09_payments.sql` (`DB\setup-database.ps1 -Target neon -Migrate 09_payments.sql`).
+- **Test** (fake Razorpay, no money, local only): `node tools/test-payments.mjs` with `DATABASE_URL` on a local database whose name contains `test` (76 checks).
+
+## Site notices, download page, legal pages
+
+- **Notices**: "service down" and announcements shown on the site (EIMC-Admin → Releases & access) appear on every page, bottom centre (`js/notices.js`); a closed notice stays closed until it changes.
+- **Download**: `download.html` takes the installer link, version, size, notes and SHA-256 from the release marked latest in EIMC-Admin (via `/api/app/status`). Host the installer anywhere with an `https://` link and paste it there.
+- **Legal**: `terms.html`, `privacy.html`, `refund.html` (with delivery), `contact.html`, linked from every footer and from the checkout. Seller details come from `js/business.js`.
 
 ## Light theme
 

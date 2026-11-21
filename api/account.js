@@ -4,6 +4,7 @@
    Every query is limited to the signed-in user's own user_id. */
 import { many, one, q, tx } from './_db.js';
 import { body, currentUser, fail, sameOrigin, send } from './_session.js';
+import { cancelAtGateway, gatewaySub, paiseOf, salesOpen } from './_billing.js';
 
 const CATS = ['Billing & payments', 'Licence & activation', 'Dhan connection', 'Data & accuracy', 'Bug report', 'Account', 'Something else'];
 const TAGS = ['Charts', 'Order flow', 'Options', 'Setups', 'Trading', 'Terminal', 'Platform', 'Account'];
@@ -30,13 +31,14 @@ async function account(uid) {
       WHERE u.id = $1`, [uid]);
 
   const s = await one(
-    `SELECT s.*, pl.name AS plan_name, pl.price_monthly, pl.max_devices,
+    `SELECT s.*, pl.name AS plan_name, pl.price_monthly, pl.max_devices, pl.live_data,
             eimc.access_until(s) AS access_until,
+            EXISTS (SELECT 1 FROM checkouts c WHERE c.provider_subscription_id = s.provider_subscription_id) AS gateway,
             EXISTS (SELECT 1 FROM subscriptions h WHERE h.user_id = s.user_id AND h.billing_cycle = 'trial' AND h.id <> s.id) AS had_trial
        FROM subscriptions s JOIN plans pl ON pl.code = s.plan_code
       WHERE s.user_id = $1 AND s.is_current`, [uid]);
 
-  const [methods, devices, orders, tickets, logins, ideas, lic, notes] = await Promise.all([
+  const [methods, devices, orders, tickets, logins, ideas, lic, notes, release, pending, sales] = await Promise.all([
     many(`SELECT * FROM payment_methods WHERE user_id = $1 AND status <> 'removed' ORDER BY is_default DESC, created_at DESC`, [uid]),
     many(`SELECT * FROM devices WHERE user_id = $1 AND NOT revoked ORDER BY last_seen DESC`, [uid]),
     many(`SELECT o.*, i.invoice_no,
@@ -58,6 +60,12 @@ async function account(uid) {
     // messages the EIMC team sends from the admin panel (push and in-app)
     many(`SELECT id, channel, title, body, is_read, created_at FROM notifications
            WHERE user_id = $1 AND channel IN ('in_app', 'push') ORDER BY created_at DESC LIMIT 50`, [uid]),
+    one(`SELECT version FROM app_releases WHERE is_latest AND channel = 'stable'`),
+    // paid for and waiting for its first charge: a continuation, or a bank still confirming
+    one(`SELECT c.* FROM checkouts c WHERE c.user_id = $1 AND c.status = 'authenticated'
+           AND NOT EXISTS (SELECT 1 FROM subscriptions x WHERE x.provider_subscription_id = c.provider_subscription_id)
+         ORDER BY c.created_at DESC LIMIT 1`, [uid]),
+    salesOpen(),
   ]);
 
   // ---- subscription (free plan if none)
@@ -68,7 +76,7 @@ async function account(uid) {
     const start = s.current_period_start || s.started_at;
     const end = trial ? (s.trial_end || s.current_period_end) : (s.current_period_end || plus(start));
     const cycle = 'monthly';
-    const price = num(s.price_monthly);
+    const price = num(s.gateway ? s.price : s.price_monthly);   // a paying customer keeps the price they signed up at
     const gst = r2(price * GST);
     sub = {
       plan: s.plan_code, planName: s.plan_name + (trial ? ' trial' : ''),
@@ -78,17 +86,21 @@ async function account(uid) {
       accessUntil: iso(s.access_until), hasAccess: !!s.access_until,
       autoRenew: s.auto_renew, cancelAtPeriodEnd: s.cancel_at_period_end,
       seats: s.seats || s.max_devices, trialUsed: trial || s.had_trial,
+      gateway: s.gateway, live: !!(s.live_data && s.access_until),
     };
   } else {
     const end = plus(now);
     sub = { plan: 'free', planName: 'Free', cycle: 'monthly', cycleNext: 'monthly', status: 'free', price: 0, gst: 0, total: 0,
       currentStart: iso(now), currentEnd: iso(end), accessUntil: null, hasAccess: false,
-      autoRenew: false, cancelAtPeriodEnd: false, seats: 1, trialUsed: false };
+      autoRenew: false, cancelAtPeriodEnd: false, seats: 1, trialUsed: false, gateway: false, live: false };
   }
 
   const mapMethod = m => m.method_type === 'card'
     ? { id: `pm-${m.id}`, type: 'card', label: BRAND[m.card_brand] || 'Card', detail: `•••• ${m.card_last4}`,
-        note: `${m.status === 'expired' ? 'Expired' : 'Expires'} ${String(m.card_exp_month).padStart(2, '0')}/${String(m.card_exp_year).slice(-2)}`,
+        // cards saved from a Razorpay payment carry no expiry date (Razorpay does not share it)
+        note: m.card_exp_month && m.card_exp_year
+          ? `${m.status === 'expired' ? 'Expired' : 'Expires'} ${String(m.card_exp_month).padStart(2, '0')}/${String(m.card_exp_year).slice(-2)}`
+          : [m.card_funding && `${m.card_funding[0].toUpperCase()}${m.card_funding.slice(1)} card`, m.card_issuer_bank].filter(Boolean).join(' · '),
         added: iso(m.created_at), default: m.is_default }
     : { id: `pm-${m.id}`, type: m.method_type, label: m.method_type === 'upi' ? 'UPI Autopay' : 'Net banking',
         detail: m.upi_vpa_masked || m.bank_name || '', note: m.method_type === 'upi' ? 'Autopay mandate' : '',
@@ -109,10 +121,8 @@ async function account(uid) {
       twoFactor: !!u.two_factor_enabled,
     },
     subscription: sub,
-    licence: lic ? {
-      key: lic.licence_key, version: lic.app_version, revoked: lic.revoked,
-      broker: { name: lic.broker_name, status: lic.broker_status, clientId: lic.broker_client_masked || '—', since: iso(lic.broker_since) },
-    } : { key: '—', version: 'v1.25.218.93', revoked: false, broker: { name: 'Dhan', status: 'not connected', clientId: '—', since: null } },
+    // the terminal signs in with the account itself (client ID or email + password); no key to paste
+    licence: { version: release?.version || null, revoked: !!lic?.revoked, maxDevices: lic?.max_devices || sub.seats },
     devices: devices.map((d, i) => ({
       id: `dev-${d.id}`, name: d.label || 'PC', os: d.os || 'Windows', version: d.app_version || '',
       lastSeen: iso(d.last_seen), here: i === 0,
@@ -125,12 +135,20 @@ async function account(uid) {
     orders: orders.map(o => ({
       id: o.order_no, invoice: o.invoice_no, date: iso(o.created_at),
       item: itemName(o.plan_code, o.billing_cycle, o.description),
-      period: [iso(o.created_at), iso(plus(o.created_at))],
+      period: [iso(o.period_start || o.created_at), iso(o.period_end || plus(o.created_at))],
       amount: num(o.amount) - num(o.discount), gst: num(o.gst_amount), total: num(o.total),
       method: o.paid_with || '—', status: o.status,
     })),
-    upcoming: { date: sub.currentEnd, item: `${s ? s.plan_name : 'Free'} — monthly`,
-      amount: sub.price, gst: r2(sub.price * GST), total: r2(sub.price * (1 + GST)) },
+    // the next charge Razorpay will really make (nothing for a trial, Free, or an ending plan)
+    upcoming: pending
+      ? { date: iso(pending.starts_at || now), item: 'Pro — monthly', amount: num(pending.price),
+          gst: r2(pending.amount_paise / 100 - num(pending.price)), total: pending.amount_paise / 100 }
+      : sub.gateway && sub.autoRenew && !sub.cancelAtPeriodEnd && ['active', 'past_due'].includes(sub.status)
+        ? { date: sub.currentEnd, item: `${s.plan_name} — monthly`, amount: num(s.price),
+            gst: r2(paiseOf(s.price) / 100 - num(s.price)), total: paiseOf(s.price) / 100 }
+        : null,
+    pending: pending ? { startsAt: iso(pending.starts_at), confirming: !pending.starts_at } : null,
+    sales: { on: sales.on, message: sales.message },
     notifications: notes.map(n => ({
       id: `note-${n.id}`, channel: n.channel, title: n.title, body: n.body || '', read: n.is_read, created: iso(n.created_at),
     })),
@@ -218,16 +236,48 @@ const actions = {
 
   async setCancel(uid, [cancel, reason]) {
     const on = cancel === true;
+    const cur = await one(`SELECT * FROM subscriptions WHERE user_id = $1 AND is_current`, [uid]);
+    const gw = await gatewaySub(cur?.provider_subscription_id);
+    if (gw) {
+      // Razorpay charges this subscription by itself: stop it there first, or it keeps charging.
+      // A cancel there is final, so "keep my subscription" afterwards means subscribing again.
+      if (!on) {
+        if (cur.cancel_at_period_end) throw new UserError('A cancelled subscription cannot be restarted at the payment provider. Subscribe again from this page instead: it starts when your paid days end, so nothing is charged twice.', 'final');
+        return { ok: true };
+      }
+      if (cur.cancel_at_period_end) return { ok: true };
+      try {
+        await cancelAtGateway(cur.provider_subscription_id, cur.status === 'active');
+      } catch (e) {
+        console.error('account: razorpay cancel', e.status, e.message);
+        throw new UserError('The payment provider did not confirm the cancellation, so nothing has changed yet. Try again in a minute, or write to support@eimc.app.', 'gateway', 502);
+      }
+    }
     const r = await q(`UPDATE subscriptions SET cancel_at_period_end = $2, auto_renew = NOT $2,
+                         provider_event_at = CASE WHEN $4 THEN date_trunc('second', now()) ELSE provider_event_at END,
                          cancelled_at = CASE WHEN $2 THEN now() END, cancel_reason = CASE WHEN $2 THEN nullif($3, '') END,
                          status = CASE WHEN $2 AND status = 'active' THEN 'cancelled'
                                        WHEN NOT $2 AND status = 'cancelled' AND current_period_end > now() THEN 'active'
                                        ELSE status END
-                       WHERE user_id = $1 AND is_current AND status IN ('active','trialing','past_due','cancelled')`,
-      [uid, on, str(reason, 500)]);
+                       WHERE user_id = $1 AND is_current AND status IN ('active','trialing','past_due','cancelled','halted')`,
+      [uid, on, str(reason, 500), gw]);
     if (!r.rowCount) throw new UserError('There is no subscription to change.');
     await q(`INSERT INTO audit_log (user_id, actor, action, details) VALUES ($1, 'customer', $2, $3)`,
       [uid, on ? 'subscription.cancel' : 'subscription.resume', JSON.stringify({ reason: str(reason, 500) || null })]);
+  },
+
+  async cancelScheduled(uid) {
+    const co = await one(`SELECT * FROM checkouts c WHERE c.user_id = $1 AND c.status = 'authenticated'
+                            AND NOT EXISTS (SELECT 1 FROM subscriptions x WHERE x.provider_subscription_id = c.provider_subscription_id)
+                          ORDER BY c.created_at DESC LIMIT 1`, [uid]);
+    if (!co) throw new UserError('There is no scheduled subscription to cancel.');
+    try { await cancelAtGateway(co.provider_subscription_id, false); } catch (e) {
+      console.error('account: razorpay cancel scheduled', e.status, e.message);
+      throw new UserError('The payment provider did not confirm the cancellation, so nothing has changed yet. Try again in a minute.', 'gateway', 502);
+    }
+    await q(`UPDATE checkouts SET status = 'cancelled' WHERE id = $1`, [co.id]);
+    await q(`INSERT INTO audit_log (user_id, actor, action, details) VALUES ($1, 'customer', 'subscription.cancel_scheduled', $2)`,
+      [uid, JSON.stringify({ provider_subscription_id: co.provider_subscription_id })]);
   },
 
   async markNotificationsRead(uid) {

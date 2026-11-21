@@ -81,7 +81,7 @@ export function renderCompare(host) {
           : `${CURRENCY}${inr(p.monthly)}<span class="dim">/mo</span>`}</td>`).join('')}
       </tr>
       <tr>
-        <td class="cap"><b>Connect your own Dhan account</b><br><span class="dim" style="font-size:12.5px">live NSE / BSE / MCX data</span></td>
+        <td class="cap"><b>Live market data</b><br><span class="dim" style="font-size:12.5px">NSE / BSE / MCX, no broker account needed</span></td>
         ${PLANS.map(p => p.liveData ? '<td class="pc y">&#10003;</td>' : '<td class="pc n">&mdash;</td>').join('')}
       </tr>
       ${CAPS.map(c => `<tr><td class="cap">${c.name}</td>${PLANS.map(p => cell(p, c.key)).join('')}</tr>`).join('')}

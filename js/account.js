@@ -10,6 +10,7 @@
 
 import { api, signOut, signedIn, initials } from '/js/auth.js';
 import { PLANS, CAPS, planById, inr, GST_RATE } from '/js/pricing-data.js';
+import { BUSINESS } from '/js/business.js';
 
 const $ = (s, c = document) => c.querySelector(s);
 const $$ = (s, c = document) => [...c.querySelectorAll(s)];
@@ -106,8 +107,27 @@ const plan = () => planById(A.subscription.plan) || planById('free');
 /* the plan's state as the database reports it */
 const STATUS = { active: ['Active', 'ok'], trialing: ['Trial', 'info'], past_due: ['Payment due', 'warn'], halted: ['Paused', 'warn'],
   expired: ['Expired', 'warn'], cancelled: ['Ending', 'warn'], free: ['Free', ''] };
-const statusPill = s => pill(...(STATUS[s.status] || ['Active', 'ok']));
-const defaultMethod = () => A.methods.find(m => m.default) || A.methods[0];
+const statusPill = s => pill(...(!s.hasAccess && s.status === 'cancelled' ? ['Ended', 'warn'] : !s.hasAccess && s.status === 'trialing' ? ['Trial ended', 'warn']
+  : STATUS[s.status] || ['Active', 'ok']));
+const defaultMethod = () => A.methods.find(m => m.default) || A.methods[0] || null;   // none until the first payment
+const methodName = () => { const m = defaultMethod(); return m ? `${m.label}${m.detail ? ' · ' + m.detail : ''}` : 'your saved card or UPI'; };
+const BUY = 'buy.html?plan=pro';
+/* what the plan is doing right now, in words (overview + subscription) */
+function planLine() {
+  const s = A.subscription;
+  if (A.pending?.startsAt) return `Pro continues on <b>${date(A.pending.startsAt)}</b>, with the first monthly charge that day.`;
+  if (A.pending?.confirming) return 'Your bank is confirming your payment. Pro switches on as soon as it does.';
+  if (s.status === 'free') return 'The Free plan runs every mode on demo data, with no expiry.';
+  if (s.status === 'trialing') return `Your free trial ends on <b>${date(s.currentEnd)}</b>. Nothing is charged unless you subscribe.`;
+  if (!s.hasAccess) return 'Your plan has ended. The terminal runs on demo data until you subscribe again.';
+  if (s.cancelAtPeriodEnd) return `Your plan stays on until <b>${date(s.currentEnd)}</b>, then it stops. Nothing more is charged.`;
+  if (s.status === 'past_due') return `Your last payment did not go through. Razorpay tries again by itself; Pro keeps working until <b>${date(s.accessUntil)}</b>.`;
+  if (s.gateway && A.upcoming) return `Renews on <b>${date(A.upcoming.date)}</b> &middot; ${money(A.upcoming.total)} via ${esc(methodName())}`;
+  return `Paid until <b>${date(s.currentEnd)}</b>.`;
+}
+/* show a "subscribe" button? (no live plan running on its own, and nothing already scheduled) */
+const canSubscribe = () => A.sales?.on !== false && !A.pending &&
+  !(A.subscription.gateway && A.subscription.hasAccess && !A.subscription.cancelAtPeriodEnd && A.subscription.status === 'active');
 
 /* ═════════════════════════════════════════════════════════ sections */
 const S = {};
@@ -126,13 +146,13 @@ S.overview = () => {
   <section class="ov-hero card glow">
     <div class="ov-plan">
       <div class="ov-k">Your plan</div>
-      <div class="ov-name">${esc(s.planName)} ${s.cancelAtPeriodEnd ? pill('Ends ' + date(s.currentEnd, { year: undefined }), 'warn') : statusPill(s)}</div>
-      <div class="ov-px">${money(s.price)}<span> / month + GST</span></div>
-      <div class="ov-meta">${s.cancelAtPeriodEnd
-        ? `Your plan stays on until <b>${date(s.currentEnd)}</b>, then it stops.`
-        : `Renews on <b>${date(s.currentEnd)}</b> &middot; ${money(s.total)} via ${esc(defaultMethod().label)}`}</div>
+      <div class="ov-name">${esc(s.planName)} ${s.cancelAtPeriodEnd && s.hasAccess ? pill('Ends ' + date(s.currentEnd, { year: undefined }), 'warn') : statusPill(s)}</div>
+      <div class="ov-px">${money(s.status === 'free' || s.status === 'trialing' ? pro.monthly : s.price)}<span> / month + GST</span></div>
+      <div class="ov-meta">${planLine()}</div>
       <div class="btns mt24">
-        <a class="btn btn-gold btn-sm" href="#subscription">Manage subscription <span class="arw">&rarr;</span></a>
+        ${canSubscribe() ? `<a class="btn btn-gold btn-sm" href="${BUY}">${s.hasAccess && s.status !== 'trialing' ? 'Subscribe again' : 'Subscribe to Pro'} <span class="arw">&rarr;</span></a>
+        <a class="btn btn-sm" href="#subscription">My subscription</a>`
+        : `<a class="btn btn-gold btn-sm" href="#subscription">Manage subscription <span class="arw">&rarr;</span></a>`}
         <a class="btn btn-sm" href="#orders">Invoices</a>
       </div>
     </div>
@@ -144,9 +164,9 @@ S.overview = () => {
   </section>
 
   <section class="tiles">
-    <div class="tile"><span>Next payment</span><b>${s.cancelAtPeriodEnd ? '—' : money(A.upcoming.total)}</b><em>${s.cancelAtPeriodEnd ? 'No more charges' : date(A.upcoming.date)}</em></div>
-    <div class="tile"><span>Devices</span><b>${A.devices.length} <i>of ${s.seats}</i></b><em>Seats on your licence</em></div>
-    <div class="tile"><span>Market data</span><b class="ok-t">Live</b><em>Dhan ${esc(A.licence.broker.clientId)} connected</em></div>
+    <div class="tile"><span>Next payment</span><b>${A.upcoming ? money(A.upcoming.total) : '—'}</b><em>${A.upcoming ? date(A.upcoming.date) : 'Nothing scheduled'}</em></div>
+    <div class="tile"><span>PCs</span><b>${A.devices.length} <i>of ${s.seats}</i></b><em>Signed in to the terminal</em></div>
+    <div class="tile"><span>Market data</span>${s.live ? '<b class="ok-t">Live</b><em>NSE · BSE · MCX, from EIMC</em>' : '<b>Demo</b><em>Live data comes with Pro</em>'}</div>
     <div class="tile"><span>Support</span><b>${open}</b><em>${open === 1 ? 'Open ticket' : 'Open tickets'}</em></div>
   </section>
 
@@ -161,18 +181,18 @@ S.overview = () => {
       </ul>
     </section>
     <div class="ov-col">
-      ${locked.length ? `
+      ${!s.live && canSubscribe() ? `
       <section class="card up-card">
         <div class="ov-k">Upgrade</div>
-        <h2>Pro has every feature</h2>
-        <p>${locked.map(c => esc(c.name.split(' — ')[0].split(' & ')[0])).join(' and ')}. Pro is ${money(pro.monthly)} a month at the launch price.</p>
-        <a class="btn btn-sm mt16" href="buy.html?plan=pro&amp;cycle=monthly">Get Pro <span class="arw">&rarr;</span></a>
+        <h2>Pro runs on the live market</h2>
+        <p>${locked.length ? `${locked.map(c => esc(c.name.split(' — ')[0].split(' & ')[0])).join(' and ')}, and live` : 'Live'} NSE, BSE and MCX data for every mode, with no broker account or daily token. Pro is ${money(pro.monthly)} a month${pro.listPrice ? ' at the launch price' : ''}.</p>
+        <a class="btn btn-sm mt16" href="${BUY}">Get Pro <span class="arw">&rarr;</span></a>
       </section>` : ''}
       <section class="card">
         <div class="card-h"><h2>Shortcuts</h2></div>
         <div class="quick">
-          <a href="download.html">${ICON.down}<div><b>Download the terminal</b><span>${esc(A.licence.version)} for Windows</span></div></a>
-          <a href="download.html#dhan">${ICON.plug}<div><b>Connect Dhan</b><span>Live data in four steps</span></div></a>
+          <a href="download.html">${ICON.down}<div><b>Download the terminal</b><span>${A.licence.version ? 'v' + esc(A.licence.version) : 'Latest version'} for Windows</span></div></a>
+          <a href="download.html#signin">${ICON.plug}<div><b>Sign in to the terminal</b><span>Client ID or email, and your password</span></div></a>
           <a href="#support">${ICON.chat}<div><b>Contact support</b><span>Replies within one working day</span></div></a>
           <a href="#ideas">${ICON.book}<div><b>Suggest a feature</b><span>Vote on what we build next</span></div></a>
         </div>
@@ -185,23 +205,49 @@ S.overview = () => {
 S.subscription = () => {
   const s = A.subscription, pl = plan(), p = period(), m = defaultMethod();
   const order = s.plan === 'pro' ? ['pro'] : [s.plan, 'pro'].filter(id => planById(id));
+  const cancellable = s.gateway
+    ? s.autoRenew && !s.cancelAtPeriodEnd && ['active', 'past_due'].includes(s.status)
+    : !s.cancelAtPeriodEnd && s.status === 'active' && s.hasAccess;
   return `
   ${head('Subscription', 'Your plan, what it costs and when it renews.')}
-  ${s.cancelAtPeriodEnd ? `
+  ${A.pending ? `
+  <div class="banner">
+    <div>${A.pending.startsAt
+      ? `<b>You are subscribed: Pro continues on ${date(A.pending.startsAt)}.</b> The first monthly charge of ${money(A.upcoming?.total || 0)} is that day.`
+      : '<b>Your bank is confirming your payment.</b> Pro switches on as soon as it does, usually within minutes.'}</div>
+    ${A.pending.startsAt ? '<button class="btn btn-sm" data-act="cancel-scheduled">Cancel it</button>' : ''}
+  </div>` : ''}
+  ${!A.pending && s.cancelAtPeriodEnd && s.hasAccess ? `
   <div class="banner warn">
     <div><b>Your subscription is set to end on ${date(s.currentEnd)}.</b> You keep every Pro feature until then. Nothing more will be charged.</div>
-    <button class="btn btn-sm" data-act="resume">Keep my subscription</button>
+    ${s.gateway ? `<a class="btn btn-sm" href="${BUY}">Subscribe again</a>` : '<button class="btn btn-sm" data-act="resume">Keep my subscription</button>'}
   </div>` : ''}
+  ${s.status === 'past_due' ? `
+  <div class="banner warn">
+    <div><b>Your last payment did not go through.</b> Razorpay tries again over the next few days, and Pro keeps working until ${date(s.accessUntil)}. To pay another way, subscribe again: the old mandate is stopped first.</div>
+    <a class="btn btn-sm" href="${BUY}">Pay another way</a>
+  </div>` : ''}
+  ${!A.pending && !s.hasAccess && s.status !== 'free' ? `
+  <div class="banner warn">
+    <div><b>${s.status === 'halted' ? 'Pro is paused: the monthly payment failed several times.' : 'Your plan has ended.'}</b> The terminal runs on demo data until you subscribe again.</div>
+    <a class="btn btn-sm" href="${BUY}">Subscribe again</a>
+  </div>` : ''}
+  ${!A.pending && s.status === 'trialing' ? `
+  <div class="banner">
+    <div><b>Your free trial ends on ${date(s.currentEnd)}.</b> Subscribe now and the first charge is on that day, so you lose no trial time.</div>
+    <a class="btn btn-sm" href="${BUY}">Subscribe</a>
+  </div>` : ''}
+  ${A.sales && !A.sales.on && canSubscribe() ? `<p class="fine">${esc(A.sales.message)}</p>` : ''}
   <section class="card">
     <div class="sub-top">
       <div>
         <div class="ov-k">Current plan</div>
-        <div class="ov-name">${esc(s.planName)} ${s.cancelAtPeriodEnd ? pill('Cancelling', 'warn') : pill('Active', 'ok')}</div>
+        <div class="ov-name">${esc(s.planName)} ${s.cancelAtPeriodEnd && s.hasAccess ? pill('Cancelling', 'warn') : statusPill(s)}</div>
         <p class="muted mt8">${esc(pl.blurb)}</p>
       </div>
       <div class="sub-bar">
         <div class="bar"><i style="width:${p.pct.toFixed(1)}%"></i></div>
-        <div class="bar-l"><span>${date(s.currentStart)}</span><span>${p.left} days left</span><span>${date(s.currentEnd)}</span></div>
+        <div class="bar-l"><span>${date(s.currentStart)}</span><span>${p.left} day${p.left === 1 ? "" : "s"} left</span><span>${date(s.currentEnd)}</span></div>
       </div>
     </div>
     <dl class="kv mt24">
@@ -210,9 +256,9 @@ S.subscription = () => {
       <div><dt>GST (${Math.round(GST_RATE * 100)}%)</dt><dd>${money(s.gst)}</dd></div>
       <div><dt>Charged each month</dt><dd><b>${money(s.total)}</b></dd></div>
       <div><dt>Current period</dt><dd>${date(s.currentStart)} &ndash; ${date(s.currentEnd)}</dd></div>
-      <div><dt>${s.cancelAtPeriodEnd ? 'Ends on' : 'Next renewal'}</dt><dd>${date(s.currentEnd)}</dd></div>
-      <div><dt>Pays with</dt><dd>${esc(m.label)} &middot; ${esc(m.detail)} <a class="tlink sm" href="#payments">Change</a></dd></div>
-      <div><dt>Seats</dt><dd>${s.seats} PC${s.seats === 1 ? '' : 's'} &middot; ${A.devices.length} in use</dd></div>
+      <div><dt>${A.upcoming ? 'Next charge' : s.status === 'trialing' ? 'Trial ends' : 'Ends on'}</dt><dd>${A.upcoming ? date(A.upcoming.date) : date(s.currentEnd)}</dd></div>
+      <div><dt>Pays with</dt><dd>${m ? `${esc(m.label)}${m.detail ? ' &middot; ' + esc(m.detail) : ''}` : '<span class="muted">Saved when you subscribe</span>'}</dd></div>
+      <div><dt>PCs</dt><dd>${s.seats} PC${s.seats === 1 ? '' : 's'} &middot; ${A.devices.length} signed in</dd></div>
     </dl>
   </section>
 
@@ -220,24 +266,24 @@ S.subscription = () => {
     <div class="card-h"><h2>Change plan</h2><a class="tlink" href="pricing.html#compare">Full comparison</a></div>
     <div class="pl3">
       ${order.map(id => {
-        const q = planById(id), cur = id === s.plan, up = id === 'pro' && s.plan === 'free';
+        const q = planById(id), cur = id === s.plan, buy = id === 'pro' && canSubscribe();
         return `<div class="pl ${cur ? 'cur' : ''}">
           <div class="pl-n">${esc(q.name)} ${cur ? pill('Your plan', 'ok') : ''}</div>
           <div class="pl-p">${money(q.monthly)}<span>/mo</span></div>
           <ul>${q.highlights.slice(0, 4).map(h => `<li>${esc(h)}</li>`).join('')}</ul>
-          ${cur ? '<button class="btn btn-sm btn-block" disabled>Current plan</button>'
-            : `<a class="btn btn-sm btn-block ${up ? 'btn-gold' : ''}" href="buy.html?plan=${id}&amp;cycle=monthly">${up ? 'Upgrade' : 'Switch'} to ${esc(q.name)}</a>`}
+          ${buy ? `<a class="btn btn-sm btn-block btn-gold" href="${BUY}">${cur ? 'Subscribe again' : 'Subscribe to Pro'}</a>`
+            : `<button class="btn btn-sm btn-block" disabled>${cur ? 'Current plan' : 'Included'}</button>`}
         </div>`;
       }).join('')}
     </div>
-    <p class="fine mt16">Upgrades start at once and you pay only the difference for the days left. A downgrade starts at your next renewal.</p>
+    <p class="fine mt16">Pro is billed monthly and renews by itself. Subscribing while a trial or a paid month is still running starts the new subscription when it ends, so you never pay twice for the same days.</p>
   </section>
 
-  ${s.cancelAtPeriodEnd ? '' : `
+  ${cancellable ? `
   <section class="card danger-zone">
-    <div><h2>Cancel subscription</h2><p class="muted">You keep ${esc(plan().name)} until ${date(s.currentEnd)}. The free terminal on demo data keeps working after that.</p></div>
+    <div><h2>Cancel subscription</h2><p class="muted">${s.status === 'past_due' ? 'Razorpay stops trying to charge you, and Pro stops when the grace days end.' : `You keep ${esc(plan().name)} until ${date(s.currentEnd)}.`} The free terminal on demo data keeps working after that.</p></div>
     <button class="btn btn-sm btn-danger" data-act="cancel">Cancel subscription</button>
-  </section>`}`;
+  </section>` : ''}`;
 };
 
 /* ── orders & invoices ────────────────────────────────────────────── */
@@ -248,22 +294,23 @@ S.orders = () => {
   <section class="tiles three">
     <div class="tile"><span>Paid so far</span><b>${money(spent)}</b><em>Including GST</em></div>
     <div class="tile"><span>Orders</span><b>${A.orders.length}</b><em>Since ${date(A.profile.memberSince, { day: undefined })}</em></div>
-    <div class="tile"><span>${s.cancelAtPeriodEnd ? 'Upcoming' : 'Next charge'}</span><b>${s.cancelAtPeriodEnd ? '—' : money(A.upcoming.total)}</b><em>${s.cancelAtPeriodEnd ? 'None, the plan is ending' : date(A.upcoming.date) + ' · ' + esc(defaultMethod().label)}</em></div>
+    <div class="tile"><span>Next charge</span><b>${A.upcoming ? money(A.upcoming.total) : '—'}</b><em>${A.upcoming ? date(A.upcoming.date) + (defaultMethod() ? ' · ' + esc(defaultMethod().label) : '') : 'Nothing scheduled'}</em></div>
   </section>
   <section class="card flush">
     <div class="tw-a">
       <table class="tbl">
         <thead><tr><th>Order</th><th>Date</th><th>Item</th><th class="r">Amount</th><th>Status</th><th class="r">Invoice</th></tr></thead>
         <tbody>
-          ${s.cancelAtPeriodEnd ? '' : `<tr class="soon">
+          ${!A.upcoming ? '' : `<tr class="soon">
             <td class="mono">Upcoming</td><td>${date(A.upcoming.date)}</td><td>${esc(A.upcoming.item)}</td>
             <td class="r mono">${money(A.upcoming.total)}</td><td>${pill('Scheduled')}</td><td class="r muted">&mdash;</td></tr>`}
+          ${A.orders.length || A.upcoming ? '' : '<tr><td colspan="6" class="muted">No orders yet. Each payment and its invoice appear here.</td></tr>'}
           ${A.orders.map(o => `<tr>
             <td class="mono">${esc(o.id)}</td>
             <td>${date(o.date)}<small>${time(o.date)}</small></td>
             <td>${esc(o.item)}<small>${date(o.period[0], { year: undefined })} &ndash; ${date(o.period[1], { year: undefined })}</small></td>
             <td class="r mono">${money(o.total)}${o.gst ? `<small>incl. ${money(o.gst)} GST</small>` : ''}</td>
-            <td>${o.status === 'failed' ? pill('Failed', 'warn') : o.status === 'refunded' ? pill('Refunded') : pill(o.status === 'paid' ? 'Paid' : 'Completed', 'ok')}</td>
+            <td>${o.status === 'failed' ? pill('Failed', 'warn') : o.status === 'refunded' ? pill('Refunded') : o.status === 'created' ? pill('Not paid') : pill(o.status === 'paid' ? 'Paid' : 'Completed', 'ok')}</td>
             <td class="r">${o.invoice ? `<button class="btn btn-sm" data-invoice="${esc(o.id)}">${ICON.down}PDF</button>` : '<span class="muted">No charge</span>'}</td>
           </tr>`).join('')}
         </tbody>
@@ -274,8 +321,16 @@ S.orders = () => {
 };
 
 function invoice(id) {
-  const o = A.orders.find(x => x.id === id), b = A.billing;
+  const o = A.orders.find(x => x.id === id), b = A.billing, B = BUSINESS;
   if (!o) return;
+  // same state as the seller: CGST + SGST (half each); another state, or unknown: IGST
+  const local = B.state && b.state && B.state.trim().toLowerCase() === b.state.trim().toLowerCase();
+  const pct = Math.round(GST_RATE * 100);
+  const taxRows = local
+    ? `<tr><td>CGST @ ${pct / 2}%</td><td></td><td class="r">${money(Math.round(o.gst * 50) / 100)}</td></tr>
+       <tr><td>SGST @ ${pct / 2}%</td><td></td><td class="r">${money(o.gst - Math.round(o.gst * 50) / 100)}</td></tr>`
+    : `<tr><td>IGST @ ${pct}%</td><td></td><td class="r">${money(o.gst)}</td></tr>`;
+  const seller = [B.legalName || B.brand, B.address, B.gstin ? `GSTIN ${B.gstin}` : '', B.email].filter(Boolean).map(esc).join('<br>');
   const w = window.open('', '_blank');
   if (!w) { toast('Allow pop-ups for this site to open the invoice.', 'bad'); return; }
   w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Invoice ${esc(o.invoice)}</title>
@@ -288,19 +343,19 @@ function invoice(id) {
     .demo{margin-top:36px;padding:12px 14px;background:#fff6d6;border:1px solid #e9cf72;font-size:12.5px}
     @media print{.demo{display:none}button{display:none}body{margin:24px}}
   </style></head><body>
-  <h1>Tax invoice</h1><div class="muted">${esc(o.invoice)} &middot; ${date(o.date)}</div>
+  <h1>${B.gstin ? 'Tax invoice' : 'Invoice'}</h1><div class="muted">${esc(o.invoice)} &middot; ${date(o.date)}${o.status === 'refunded' ? ' &middot; REFUNDED' : ''}</div>
   <div class="row">
-    <div><b>EIMC Terminal</b><br><span class="muted">Seller details and GSTIN print here on live invoices</span></div>
-    <div><b>Billed to</b><br>${esc(b.name)}<br>${esc(b.line1)}<br>${esc(b.line2)}<br>${esc(b.city)}, ${esc(b.state)} ${esc(b.pin)}${b.gstin ? '<br>GSTIN ' + esc(b.gstin) : ''}<br>Client ID ${esc(A.profile.clientId)}</div>
+    <div><b>Sold by</b><br>${seller}</div>
+    <div><b>Billed to</b><br>${[b.name, b.line1, b.line2, [b.city, [b.state, b.pin].filter(Boolean).join(' ')].filter(Boolean).join(', '),
+      b.gstin ? `GSTIN ${b.gstin}` : '', `Client ID ${A.profile.clientId}`].filter(Boolean).map(esc).join('<br>')}</div>
   </div>
   <table><thead><tr><th>Description</th><th>Period</th><th class="r">Amount</th></tr></thead><tbody>
     <tr><td>EIMC ${esc(o.item)} subscription (SAC 998431)</td><td>${date(o.period[0])} &ndash; ${date(o.period[1])}</td><td class="r">${money(o.amount)}</td></tr>
-    <tr><td>IGST @ ${Math.round(GST_RATE * 100)}%</td><td></td><td class="r">${money(o.gst)}</td></tr>
+    ${taxRows}
     <tr class="tot"><td>Total</td><td></td><td class="r">${money(o.total)}</td></tr>
   </tbody></table>
   <div class="muted" style="margin-top:12px">Paid by ${esc(o.method)} &middot; Order ${esc(o.id)}</div>
-  <div class="stamp">PAID</div>
-  <div class="demo"><b>Sample invoice.</b> This is the demo account; live invoices are issued by the billing system.</div>
+  <div class="stamp">${o.status === 'refunded' ? 'REFUNDED' : 'PAID'}</div>
   <p><button onclick="print()">Print or save as PDF</button></p>
   </body></html>`);
   w.document.close();
@@ -312,17 +367,16 @@ S.payments = () => {
   return `
   ${head('Payment methods', 'How your subscription is paid, and the details on your invoices.')}
   <section class="card">
-    <div class="card-h"><h2>Saved methods</h2><button class="btn btn-sm" data-act="add-method">${ICON.plus}Add method</button></div>
+    <div class="card-h"><h2>Saved methods</h2></div>
     <div class="pm-list">
-      ${A.methods.map(m => `
+      ${A.methods.length ? A.methods.map(m => `
       <div class="pm ${m.default ? 'def' : ''}">
         <div class="pm-ic ${m.type}">${m.type === 'upi' ? ICON.upi : ICON.card}</div>
-        <div class="pm-t"><b>${esc(m.label)} ${m.default ? pill('Default', 'ok') : ''}</b><span class="mono">${esc(m.detail)}</span><em>${esc(m.note)}</em></div>
-        <div class="pm-a">${m.default ? '<span class="muted">Charged for renewals</span>'
-          : `<button class="btn btn-sm" data-default="${esc(m.id)}">Make default</button>`}</div>
-      </div>`).join('')}
+        <div class="pm-t"><b>${esc(m.label)} ${m.default ? pill(A.upcoming ? 'In use' : 'Last used', A.upcoming ? 'ok' : '') : ''}</b><span class="mono">${esc(m.detail)}</span><em>${esc(m.note)}</em></div>
+        <div class="pm-a"><span class="muted">${m.default && A.upcoming ? 'Charged each month' : 'Used before'}</span></div>
+      </div>`).join('') : '<p class="muted">No saved method yet. The card or UPI Autopay mandate you subscribe with is saved here.</p>'}
     </div>
-    <p class="fine mt16">${ICON.shield}Card and UPI details are held by the payment provider, never by EIMC. We only see the last digits.</p>
+    <p class="fine mt16">${ICON.shield}Card and UPI details are held by Razorpay, never by EIMC: we only see the last digits. Your monthly charge uses the card or UPI mandate you subscribed with. To pay another way, cancel and subscribe again: a new subscription starts when your paid days end.</p>
   </section>
 
   <section class="card">
@@ -458,49 +512,45 @@ S.notifications = () => `
 /* ── licence & devices ────────────────────────────────────────────── */
 S.devices = () => {
   const l = A.licence, s = A.subscription;
-  const masked = l.key.replace(/^(EIMC-[A-Z0-9]{4}-)(.*)(-[A-Z0-9]{4})$/, (_, a, b, c) => a + b.replace(/[A-Z0-9]/g, '•') + c);
   return `
-  ${head('Licence &amp; devices', 'Your licence key, and the PCs the terminal is active on.')}
+  ${head('Licence &amp; devices', 'How the terminal signs in, and the PCs it is signed in on.')}
   <section class="card lic">
     <div>
-      <div class="ov-k">Licence key</div>
-      <div class="lic-key mono" data-key="${esc(l.key)}" data-masked="${esc(masked)}">${esc(masked)}</div>
-      <p class="muted">Paste it into the terminal under Settings &rarr; Licence. Keep it private: it is tied to your account.</p>
+      <div class="ov-k">Sign in to EIMC Terminal</div>
+      <div class="lic-key mono">${esc(A.profile.clientId)}</div>
+      <p class="muted">Open the terminal and sign in with this client ID (or your email) and your account password. It stays signed in on that PC, checks your plan in the background, and needs no licence key or broker token.</p>
     </div>
-    <div class="btns">
-      <button class="btn btn-sm" data-act="reveal">${ICON.eye}<span>Show</span></button>
-      <button class="btn btn-sm" data-act="copy-key">${ICON.copy}Copy</button>
-    </div>
+    <div class="btns"><a class="btn btn-sm" href="download.html">${ICON.down}Download</a></div>
   </section>
   <section class="tiles three">
-    <div class="tile"><span>Seats used</span><b>${A.devices.length} <i>of ${s.seats}</i></b><div class="bar sm"><i style="width:${A.devices.length / s.seats * 100}%"></i></div></div>
-    <div class="tile"><span>Latest version</span><b class="mono-b">${esc(l.version)}</b><em><a class="tlink sm" href="download.html">Download</a></em></div>
-    <div class="tile"><span>Broker</span><b class="ok-t">${esc(l.broker.name)}</b><em>Connected &middot; ${esc(l.broker.clientId)}</em></div>
+    <div class="tile"><span>PCs signed in</span><b>${A.devices.length} <i>of ${s.seats}</i></b><div class="bar sm"><i style="width:${Math.min(100, A.devices.length / s.seats * 100)}%"></i></div></div>
+    <div class="tile"><span>Latest version</span><b class="mono-b">${l.version ? 'v' + esc(l.version) : '—'}</b><em><a class="tlink sm" href="download.html">Download</a></em></div>
+    <div class="tile"><span>Market data</span>${s.live ? '<b class="ok-t">Live</b><em>From EIMC, no broker needed</em>' : '<b>Demo</b><em>Live data comes with Pro</em>'}</div>
   </section>
   <section class="card">
-    <div class="card-h"><h2>Activated PCs</h2><span class="muted">Remove one to free its seat</span></div>
+    <div class="card-h"><h2>Signed-in PCs</h2><span class="muted">Remove one to free its place</span></div>
     <ul class="dev">
       ${A.devices.length ? A.devices.map(d => {
-        const old = d.version !== l.version;
+        const old = !!(l.version && d.version && d.version.replace(/^v/, '') !== l.version);
         return `<li>
         <div class="dev-ic">${ICON.pc}</div>
         <div class="dev-t"><b>${esc(d.name)} ${d.here ? pill('Last used', 'ok') : ''}</b><span>${esc(d.os)} &middot; <span class="mono">${esc(d.version)}</span>${old ? ' <em class="warn-t">update available</em>' : ''}</span></div>
         <div class="dev-w"><span>Last active</span><b>${ago(d.lastSeen)}</b></div>
         <button class="btn btn-sm" data-remove-device="${esc(d.id)}">Remove</button>
       </li>`;
-      }).join('') : '<li class="empty">No PCs are activated. Install the terminal and enter your key.</li>'}
+      }).join('') : '<li class="empty">No PCs yet. Install the terminal and sign in with this account.</li>'}
     </ul>
   </section>`;
 };
 
 /* ── contact support ──────────────────────────────────────────────── */
-const CATS = ['Billing & payments', 'Licence & activation', 'Dhan connection', 'Data & accuracy', 'Bug report', 'Account', 'Something else'];
+const CATS = ['Billing & payments', 'Licence & activation', 'Data & accuracy', 'Bug report', 'Account', 'Something else'];
 S.support = (prefill) => `
   ${head('Contact support', 'Real people who use the terminal themselves. We reply within one working day.')}
   <section class="chan">
     <a class="card chan-c" href="mailto:support@eimc.app">${ICON.mail}<div><b>Email</b><span>support@eimc.app</span><em>Within 1 working day</em></div></a>
     <a class="card chan-c" href="#support-form" data-jump>${ICON.chat}<div><b>Raise a ticket</b><span>Tracked here, with updates</span><em>Fastest for bugs and billing</em></div></a>
-    <a class="card chan-c" href="download.html#keys">${ICON.book}<div><b>Guides</b><span>Setup, Dhan, shortcuts</span><em>Answers in minutes</em></div></a>
+    <a class="card chan-c" href="download.html#keys">${ICON.book}<div><b>Guides</b><span>Install, sign-in, shortcuts</span><em>Answers in minutes</em></div></a>
   </section>
   <section class="card" id="support-form">
     <div class="card-h"><h2>New ticket</h2><span class="muted">Mon–Sat, 9:00–18:00 IST</span></div>
@@ -604,26 +654,22 @@ function wire(tab) {
   }));
   on('[data-act="cancel"]', 'click', () => modal(`
     <h3 id="modal-h">Cancel your Pro subscription?</h3>
-    <p>You keep every Pro feature until <b>${date(A.subscription.currentEnd)}</b>. After that the terminal goes back to the free plan on demo data. Your settings and drawings stay.</p>
+    <p>${A.subscription.status === 'past_due' ? 'Razorpay stops trying to charge you.' : `You keep every Pro feature until <b>${date(A.subscription.currentEnd)}</b>.`} After that the terminal goes back to the free plan on demo data. Your settings and drawings stay.</p>
+    ${A.subscription.gateway ? '<p class="fine">Razorpay stops the monthly charge straight away. A cancellation cannot be undone there, but you can subscribe again any time.</p>' : ''}
     <div class="fld mt16"><label for="m-why">What made you cancel? <span class="muted">(optional)</span></label>
       <select id="m-why"><option value="">Choose a reason</option><option>Too expensive</option><option>Missing a feature I need</option><option>Not trading for a while</option><option>Moving to another tool</option><option>Something else</option></select></div>
     <div class="modal-f"><button class="btn btn-sm" data-close autofocus>Keep Pro</button><button class="btn btn-sm btn-danger" data-confirm>Cancel at period end</button></div>`,
   (box, close) => $('[data-confirm]', box).addEventListener('click', e => busy(e.currentTarget, async () => {
-    try { await api.setCancel(true, $('#m-why', box).value); close(); await refresh(); toast(`Cancelled. Pro stays on until ${date(A.subscription.currentEnd)}.`); } catch (x) { guard(x); }
+    try { await api.setCancel(true, $('#m-why', box).value); close(); await refresh(); toast(A.subscription.hasAccess ? `Cancelled. Pro stays on until ${date(A.subscription.currentEnd)}.` : 'Cancelled. Nothing more will be charged.'); } catch (x) { guard(x); }
   }))));
 
-  on('[data-default]', 'click', e => busy(e.currentTarget, async () => {
-    try { await api.setDefaultMethod(e.currentTarget.dataset.default); await refresh(); toast('Default payment method changed.'); } catch (x) { guard(x); }
-  }));
-  on('[data-act="add-method"]', 'click', () => modal(`
-    <h3 id="modal-h">Add a payment method</h3>
-    <p>New cards and UPI Autopay mandates are added on the payment provider's secure page, so EIMC never sees your full card number or UPI PIN.</p>
-    <div class="pm-pick">
-      <button class="pm-o" disabled>${ICON.upi}<b>UPI Autopay</b><span>Any UPI app</span></button>
-      <button class="pm-o" disabled>${ICON.card}<b>Credit or debit card</b><span>Visa, Mastercard, RuPay</span></button>
-    </div>
-    <p class="fine">This opens once accounts go online. Until then, your current methods keep working.</p>
-    <div class="modal-f"><button class="btn btn-sm" data-close autofocus>Close</button></div>`));
+  on('[data-act="cancel-scheduled"]', 'click', () => modal(`
+    <h3 id="modal-h">Cancel the subscription that starts on ${date(A.pending.startsAt)}?</h3>
+    <p>Nothing has been charged for it yet, and nothing will be. Your current plan is not affected.</p>
+    <div class="modal-f"><button class="btn btn-sm" data-close autofocus>Keep it</button><button class="btn btn-sm btn-danger" data-confirm>Cancel it</button></div>`,
+  (box, close) => $('[data-confirm]', box).addEventListener('click', e => busy(e.currentTarget, async () => {
+    try { await api.cancelScheduled(); close(); await refresh(); toast('Cancelled. Nothing will be charged.'); } catch (x) { guard(x); }
+  }))));
 
   const fb = $('#f-billing', body);
   fb?.addEventListener('submit', e => { e.preventDefault();
@@ -677,21 +723,13 @@ function wire(tab) {
     try { await api.savePrefs({ ...A.prefs, [k]: v }); A.prefs[k] = v; toast(v ? 'Turned on.' : 'Turned off.'); } catch (x) { e.currentTarget.checked = !v; guard(x); }
   });
 
-  on('[data-act="reveal"]', 'click', e => {
-    const k = $('.lic-key', body), show = k.textContent === k.dataset.masked;
-    k.textContent = show ? k.dataset.key : k.dataset.masked;
-    $('span', e.currentTarget).textContent = show ? 'Hide' : 'Show';
-  });
-  on('[data-act="copy-key"]', 'click', async () => {
-    try { await navigator.clipboard.writeText(A.licence.key); toast('Licence key copied.'); } catch { toast('Copy failed — select the key and copy it.', 'bad'); }
-  });
   on('[data-remove-device]', 'click', e => {
     const d = A.devices.find(x => x.id === e.currentTarget.dataset.removeDevice);
     modal(`<h3 id="modal-h">Remove ${esc(d.name)}?</h3>
-      <p>The terminal on that PC goes back to the free plan the next time it starts, and the seat is free for another PC.</p>
+      <p>The terminal on that PC is signed out within the hour (and at once from live data), and its place is free for another PC. Signing in there again adds it back.</p>
       <div class="modal-f"><button class="btn btn-sm" data-close autofocus>Keep it</button><button class="btn btn-sm btn-danger" data-confirm>Remove PC</button></div>`,
     (box, close) => $('[data-confirm]', box).addEventListener('click', ev => busy(ev.currentTarget, async () => {
-      try { await api.removeDevice(d.id); close(); await refresh(); toast(`${d.name} removed. One seat is free.`); } catch (x) { guard(x); }
+      try { await api.removeDevice(d.id); close(); await refresh(); toast(`${d.name} removed. One place is free.`); } catch (x) { guard(x); }
     })));
   });
 

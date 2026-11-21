@@ -31,7 +31,19 @@ http.createServer(async (req, res) => {
       const file = path.join(root, 'api', `${api[1]}.js`);
       if (!fs.existsSync(file)) { res.statusCode = 404; return res.end('{"error":"not found"}'); }
       const mod = await import(pathToFileURL(file).href);
-      return await mod.default(req, res);
+      if (typeof mod.default === 'function') return await mod.default(req, res);
+      // Web-standard handler (export POST(request) -> Response), as Vercel runs it: the raw body
+      // stays untouched, which a webhook signature needs (api/razorpay-webhook.js).
+      const fn = mod[req.method];
+      if (typeof fn !== 'function') { res.statusCode = 405; return res.end('{"error":"Method not allowed."}'); }
+      const chunks = [];
+      for await (const c of req) chunks.push(c);
+      const headers = new Headers();
+      for (const [k, v] of Object.entries(req.headers)) if (v != null) headers.set(k, Array.isArray(v) ? v.join(', ') : String(v));
+      const reply = await fn(new Request(url, { method: req.method, headers, body: ['GET', 'HEAD'].includes(req.method) ? undefined : Buffer.concat(chunks) }));
+      res.statusCode = reply.status;
+      reply.headers.forEach((v, k) => res.setHeader(k, v));
+      return res.end(Buffer.from(await reply.arrayBuffer()));
     }
     let p = decodeURIComponent(url.pathname);
     if (p.endsWith('/')) p += 'index.html';

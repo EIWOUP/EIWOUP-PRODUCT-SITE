@@ -60,6 +60,7 @@ const httpBackend = {
   vote: (s, id, on) => act('vote', id, !!on),
   changePassword: (s, current, next) => act('changePassword', current, next),
   markNotificationsRead: () => act('markNotificationsRead'),
+  cancelScheduled: () => act('cancelScheduled'),
 };
 
 const backend = httpBackend;
@@ -129,11 +130,12 @@ function call(name) {
 }
 export const api = Object.fromEntries(
   ['account', 'saveProfile', 'savePrefs', 'saveBilling', 'setDefaultMethod', 'setCancel',
-    'removeDevice', 'createTicket', 'submitIdea', 'vote', 'changePassword', 'markNotificationsRead'].map(n => [n, call(n)]));
+    'removeDevice', 'createTicket', 'submitIdea', 'vote', 'changePassword', 'markNotificationsRead', 'cancelScheduled'].map(n => [n, call(n)]));
 
 /* only same-site paths are allowed as a place to return to after logging in */
 export function safeNext(raw, fallback = 'account.html') {
-  if (!raw || !/^[a-z0-9_-]+\.html(#[a-z0-9-]*)?$/i.test(raw)) return fallback;
+  // a page of this site, optionally with a simple query (buy.html?plan=pro) and a #section
+  if (!raw || !/^[a-z0-9_-]+\.html(\?[a-z0-9=&_-]*)?(#[a-z0-9-]*)?$/i.test(raw)) return fallback;
   return raw;
 }
 
