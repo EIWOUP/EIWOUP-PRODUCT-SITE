@@ -181,6 +181,14 @@ async function main() {
   r = await call('/api/subscribe', { action: 'start', plan: 'pro' });
   ok(r.status === 401, 'starting a checkout needs a sign-in');
 
+  // sign-up keeps a 10-digit mobile that begins 91, and still accepts +91 / 91 / 0 prefixes
+  const tail = String(Date.now()).slice(-8);
+  for (const [phone, label] of [[`91${tail}`, '10 digits starting 91'], [`+917${tail}1`, '+91 prefix'], [`06${tail}3`, 'leading 0']]) {
+    ipN++;
+    const rr = await call('/api/signup', { name: 'Phone Check', email: `phone-${Date.now()}-${ipN}@example.com`, phone, password: 'secret123', agree: true });
+    ok(rr.status === 201, `sign-up accepts a mobile number: ${label}`);
+  }
+
   // ---------------------------------------------------------------- A: trial ended, pays at once
   const A = await signUp('a');
   await sql(`UPDATE eimc.subscriptions SET trial_end = now() - interval '1 minute', current_period_end = now() - interval '1 minute'

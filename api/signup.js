@@ -28,7 +28,9 @@ function check(b) {
   const password = String(b.password ?? '');
   if (name.length < 2 || !/\p{L}/u.test(name)) throw new UserError('Enter your full name.', 'name');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) throw new UserError('Enter a valid email address.', 'email');
-  const digits = raw.replace(/^\+?91/, '').replace(/^0/, '');
+  // drop a country code (+91 / 91) or trunk 0 only when exactly 10 digits follow, so a real 10-digit
+  // number that happens to begin 91 (for example 9123456789) is kept whole
+  const digits = raw.replace(/^(?:\+?91|0)(?=\d{10}$)/, '');
   if (!/^[6-9]\d{9}$/.test(digits)) throw new UserError('Enter a 10-digit Indian mobile number.', 'phone');
   if (password.length < 8) throw new UserError('Use at least 8 characters for your password.', 'password');
   if (password.length > 128) throw new UserError('Use at most 128 characters for your password.', 'password');
