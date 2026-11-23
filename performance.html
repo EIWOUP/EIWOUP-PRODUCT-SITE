@@ -161,10 +161,10 @@
           <tr><td>Book push rate</td><td>A fresh snapshot to the interface every <b>0.25 s</b></td><td><code class="src">depth.py:43</code></td></tr>
           <tr><td>Liquidity recording</td><td><b>Once a second</b>, 09:00&ndash;15:35 IST on market days, app open or not</td><td><code class="src">heatrec.py:3</code></td></tr>
           <tr><td>Recording retention</td><td><b>5 sessions</b> kept on disk</td><td><code class="src">heatrec.py:53</code></td></tr>
-          <tr><td>Candle reconciliation</td><td>Every close re-checked at <b>1 s, 6 s and 20 s</b>, then every 30 s until Dhan has it</td><td><code class="src">service.py</code></td></tr>
-          <tr><td>Tick handling</td><td>Ticks are never dropped. A new day high or low between Dhan&rsquo;s ~1 s snapshots still reaches the wick. Prices snap to the instrument&rsquo;s tick size.</td><td><code class="src">feed.py</code></td></tr>
+          <tr><td>Candle reconciliation</td><td>Every close re-checked at <b>1 s, 6 s and 20 s</b>, then every 30 s until EIMC-DATA has it</td><td><code class="src">service.py</code></td></tr>
+          <tr><td>Tick handling</td><td>Ticks are never dropped. A new day high or low between EIMC-DATA&rsquo;s ~1 s snapshots still reaches the wick. Prices snap to the instrument&rsquo;s tick size.</td><td><code class="src">feed.py</code></td></tr>
           <tr><td>Clock</td><td>Requests use the <b>exchange&rsquo;s</b> clock, not the PC clock, so a slow local clock cannot hide the newest candle</td><td><code class="src">service.py</code></td></tr>
-          <tr><td>Volume-profile accuracy</td><td>Every row within <b>0.6 px</b> of a Dhan TradingView screenshot of NIFTY 50 on 19 Oct 2026 &mdash; same POC row, same value-area edge</td><td><code class="src">tests/test_volprofile.py</code></td></tr>
+          <tr><td>Volume-profile accuracy</td><td>Every row within <b>0.6 px</b> of an EIMC-DATA TradingView screenshot of NIFTY 50 on 19 Oct 2026 &mdash; same POC row, same value-area edge</td><td><code class="src">tests/test_volprofile.py</code></td></tr>
           <tr><td>Analysis time</td><td><b>&asymp;100 ms</b> at default history; <b>1,030 ms</b> for 5m over one year</td><td><code class="src">tests/bench.py</code></td></tr>
           <tr><td>Payload</td><td><b>230&ndash;330 KB</b>; json.dumps at 11 ms, 142 ms worst case</td><td><code class="src">tests/bench.py</code></td></tr>
           <tr><td>Equivalence coverage</td><td><b>1,365</b> comparisons proving the fast path matches the original algorithms exactly</td><td><code class="src">tests/test_equivalence.py</code></td></tr>
@@ -228,7 +228,7 @@
     <div class="footer-in">
       <div class="footer-brand">
         <div class="brand"><div class="bt"><b>EIMC</b><span>TERMINAL</span></div></div>
-        <p>Order flow, liquidity and market structure for Indian markets. Built on the DhanHQ v2 Data API.</p>
+        <p>Order flow, liquidity and market structure for Indian markets. Built on EIMC-DATA.</p>
       </div>
       <div>
         <h5>Modes</h5>
@@ -268,7 +268,7 @@
       </div>
     </div>
     <div class="footer-base">
-      <span>&copy; <span data-year>2026</span> EIMC &middot; Terminal <span data-app-version>v1.26.0.0</span></span>
+      <span>&copy; <span data-year>2026</span> EIMC &middot; Terminal <span data-app-version>v1.25.218.94</span></span>
       <span class="legal"><a href="terms.html">Terms</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="refund.html">Cancellation &amp; refunds</a> &middot; <a href="contact.html">Contact</a></span>
       <span class="r">Chart engine: Lightweight Charts &copy; TradingView (Apache-2.0)</span>
     </div>

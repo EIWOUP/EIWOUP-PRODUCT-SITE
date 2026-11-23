@@ -6,7 +6,7 @@ import { many, one, q, tx } from './_db.js';
 import { body, currentUser, fail, sameOrigin, send } from './_session.js';
 import { cancelAtGateway, gatewaySub, paiseOf, salesOpen } from './_billing.js';
 
-const CATS = ['Billing & payments', 'Licence & activation', 'Dhan connection', 'Data & accuracy', 'Bug report', 'Account', 'Something else'];
+const CATS = ['Billing & payments', 'Licence & activation', 'EIMC-DATA connection', 'Data & accuracy', 'Bug report', 'Account', 'Something else'];
 const TAGS = ['Charts', 'Order flow', 'Options', 'Setups', 'Trading', 'Terminal', 'Platform', 'Account'];
 const GST = 0.18;
 

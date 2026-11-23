@@ -46,7 +46,7 @@ export const DETAIL = {
     pitch: 'Yesterday’s business, standing over today’s.',
     lead: "EIMC rebuilds the previous session's volume profile from its 1-minute candles using TradingView's own rules, then carries its POC and its high- and low-volume zones forward into the next day's space. You trade today against where the market actually did business yesterday — not against a line someone drew.",
     paras: [
-      "Accuracy here is not a claim, it is a test. The profile was checked against a Dhan TradingView screenshot of NIFTY 50 on 19 October 2026: every row landed within <b>0.6 px</b>, the POC fell on the same row, and the value area ended on the same edge. That comparison runs as <code class=\"src\">tests/test_volprofile.py</code> on every build.",
+      "Accuracy here is not a claim, it is a test. The profile was checked against an EIMC-DATA TradingView screenshot of NIFTY 50 on 19 October 2026: every row landed within <b>0.6 px</b>, the POC fell on the same row, and the value area ended on the same edge. That comparison runs as <code class=\"src\">tests/test_volprofile.py</code> on every build.",
       "Each candle's volume is shared equally by every tick between its low and its high, and volume counts as up when the close is at or above the open. The value area grows outward from the POC by TradingView's documented rule. An index counts in 0.01; every other instrument counts in its own exchange tick.",
       "<b>HVN</b> marks price the market accepted — a peak holding at least 25% of the POC's volume and standing 15% of it above its saddle. <b>LVN</b> marks the opposite: a trough at least 8% of the POC's volume below its lower wall and no more than half of it. Thin trade between two accepted areas, where price travels fast.",
     ],
@@ -55,7 +55,7 @@ export const DETAIL = {
       ['Value area', 'Default 70%, grown from the POC by TradingView’s documented rule'],
       ['HVN', '≥ 25% of POC volume, standing 15% of it above its saddle'],
       ['LVN', '≥ 8% of POC volume below its lower wall, and ≤ half of it'],
-      ['Verified', 'NIFTY 50, 19 Oct 2026 — every row within 0.6 px of Dhan’s TradingView chart'],
+      ['Verified', 'NIFTY 50, 19 Oct 2026 — every row within 0.6 px of EIMC-DATA’s TradingView chart'],
       ['Timeframes', 'Intraday only, 1m – 4H'],
       ['Cost', 'A finished session never changes, so each is computed once (GET /api/gvp)'],
     ],
@@ -68,7 +68,7 @@ export const DETAIL = {
     lead: "Order flow turns the recorded book into a footprint read: the walls standing in the way, the size going through them, a live DOM down the right edge, and each candle's delta underneath. Zoom in far enough and the candles open into full footprints.",
     paras: [
       "Delta answers the question every other indicator answers late: of everything that traded inside this candle, how much lifted the offer and how much hit the bid. A candle that closes green on negative delta was bought by nobody — it drifted up because sellers stepped away. You see that here before you see it anywhere else.",
-      "The data is recorded, not reconstructed. Dhan keeps no order-book history, so EIMC writes its own — once a second, 09:00 to 15:35 IST on market days, whether the app is open or not. NIFTY is always recorded; options join from the Option Chain.",
+      "The data is recorded, not reconstructed. EIMC-DATA keeps no order-book history, so EIMC writes its own — once a second, 09:00 to 15:35 IST on market days, whether the app is open or not. NIFTY is always recorded; options join from the Option Chain.",
       "Order flow and the Liquidity heatmap are the two <b>heat modes</b>, and only one runs at a time — both paint the chart background, and the product keeps them mutually exclusive.",
     ],
     specs: [
@@ -108,7 +108,7 @@ export const DETAIL = {
     pitch: 'An order book for an index that has none.',
     lead: "Resting orders drawn behind the candles as a heat field running back through time, with trade bubbles where size actually went through and a live DOM on the right edge. A wall that stood for forty minutes before it was eaten is still on the chart when you go looking for it.",
     paras: [
-      "Dhan keeps no order-book history, so EIMC records its own — once a second, 09:00 to 15:35 IST, whether the app is open or not. Five sessions are kept.",
+      "EIMC-DATA keeps no order-book history, so EIMC records its own — once a second, 09:00 to 15:35 IST, whether the app is open or not. Five sessions are kept.",
       "<b>NIFTY 50 is always recorded.</b> An index has no book of its own, so EIMC takes its near-month future's book and shifts it onto the index chart by the basis. That is a depth map for NIFTY that does not otherwise exist. <b>Options you pick</b> join the heat recorder from the Option Chain — click ◉ beside any call or put, up to six, NSE only.",
       "Depth is the constraint and EIMC is built around it. The 200-level feed carries one instrument per socket and an account may hold only five, so EIMC's market-data server holds them for everyone: up to three instruments streamed at 200 levels (NIFTY's near-month future first), and 20-level books for the rest, each fetched once and shared with every customer watching it.",
     ],

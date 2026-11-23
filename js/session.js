@@ -24,7 +24,7 @@ export const SESSION = [
     h: 'The recorder is already running',
     d: 'Fifteen minutes before the open, EIMC starts taking a snapshot of the near-month '
      + 'future&rsquo;s 200-level order book every single second &mdash; whether the app is open in a '
-     + 'browser or not. Dhan keeps no order-book history, so if EIMC does not record it, '
+     + 'browser or not. EIMC-DATA keeps no order-book history, so if EIMC does not record it, '
      + 'nobody does and it is gone.',
     k: ['200 levels', 'Every 1 s', 'App closed is fine'],
   },
@@ -40,8 +40,8 @@ export const SESSION = [
   {
     t: '09:16', tag: 'First ticks', tier: 'pro',
     h: 'And the candles are already being checked',
-    d: 'Every close is re-read against Dhan&rsquo;s own candles at 1&nbsp;s, 6&nbsp;s and 20&nbsp;s, then '
-     + 'every 30&nbsp;s until Dhan has it. Requests use the exchange clock rather than your PC clock. '
+    d: 'Every close is re-read against EIMC-DATA&rsquo;s own candles at 1&nbsp;s, 6&nbsp;s and 20&nbsp;s, then '
+     + 'every 30&nbsp;s until EIMC-DATA has it. Requests use the exchange clock rather than your PC clock. '
      + 'The chip in the status bar tells you exactly how stale the newest candle is, '
      + 'instead of letting you assume.',
     k: ['1 s · 6 s · 20 s', 'Exchange clock', 'No dropped ticks'],

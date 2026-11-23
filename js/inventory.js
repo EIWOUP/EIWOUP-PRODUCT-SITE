@@ -36,11 +36,11 @@ export const GROUPS = [
 /* ── the inventory ──────────────────────────────────────────────── */
 export const ITEMS = [
   /* chart engine */
-  ['chart', 'pro', 'Instruments covered', 'NIFTY 50, BANKNIFTY, FINNIFTY, SENSEX and INDIA VIX, every NSE F&amp;O name, NSE and BSE cash, and MCX commodities — through DhanHQ v2.'],
+  ['chart', 'pro', 'Instruments covered', 'NIFTY 50, BANKNIFTY, FINNIFTY, SENSEX and INDIA VIX, every NSE F&amp;O name, NSE and BSE cash, and MCX commodities — through EIMC-DATA.'],
   ['chart', 'free', 'Ten timeframes', '1m · 5m · 15m · 25m · 1H · 2H · 4H · 1D · 1W · 1M, each on a number key.'],
   ['chart', 'free', 'Six chart types', 'Candles, Hollow, Heikin Ashi, Bars, Line and Area.'],
   ['chart', 'free', 'Infinite history', 'Scroll to the left edge and older candles load themselves.'],
-  ['chart', 'pro', 'Tick-by-tick live candles', "The forming candle and every indicator on it update on each tick from Dhan's live feed, keeping your zoom and scroll position."],
+  ['chart', 'pro', 'Tick-by-tick live candles', "The forming candle and every indicator on it update on each tick from EIMC-DATA's live feed, keeping your zoom and scroll position."],
   ['chart', 'free', 'Mouse-wheel and pinch zoom', 'Kinetic scrolling, drag either axis to rescale, double-click an axis to reset.'],
   ['chart', 'free', 'Auto-fit price axis', 'The A button fits the axis to what is on screen, and switches itself off the moment you drag the axis.'],
   ['chart', 'free', 'Logarithmic price axis', 'The L button makes equal percentage moves look equal. Both A and L are remembered.'],
@@ -51,12 +51,12 @@ export const ITEMS = [
   ['chart', 'free', 'Drawing tools', 'Trend line, horizontal level, rectangle and measure, on Alt+T / Alt+H / Alt+B / Alt+M, with Delete, Ctrl+Z and Esc.'],
 
   /* candle accuracy */
-  ['candle', 'pro', 'Triple close reconciliation', "Every candle close is re-checked against Dhan's own candles 1 s, 6 s and 20 s later, then every 30 s until Dhan has it."],
+  ['candle', 'pro', 'Triple close reconciliation', "Every candle close is re-checked against EIMC-DATA's own candles 1 s, 6 s and 20 s later, then every 30 s until EIMC-DATA has it."],
   ['candle', 'pro', 'Exchange clock, not your PC clock', "Data requests use the exchange's clock, so a slow PC clock can no longer hide the newest candle."],
   ['candle', 'pro', 'Clock drift readout', 'The status bar shows how far this machine is from the exchange, and when candles last synced.'],
-  ['candle', 'pro', 'No dropped ticks', "A new day high or low that lands between Dhan's ~1 s snapshots still reaches the candle's wick."],
-  ['candle', 'pro', 'Tick-size snapping', 'The Dhan feed sends float32, so 25843.35 arrives as 25843.3496. Prices are snapped back to the instrument tick.'],
-  ['candle', 'pro', 'Official daily bars', "Previous day, week and month levels, pivots, CPR and change % use Dhan's official daily bars — and for NSE stocks the official close is the 30-minute VWAP, not the last trade."],
+  ['candle', 'pro', 'No dropped ticks', "A new day high or low that lands between EIMC-DATA's ~1 s snapshots still reaches the candle's wick."],
+  ['candle', 'pro', 'Tick-size snapping', 'The EIMC-DATA feed sends float32, so 25843.35 arrives as 25843.3496. Prices are snapped back to the instrument tick.'],
+  ['candle', 'pro', 'Official daily bars', "Previous day, week and month levels, pivots, CPR and change % use EIMC-DATA's official daily bars — and for NSE stocks the official close is the 30-minute VWAP, not the last trade."],
   ['candle', 'pro', 'Re-check on reconnect and on tab focus', 'Candles are verified again after a dropped connection and when the tab comes back into view.'],
   ['candle', 'pro', 'Confirming-candle state', 'The chip reads "Confirming live candle…" while the newest candle exists only from ticks.'],
 
@@ -99,7 +99,7 @@ export const ITEMS = [
 
   /* golden volume profile */
   ['gvp', 'pro', "TradingView's own profile rules", "Rows, value area and POC computed the way TradingView documents them, from the session's 1-minute candles."],
-  ['gvp', 'pro', 'Verified against a real TradingView chart', 'Checked against a Dhan TradingView screenshot of NIFTY 50 on 19 Oct 2026: every row within 0.6 px, same POC row, same value-area edge.'],
+  ['gvp', 'pro', 'Verified against a real TradingView chart', 'Checked against an EIMC-DATA TradingView screenshot of NIFTY 50 on 19 Oct 2026: every row within 0.6 px, same POC row, same value-area edge.'],
   ['gvp', 'pro', 'Yesterday carried into today', "The previous session's profile, POC and zones are drawn forward to the next session's close."],
   ['gvp', 'pro', 'HVN zones', 'A peak holding at least 25% of the POC\'s volume and standing 15% above its saddle — an area the market accepted.'],
   ['gvp', 'pro', 'LVN zones', 'A trough at least 8% below its lower wall and at most half the POC — thin trade, where price tends to move fast.'],
@@ -109,12 +109,12 @@ export const ITEMS = [
   ['gvp', 'pro', 'Replay-safe', 'In a bar replay, only sessions that closed before the replay clock can be read.'],
 
   /* order book, heatmap, flow */
-  ['depth', 'pro', '200-level order book', "Dhan's deepest feed, falling back to 20 levels then 5 if a socket is unavailable."],
+  ['depth', 'pro', '200-level order book', "EIMC-DATA's deepest feed, falling back to 20 levels then 5 if a socket is unavailable."],
   ['depth', 'pro', 'Order-book density on the chart', 'One horizontal band per price level hugging the right edge, whose length and opacity both grow with the quantity resting there. Walls keep their price line and label.'],
   ['depth', 'pro', 'Independent of the panel', 'The density map keeps working with the Book tab closed.'],
   ['depth', 'pro', 'Liquidity heatmap, Bookmap-style', 'Resting orders over time, so you can see a wall build and then get eaten.'],
   ['depth', 'pro', 'Order flow and footprint', 'Per-price traded volume and delta, ATAS-style.'],
-  ['depth', 'pro', 'The book recorded every second', 'Dhan keeps no order-book history, so EIMC records its own — once a second, 09:00 to 15:35 IST on market days, whether the app is open or not.'],
+  ['depth', 'pro', 'The book recorded every second', 'EIMC-DATA keeps no order-book history, so EIMC records its own — once a second, 09:00 to 15:35 IST on market days, whether the app is open or not.'],
   ['depth', 'pro', 'Five sessions kept', 'A week of recorded liquidity on disk, replayable.'],
   ['depth', 'pro', 'Depth for NIFTY 50, which has no book', "The near-month future's 200-level book, shifted onto the index chart by the basis."],
   ['depth', 'pro', 'Up to six options recorded', 'Pick them in the option chain. Up to five books record 20 levels; the instruments EIMC streams deep record 200.'],
